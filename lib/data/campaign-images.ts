@@ -20,7 +20,7 @@ export const campaignImages = {
   /** Monochromatic / 3D terrain peta — replace file in public/images */
   mapTerrain: "/images/peta-malaysia-terrain.jpg",
   /** Hero — Cameron Highlands tea terraces, Pahang, Malaysia */
-  heroBackground: "/images/hero-background.jpg",
+  heroBackground: "/images/home-bg.jpg",
   heroBackgroundAlt: "Emerald tea plantations in Cameron Highlands, Pahang, Malaysia",
   /** About section — Malaysia diversity collage */
   aboutCollage: {

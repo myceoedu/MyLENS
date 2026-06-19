@@ -45,14 +45,6 @@ const AWARD_PLAQUES = [
   },
 ] as const;
 
-const FINALE_STATS = [
-  { value: "75", label: "Schools Nationwide" },
-  { value: "300", label: "Young Creators" },
-  { value: "1,800", label: "Tourism Stories Produced" },
-  { value: "14", label: "States Represented" },
-  { value: "500,000+", label: "Audience Reach" },
-] as const;
-
 function ChampionSpotlight() {
   return (
     <motion.article
@@ -180,31 +172,6 @@ export default function CompetitionHubSection() {
             ))}
           </motion.div>
         </motion.div>
-
-        {/* Championship at a Glance */}
-        <motion.footer
-          variants={fadeInUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-40px" }}
-          className="mt-16 pt-10 border-t border-zinc-200/60"
-        >
-          <p className="text-center text-zinc-400 font-sans font-bold tracking-widest text-[11px] uppercase mb-8">
-            Championship at a Glance
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 lg:gap-4 text-center">
-            {FINALE_STATS.map((stat) => (
-              <div key={stat.label}>
-                <p className="text-[#0f172a] font-serif font-bold text-4xl md:text-5xl tracking-tight leading-none">
-                  {stat.value}
-                </p>
-                <p className="text-zinc-400 font-sans font-bold tracking-widest text-[11px] uppercase mt-1.5">
-                  {stat.label}
-                </p>
-              </div>
-            ))}
-          </div>
-        </motion.footer>
       </div>
     </section>
   );

@@ -1,52 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Play, ChevronDown, Camera, Globe, Users, Film } from "lucide-react";
-import { heroTextVariant, staggerContainer, fadeInUp, scaleIn } from "@/lib/animations";
+import { Play, ChevronDown } from "lucide-react";
+import { heroTextVariant, staggerContainer, fadeInUp } from "@/lib/animations";
 import { campaignImages, CANVAS_OFF_WHITE } from "@/lib/data/campaign-images";
-
-const stats = [
-  { icon: Globe,  value: "14",  suffix: "",  label: "States & Territories" },
-  { icon: Camera, value: "75",  suffix: "",  label: "Schools" },
-  { icon: Users,  value: "300", suffix: "",  label: "Homegrown Creators" },
-  { icon: Film,   value: "300", suffix: "+", label: "Tourism Videos" },
-];
-
-function AnimatedCounter({ value, suffix }: { value: string; suffix: string }) {
-  const [count, setCount] = useState(0);
-  const target = parseInt(value, 10);
-
-  useEffect(() => {
-    let cancelled = false;
-    const steps = 60;
-    const increment = target / steps;
-    let current = 0;
-
-    const timer = window.setInterval(() => {
-      if (cancelled) return;
-      current += increment;
-      if (current >= target) {
-        setCount(target);
-        window.clearInterval(timer);
-      } else {
-        setCount(Math.floor(current));
-      }
-    }, 1800 / steps);
-
-    return () => {
-      cancelled = true;
-      window.clearInterval(timer);
-    };
-  }, [target]);
-
-  return (
-    <span>
-      {count}
-      {suffix}
-    </span>
-  );
-}
 
 export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -179,7 +137,7 @@ export default function HeroSection() {
           initial="hidden"
           animate="visible"
           transition={{ delay: 1.3 }}
-          className="flex justify-center mb-16"
+          className="flex justify-center"
         >
           <motion.button
             onClick={() => document.querySelector("#videos")?.scrollIntoView({ behavior: "smooth" })}
@@ -191,30 +149,6 @@ export default function HeroSection() {
             <Play className="w-4 h-4 fill-white" />
             Explore Videos
           </motion.button>
-        </motion.div>
-
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          animate="visible"
-          transition={{ delay: 1.55 }}
-          className="grid grid-cols-2 lg:grid-cols-4 gap-3 max-w-3xl mx-auto"
-        >
-          {stats.map((stat) => (
-            <motion.div
-              key={stat.label}
-              variants={scaleIn}
-              className="stat-card-hero backdrop-blur-md bg-white/80 rounded-2xl p-5 text-center border border-[rgba(46,139,87,0.14)]"
-            >
-              <stat.icon className="w-4 h-4 mx-auto mb-2 text-zinc-400 opacity-80" />
-              <div className="text-slate-900 font-serif font-bold text-3xl md:text-4xl tracking-tight mb-0.5 leading-none">
-                <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-              </div>
-              <p className="text-zinc-500 font-sans font-bold tracking-widest text-[10px] uppercase mt-2 block">
-                {stat.label}
-              </p>
-            </motion.div>
-          ))}
         </motion.div>
       </motion.div>
 
