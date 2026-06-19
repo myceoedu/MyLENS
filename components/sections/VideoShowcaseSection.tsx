@@ -17,13 +17,6 @@ import { staggerContainer, fadeInUp, scaleIn } from "@/lib/animations";
 import { SectionTextureLayer, DecorativeHeader } from "@/components/ui/SectionDecor";
 import { cn } from "@/lib/utils";
 
-const STORY_STATS = [
-  { value: "36+", label: "Stories" },
-  { value: "13", label: "States" },
-  { value: "100+", label: "Student Creators" },
-  { value: "50+", label: "Hidden Locations" },
-] as const;
-
 function getStoryImage(video: Video) {
   return storyDestinationImages[video.thumbnail] ?? "/images/about-nature.jpg";
 }
@@ -309,24 +302,6 @@ function StoryCategoryPills({
   );
 }
 
-/* ─── Stats bar ────────────────────────────────────────────────────────────── */
-function StoryStatsBar() {
-  return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 py-10 border-y border-slate-200/70">
-      {STORY_STATS.map((stat) => (
-        <div key={stat.label} className="text-center">
-          <p className="font-serif font-bold text-3xl sm:text-4xl text-slate-900 tracking-tight">
-            {stat.value}
-          </p>
-          <p className="text-[11px] tracking-[0.22em] uppercase text-slate-500 mt-1.5 font-medium">
-            {stat.label}
-          </p>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 /* ─── Homepage storytelling gallery ────────────────────────────────────────── */
 const HOMEPAGE_STORY_COUNT = 5;
 
@@ -395,10 +370,6 @@ function HomeStoryGallery({ onBrowseAll }: { onBrowseAll: () => void }) {
             ))}
           </motion.div>
         </AnimatePresence>
-
-        <motion.div variants={fadeInUp}>
-          <StoryStatsBar />
-        </motion.div>
 
         <motion.div variants={fadeInUp} className="mt-12 lg:mt-14 text-center">
           <h3 className="text-slate-900 font-serif font-bold text-2xl sm:text-3xl tracking-tight mb-6">
@@ -737,8 +708,6 @@ export default function VideoShowcaseSection({ preview = false }: { preview?: bo
             </motion.div>
           )}
         </AnimatePresence>
-
-        <StoryStatsBar />
 
         <div className="mt-12 text-center">
           <h3 className="text-slate-900 font-serif font-bold text-2xl tracking-tight mb-6">

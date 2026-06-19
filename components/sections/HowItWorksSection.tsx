@@ -10,7 +10,6 @@ import { campaignImages } from "@/lib/data/campaign-images";
 
 const CHAPTERS = [
   {
-    step: "01",
     icon: School,
     title: "Schools Register",
     subtitle: "The invitation",
@@ -18,7 +17,6 @@ const CHAPTERS = [
       "Schools from every corner of Malaysia answer the call — each state sending its finest institutions to represent their homeland.",
   },
   {
-    step: "02",
     icon: Users,
     title: "Creators Assemble",
     subtitle: "The visionaries",
@@ -26,7 +24,6 @@ const CHAPTERS = [
       "Four young creators form a storytelling team — digital ambassadors carrying the voice of their school, community, and nation.",
   },
   {
-    step: "03",
     icon: Camera,
     title: "Capture the Unseen",
     subtitle: "The journey",
@@ -34,7 +31,6 @@ const CHAPTERS = [
       "Teams venture into their landscapes to discover hidden gems — heritage, culture, nature, and the flavours that define a place.",
   },
   {
-    step: "04",
     icon: Globe2,
     title: "Share with the Nation",
     subtitle: "The premiere",
@@ -96,7 +92,7 @@ function JourneyTimeline() {
           const Icon = chapter.icon;
           return (
             <motion.article
-              key={chapter.step}
+              key={chapter.title}
               variants={fadeInUp}
               custom={index}
               className="relative flex flex-col items-center lg:items-start text-center lg:text-left px-2 lg:px-4"
@@ -109,10 +105,6 @@ function JourneyTimeline() {
                   {index + 1}
                 </span>
               </div>
-
-              <span className="text-4xl sm:text-5xl font-serif font-light leading-none mb-4 select-none text-zinc-200">
-                {chapter.step}
-              </span>
 
               <p className="text-amber-700 font-sans tracking-widest text-xs uppercase font-bold mb-2">
                 {chapter.subtitle}
