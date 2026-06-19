@@ -1,0 +1,35 @@
+/** Color-graded landscape thumbnails for state explorer cards (Unsplash) */
+export const stateLandscapeImages: Record<string, string> = {
+  johor:
+    "https://images.unsplash.com/photo-1552733407-5d5c46c3bbf3?w=800&q=80&auto=format&fit=crop",
+  kedah:
+    "https://images.unsplash.com/photo-1518509562904-e7ef99cdee86?w=800&q=80&auto=format&fit=crop",
+  kelantan:
+    "https://images.unsplash.com/photo-1560179406-1c6c60e0dc76?w=800&q=80&auto=format&fit=crop",
+  melaka:
+    "https://images.unsplash.com/photo-1585409670513-2f6e0f0e8a3c?w=800&q=80&auto=format&fit=crop",
+  negerisembilan:
+    "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80&auto=format&fit=crop",
+  pahang:
+    "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=800&q=80&auto=format&fit=crop",
+  perak:
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80&auto=format&fit=crop",
+  perlis:
+    "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&q=80&auto=format&fit=crop",
+  penang:
+    "https://images.unsplash.com/photo-1583417319070-4a2ad2cec700?w=800&q=80&auto=format&fit=crop",
+  sabah:
+    "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=800&q=80&auto=format&fit=crop",
+  sarawak:
+    "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?w=800&q=80&auto=format&fit=crop",
+  selangor:
+    "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=800&q=80&auto=format&fit=crop",
+  terengganu:
+    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80&auto=format&fit=crop",
+  kualalumpur:
+    "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=800&q=80&auto=format&fit=crop",
+  labuan:
+    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80&auto=format&fit=crop",
+  putrajaya:
+    "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&q=80&auto=format&fit=crop",
+};
