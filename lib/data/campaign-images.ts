@@ -24,13 +24,10 @@ export const campaignImages = {
   heroBackgroundAlt: "Emerald tea plantations in Cameron Highlands, Pahang, Malaysia",
   /** About section — Malaysia diversity collage */
   aboutCollage: {
-    kinabalu: "/images/hero-background.jpg",
-    georgeTown:
-      "https://images.unsplash.com/photo-1583417319070-4a2ad2cec700?w=900&q=80&auto=format&fit=crop",
-    sarawak:
-      "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?w=900&q=80&auto=format&fit=crop",
-    food: "/images/creator-spotlight.jpg",
-    rainforest: "/images/about-nature.jpg",
+    kinabalu: "/images/mount-kinabalu.jpg",
+    georgeTown: "/images/georgetown-heritage.jpg",
+    sarawak: "/images/sarawak-culture.jpg",
+    food: "/images/malaysian-food.jpg",
   },
   sneakPeek: {
     creators: "/images/creator-spotlight.jpg",

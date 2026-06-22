@@ -14,12 +14,11 @@ import {
 import { SectionTextureLayer, DecorativeHeader } from "@/components/ui/SectionDecor";
 import { campaignImages } from "@/lib/data/campaign-images";
 import { featuredStorytellers } from "@/lib/data/featured-storytellers";
-import { journeySteps } from "@/lib/data/journey-timeline";
 import { cn } from "@/lib/utils";
 
 const IMPACT_METRICS = [
   { value: "14", label: "States Explored", sub: "From Perlis to Sabah — one Malaysia" },
-  { value: "100+", label: "Schools Participating", sub: "Classrooms turned into studios" },
+  { value: "75", label: "Schools Participating", sub: "Classrooms turned into studios" },
   { value: "300+", label: "Young Storytellers", sub: "Homegrown voices behind every frame" },
   { value: "500+", label: "Hidden Gems Captured", sub: "Places the guidebooks never mention" },
 ] as const;
@@ -28,35 +27,8 @@ const COLLAGE_ITEMS = [
   { key: "kinabalu", label: "Mount Kinabalu", span: "col-span-2 row-span-2" },
   { key: "georgeTown", label: "George Town Heritage", span: "col-span-1 row-span-1" },
   { key: "sarawak", label: "Sarawak Culture", span: "col-span-1 row-span-1" },
-  { key: "food", label: "Malaysian Food", span: "col-span-1 row-span-1" },
-  { key: "rainforest", label: "Rainforest", span: "col-span-2 row-span-1" },
+  { key: "food", label: "Malaysian Food", span: "col-span-3 row-span-1" },
 ] as const;
-
-function TravelRouteDecor() {
-  return (
-    <svg
-      className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.07]"
-      viewBox="0 0 1200 400"
-      preserveAspectRatio="none"
-      aria-hidden
-    >
-      <path
-        d="M0 200 C200 120 350 280 500 200 S800 80 1000 180 S1150 220 1200 200"
-        fill="none"
-        stroke="#94a3b8"
-        strokeWidth="1.5"
-        strokeDasharray="8 10"
-      />
-      <path
-        d="M80 320 C300 260 450 340 620 300 S900 240 1120 280"
-        fill="none"
-        stroke="#0B3C5D"
-        strokeWidth="1"
-        strokeDasharray="6 8"
-      />
-    </svg>
-  );
-}
 
 function MalaysiaCollage() {
   const collage = campaignImages.aboutCollage;
@@ -197,76 +169,6 @@ function FeaturedStorytellersRow() {
   );
 }
 
-function JourneyTimeline() {
-  return (
-    <div className="relative">
-      <TravelRouteDecor />
-      <div className="text-center mb-12 relative z-10">
-        <p className="section-label-dark text-center">The Journey</p>
-        <h3 className="text-slate-800 font-sans font-semibold text-2xl sm:text-3xl tracking-tight">
-          From Classroom to National Stage
-        </h3>
-      </div>
-
-      <div className="relative z-10 hidden lg:grid lg:grid-cols-5 gap-4">
-        {journeySteps.map((step, i) => {
-          const Icon = step.icon;
-          return (
-            <motion.div
-              key={step.id}
-              variants={fadeInUp}
-              custom={i}
-              className="relative text-center"
-            >
-              {i < journeySteps.length - 1 && (
-                <div
-                  className="absolute top-7 left-[calc(50%+28px)] right-[calc(-50%+28px)] h-px border-t border-dashed border-zinc-200"
-                  aria-hidden
-                />
-              )}
-              <div className="w-14 h-14 mx-auto rounded-full border border-zinc-200/80 bg-white flex items-center justify-center shadow-sm mb-4">
-                <Icon className="w-5 h-5 text-zinc-500" strokeWidth={1.5} />
-              </div>
-              <p className="text-[11px] tracking-[0.18em] uppercase font-semibold text-slate-800">
-                {step.label}
-              </p>
-              <p className="text-xs text-gray-600 leading-relaxed mt-2 px-2">
-                {step.description}
-              </p>
-            </motion.div>
-          );
-        })}
-      </div>
-
-      <div className="relative z-10 lg:hidden space-y-4">
-        {journeySteps.map((step, i) => {
-          const Icon = step.icon;
-          return (
-            <motion.div
-              key={step.id}
-              variants={fadeInUp}
-              custom={i}
-              className="flex gap-4 items-start"
-            >
-              <div className="w-11 h-11 shrink-0 rounded-full border border-zinc-200/80 bg-white flex items-center justify-center">
-                <Icon className="w-4 h-4 text-zinc-500" strokeWidth={1.5} />
-              </div>
-              <div>
-                <p className="text-[11px] tracking-[0.16em] uppercase font-semibold text-slate-800">
-                  {step.label}
-                </p>
-                <p className="text-sm text-gray-600 leading-relaxed mt-1">
-                  {step.description}
-                </p>
-              </div>
-            </motion.div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 export default function AboutSection() {
   return (
     <section id="about" className="relative overflow-hidden">
@@ -356,20 +258,9 @@ export default function AboutSection() {
           </div>
 
           {/* Featured storytellers */}
-          <div className="mb-20 lg:mb-24">
+          <div>
             <FeaturedStorytellersRow />
           </div>
-
-          {/* Journey timeline */}
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-60px" }}
-            className="relative"
-          >
-            <JourneyTimeline />
-          </motion.div>
         </div>
       </div>
     </section>
