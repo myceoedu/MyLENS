@@ -2,8 +2,8 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Play, ChevronDown } from "lucide-react";
-import { heroTextVariant, staggerContainer, fadeInUp } from "@/lib/animations";
+import { ChevronDown } from "lucide-react";
+import { heroTextVariant, fadeInUp } from "@/lib/animations";
 import { campaignImages, CANVAS_OFF_WHITE } from "@/lib/data/campaign-images";
 
 export default function HeroSection() {
@@ -53,101 +53,108 @@ export default function HeroSection() {
       {/* ── Foreground content ── */}
       <motion.div
         style={{ opacity }}
-        className="relative z-20 text-center px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full pt-24 pb-32"
+        className="relative z-20 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full pt-24 pb-32"
       >
-        <motion.div
+        {/* Kicker */}
+        <motion.p
           variants={fadeInUp}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.1 }}
+          className="text-white/80 text-[0.65rem] font-semibold tracking-[0.45em] uppercase mb-6 drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]"
+          style={{ fontFamily: "var(--font-poppins)" }}
+        >
+          Supported by Tourism Malaysia
+        </motion.p>
+
+        {/* Main title — MyLENS — directly on image, no card */}
+        <motion.h1
+          variants={heroTextVariant}
           initial="hidden"
           animate="visible"
           transition={{ delay: 0.2 }}
-          className="inline-flex items-center gap-3 mb-10"
+          className="font-bold leading-none tracking-tight text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.55)]"
+          style={{
+            fontFamily: "var(--font-poppins)",
+            fontSize: "clamp(4rem, 12vw, 11rem)",
+            fontWeight: 700,
+          }}
         >
-          <div className="h-px w-10 bg-white/40" />
-          <span
-            className="text-white/90 text-[0.65rem] font-semibold tracking-[0.45em] uppercase drop-shadow-[0_1px_3px_rgba(0,0,0,0.2)]"
-            style={{ fontFamily: "var(--font-poppins)" }}
-          >
-            Supported by Tourism Malaysia
-          </span>
-          <div className="h-px w-10 bg-white/40" />
-        </motion.div>
+          MyLENS
+        </motion.h1>
 
-        <motion.div
-          variants={staggerContainer}
+        {/* Second title — MALAYSIA UNSEEN 2026 — directly on image */}
+        <motion.p
+          variants={heroTextVariant}
           initial="hidden"
           animate="visible"
-          className="mb-6"
+          transition={{ delay: 0.5 }}
+          className="text-base sm:text-lg lg:text-xl font-medium tracking-[0.4em] uppercase mt-4 mb-8 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.55)]"
+          style={{ fontFamily: "var(--font-poppins)" }}
         >
-          <motion.h1
-            variants={heroTextVariant}
-            className="font-bold leading-none tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
-            style={{
-              fontFamily: "var(--font-poppins)",
-              fontSize: "clamp(4rem, 12vw, 11rem)",
-              fontWeight: 700,
-            }}
-          >
-            MyLENS
-          </motion.h1>
+          Malaysia Unseen <span className="text-white/90">2026</span>
+        </motion.p>
 
-          <motion.p
-            variants={heroTextVariant}
-            className="text-base sm:text-lg lg:text-xl font-medium tracking-[0.4em] uppercase mt-4 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]"
-            style={{ fontFamily: "var(--font-poppins)" }}
-          >
-            Malaysia Unseen
-            <span className="ml-3 text-white/90">2026</span>
-          </motion.p>
-        </motion.div>
-
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 1, delay: 0.85 }}
-          className="w-20 h-0.5 mx-auto mb-8 rounded-full bg-white/50"
-        />
-
-        {/* Frosted glass plate — shields subtitle & body from busy background */}
+        {/* Frosted card — slogan, body, stats, buttons */}
         <motion.div
           variants={fadeInUp}
           initial="hidden"
           animate="visible"
-          transition={{ delay: 1.0 }}
-          className="bg-slate-950/20 backdrop-blur-sm p-6 rounded-2xl max-w-2xl mx-auto border border-white/10 mb-8"
+          transition={{ delay: 0.75 }}
+          className="bg-slate-950/30 backdrop-blur-sm rounded-2xl px-6 py-7 max-w-2xl mx-auto border border-white/10"
         >
+          {/* Slogan */}
           <p
-            className="text-lg sm:text-xl lg:text-2xl font-medium mb-4 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+            className="text-lg sm:text-xl lg:text-2xl font-medium text-white mb-4"
             style={{ fontFamily: "var(--font-poppins)" }}
           >
-            Malaysia Through Young Visionaries
+            See Malaysia Through New Eyes
           </p>
 
+          {/* Body */}
           <p
-            className="text-sm sm:text-base leading-relaxed text-white/95 drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+            className="text-sm sm:text-base leading-relaxed text-white/90 mb-6"
             style={{ fontFamily: "var(--font-inter)" }}
           >
-            Discover Malaysia through the eyes of young creators as homegrown creators from across the
-            nation uncover hidden gems, untold stories, local culture, and breathtaking
-            destinations — 45 seconds at a time.
+            A national storytelling challenge where students discover hidden stories, develop
+            creative skills, and showcase their talents on a national stage.
+          </p>
+
+          {/* Stats line */}
+          <p
+            className="text-white/90 font-semibold text-sm tracking-wide"
+            style={{ fontFamily: "var(--font-poppins)" }}
+          >
+            75 Schools&nbsp;&bull;&nbsp;300 Students&nbsp;&bull;&nbsp;One National Grand Finale
           </p>
         </motion.div>
 
+        {/* CTA buttons — outside the card */}
         <motion.div
           variants={fadeInUp}
           initial="hidden"
           animate="visible"
-          transition={{ delay: 1.3 }}
-          className="flex justify-center"
+          transition={{ delay: 1.1 }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-6"
         >
           <motion.button
-            onClick={() => document.querySelector("#videos")?.scrollIntoView({ behavior: "smooth" })}
-            whileHover={{ scale: 1.05 }}
+            onClick={() => document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" })}
+            whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.97 }}
-            className="btn-primary-green gap-2.5 text-sm px-10 py-3.5 shadow-lg"
-            style={{ boxShadow: "0 8px 28px rgba(46,139,87,0.35)" }}
+            className="w-full sm:w-auto text-sm font-semibold px-8 py-3.5 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white transition-colors shadow-lg"
+            style={{ fontFamily: "var(--font-poppins)", boxShadow: "0 8px 24px rgba(21,128,61,0.38)" }}
           >
-            <Play className="w-4 h-4 fill-white" />
-            Explore Videos
+            Register Your School
+          </motion.button>
+
+          <motion.button
+            onClick={() => document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" })}
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.97 }}
+            className="w-full sm:w-auto text-sm font-semibold px-8 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/40 transition-colors backdrop-blur-sm"
+            style={{ fontFamily: "var(--font-poppins)" }}
+          >
+            Become A Partner
           </motion.button>
         </motion.div>
       </motion.div>

@@ -10,7 +10,11 @@ export const campaignPhotoGradeStyle = {
   filter: "saturate(0.88) contrast(1.14) brightness(0.94) sepia(0.1) hue-rotate(-6deg)",
 } as const;
 
+/** Site logo — /public/images/MyLENS Logo.png */
+export const MYLENS_LOGO_SRC = "/images/MyLENS%20Logo.png";
+
 export const campaignImages = {
+  siteLogo: MYLENS_LOGO_SRC,
   /** Local campaign photography — /public/images */
   aboutNature: "/images/about-nature.jpg",
   bannerLandscape: "/images/banner-landscape.jpg",

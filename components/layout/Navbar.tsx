@@ -4,18 +4,53 @@ import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Play } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { MYLENS_LOGO_SRC } from "@/lib/data/campaign-images";
 import { cn } from "@/lib/utils";
 import { navigateTo } from "@/lib/navigation";
 
+const NAV_LOGO_WHITE = "/images/mylens-logo-white.svg";
+
 const navLinks = [
-  { label: "About",        href: "#about" },
-  { label: "How It Works", href: "#how-it-works" },
-  { label: "Videos",       href: "/videos" },
-  { label: "Schools",      href: "/schools" },
-  { label: "Competition",  href: "#competition" },
-  { label: "Contact",      href: "#contact" },
+  { label: "About MyLENS",        href: "#about" },
+  { label: "Student Journey",     href: "#how-it-works" },
+  { label: "Youth Creator Awards",href: "#competition" },
+  { label: "Stories",             href: "/videos" },
+  { label: "Schools",             href: "/schools" },
 ];
+
+function NavbarWordmark({ solidNav }: { solidNav: boolean }) {
+  return (
+    <div
+      className="flex flex-none shrink-0 flex-col justify-center h-8 md:h-9 min-h-8 md:min-h-9"
+    >
+      <p
+        className={cn(
+          "font-sans leading-none tracking-tight text-[17px] md:text-[19px]",
+          solidNav ? "text-[#0f172a]" : "text-[#ffffff]"
+        )}
+        style={{ fontFamily: "var(--font-poppins)" }}
+      >
+        <span className="font-normal">My</span>
+        <span className="font-bold">LENS</span>
+      </p>
+      <p
+        className={cn(
+          "font-sans font-normal uppercase leading-none mt-0.5",
+          "text-[8px] md:text-[9px] tracking-widest",
+          solidNav ? "text-slate-500" : "text-[#ffffff]/80"
+        )}
+        style={{ fontFamily: "var(--font-inter)" }}
+      >
+        MALAYSIA UNSEEN 2026
+      </p>
+
+      {/* Image paths preserved — emblem hidden (typographic wordmark only) */}
+      <img src={MYLENS_LOGO_SRC} alt="" className="hidden" aria-hidden="true" />
+      <img src={NAV_LOGO_WHITE} alt="" className="hidden" aria-hidden="true" />
+    </div>
+  );
+}
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -41,6 +76,7 @@ export default function Navbar() {
     };
   }, [pathname]);
 
+
   useEffect(() => {
     const frame = requestAnimationFrame(() => setMobileOpen(false));
     return () => cancelAnimationFrame(frame);
@@ -58,58 +94,24 @@ export default function Navbar() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+          "fixed top-0 left-0 right-0 z-50 h-20 overflow-visible transition-all duration-500",
           solidNav
-            ? "bg-white/97 backdrop-blur-sm shadow-[0_2px_20px_rgba(45,55,72,0.08)] py-3 border-b border-[rgba(45,55,72,0.06)]"
-            : "bg-emerald-950/10 backdrop-blur-md border-b border-white/10 py-5"
+            ? "bg-white/97 backdrop-blur-sm shadow-[0_2px_20px_rgba(45,55,72,0.08)] border-b border-[rgba(45,55,72,0.06)]"
+            : "bg-emerald-950/10 backdrop-blur-md border-b border-white/10"
         )}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between overflow-visible">
+          {/* Logo */}
+          <Link
+            href="/"
+            aria-label="MyLENS Malaysia Unseen 2026"
+            className="relative z-[60] flex flex-none shrink-0 items-center self-center overflow-visible group focus:outline-none transition-opacity duration-300 hover:opacity-90"
+          >
+            <NavbarWordmark solidNav={solidNav} />
+          </Link>
 
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 group">
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex items-center gap-3"
-              >
-                <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center shadow-md transition-all duration-300"
-                  style={{
-                    background: solidNav
-                      ? "linear-gradient(135deg, #2E8B57 0%, #52B788 100%)"
-                      : "rgba(255,255,255,0.15)",
-                    border: solidNav ? "none" : "1px solid rgba(255,255,255,0.3)",
-                  }}
-                >
-                  <Play className="w-4 h-4 fill-white text-white ml-0.5" />
-                </div>
-
-                <div className="text-left">
-                  <span
-                    className="block font-bold text-lg leading-none tracking-wide transition-colors duration-300"
-                    style={{
-                      fontFamily: "var(--font-poppins)",
-                      color: solidNav ? "#1A2332" : "#FFFFFF",
-                      fontWeight: 700,
-                    }}
-                  >
-                    My
-                    <span style={{ color: solidNav ? "#2E8B57" : "#A8DABD" }}>LENS</span>
-                  </span>
-                  <span
-                    className="block text-[10px] tracking-[0.2em] uppercase leading-none mt-0.5 transition-colors duration-300"
-                    style={{ color: solidNav ? "#8A98B0" : "rgba(255,255,255,0.55)" }}
-                  >
-                    Malaysia Unseen
-                  </span>
-                </div>
-              </motion.div>
-            </Link>
-
-            {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-0.5">
+          {/* Desktop Nav */}
+          <nav className="hidden lg:flex flex-none items-center gap-0.5 h-full shrink min-w-0">
               {navLinks.map((link) => (
                 <button
                   key={link.href}
@@ -132,8 +134,8 @@ export default function Navbar() {
               ))}
             </nav>
 
-            {/* CTA + Mobile toggle */}
-            <div className="flex items-center gap-2 sm:gap-3">
+          {/* CTA + Mobile toggle */}
+          <div className="flex flex-none shrink-0 items-center gap-2 sm:gap-3 h-full">
               <Link
                 href="/login"
                 className={cn(
@@ -159,7 +161,7 @@ export default function Navbar() {
                 )}
                 style={{ fontFamily: "var(--font-poppins)" }}
               >
-                Join The Journey
+                Register
               </motion.button>
 
               <button
@@ -174,7 +176,6 @@ export default function Navbar() {
               >
                 {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
-            </div>
           </div>
         </div>
       </motion.header>
@@ -187,7 +188,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
             transition={{ duration: 0.28 }}
-            className="fixed inset-0 z-40 bg-white flex flex-col pt-24 px-6 pb-8"
+            className="fixed inset-0 z-40 bg-white flex flex-col pt-20 px-6 pb-8"
           >
             <nav className="flex flex-col gap-0.5">
               {navLinks.map((link, i) => (
@@ -231,11 +232,12 @@ export default function Navbar() {
               transition={{ delay: 0.38 }}
               onClick={() => handleNavClick("#contact")}
               className="btn-journey-glow mt-8 text-center text-base font-semibold rounded-full py-4 text-white bg-emerald-800 hover:bg-emerald-900 transition-colors"
+              aria-label="Register"
               style={{
                 boxShadow: "0 6px 20px rgba(21,128,61,0.28)",
               }}
             >
-              Join The Journey
+              Register
             </motion.button>
 
             <p

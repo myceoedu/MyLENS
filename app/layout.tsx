@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Cormorant_Garamond } from "next/font/google";
 import { ThemeProvider } from "next-themes";
+import { MYLENS_LOGO_SRC } from "@/lib/data/campaign-images";
 import "./globals.css";
 
 const inter = Inter({
@@ -19,6 +20,10 @@ const cormorant = Cormorant_Garamond({
 
 export const metadata: Metadata = {
   title: "MyLENS: MALAYSIA UNSEEN 2026 | Malaysia Through Young Visionaries",
+  icons: {
+    icon: MYLENS_LOGO_SRC,
+    apple: MYLENS_LOGO_SRC,
+  },
   description:
     "MyLENS: MALAYSIA UNSEEN 2026 is a nationwide youth tourism content competition supported by Tourism Malaysia. Students from 75 schools across every state and territory create 45-second videos showcasing Malaysia's hidden gems.",
   keywords: [
