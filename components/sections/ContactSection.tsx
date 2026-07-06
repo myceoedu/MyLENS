@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send, ExternalLink } from "lucide-react";
 import { staggerContainer, fadeInUp, fadeInLeft, fadeInRight } from "@/lib/animations";
 import { DecorativeHeader } from "@/components/ui/SectionDecor";
+import { campaignImages } from "@/lib/data/campaign-images";
 import { useState } from "react";
 
 const inputClassName =
@@ -27,7 +28,8 @@ export default function ContactSection() {
       className="relative overflow-hidden bg-[#fafaf7] py-28 lg:py-40 border-t border-zinc-200/60"
     >
       <div
-        className="absolute inset-0 bg-[url('/images/malaysia-landmark.jpg')] bg-cover bg-center opacity-[0.03] pointer-events-none"
+        className="absolute inset-0 bg-cover bg-center opacity-[0.03] pointer-events-none"
+        style={{ backgroundImage: `url('${campaignImages.malaysiaLandmark}')` }}
         aria-hidden="true"
       />
 

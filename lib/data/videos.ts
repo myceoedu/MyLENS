@@ -19,22 +19,22 @@ export interface Video {
 /** Real destination photography for story cards */
 export const storyDestinationImages: Record<string, string> = {
   nature1:    "/images/about-nature.jpg",
-  nature2:    "/images/hero-background.jpg",
+  nature2:    "/images/home-bg.jpg",
   nature3:    "/images/banner-landscape.jpg",
   food1:      "/images/creator-spotlight.jpg",
   food2:      "/images/banner-landscape.jpg",
   food3:      "/images/about-nature.jpg",
   culture1:   "/images/creator-spotlight.jpg",
   culture2:   "/images/batik.jpg",
-  culture3:   "/images/hero-background.jpg",
+  culture3:   "/images/home-bg.jpg",
   heritage1:  "/images/banner-landscape.jpg",
   heritage2:  "/images/about-nature.jpg",
   heritage3:  "/images/creator-spotlight.jpg",
-  adventure1: "/images/hero-background.jpg",
+  adventure1: "/images/home-bg.jpg",
   adventure2: "/images/about-nature.jpg",
   adventure3: "/images/banner-landscape.jpg",
   hidden1:    "/images/about-nature.jpg",
-  hidden2:    "/images/hero-background.jpg",
+  hidden2:    "/images/home-bg.jpg",
   hidden3:    "/images/banner-landscape.jpg",
 };
 

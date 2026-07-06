@@ -1,6 +1,6 @@
 /**
  * Official Tourism Malaysia–style campaign imagery paths & grading.
- * Place local assets in /public/images/ — terrain map: peta-malaysia-terrain.jpg
+ * Place local assets in /public/images/ — map: MALAYSIA.png, landmark: KLCC.png
  */
 
 export const CANVAS_OFF_WHITE = "#FBFBFA";
@@ -13,6 +13,27 @@ export const campaignPhotoGradeStyle = {
 /** Site logo — /public/images/MyLENS Logo.png */
 export const MYLENS_LOGO_SRC = "/images/MyLENS%20Logo.png";
 
+export const partnerLogos = {
+  tourismMalaysia: {
+    src: "/images/Logo-tourism.webp",
+    alt: "Tourism Malaysia",
+    width: 220,
+    height: 72,
+  },
+  mdec: {
+    src: "/images/Logo-MDEC.png",
+    alt: "MDEC",
+    width: 160,
+    height: 64,
+  },
+  myceo: {
+    src: "/images/Logo-MyCeo.png",
+    alt: "MyCEO Education",
+    width: 180,
+    height: 64,
+  },
+} as const;
+
 export const campaignImages = {
   siteLogo: MYLENS_LOGO_SRC,
   /** Local campaign photography — /public/images */
@@ -20,9 +41,8 @@ export const campaignImages = {
   bannerLandscape: "/images/banner-landscape.jpg",
   creatorSpotlight: "/images/creator-spotlight.jpg",
   batikTexture: "/images/batik.jpg",
-  malaysiaLandmark: "/images/malaysia-landmark.jpg",
-  /** Monochromatic / 3D terrain peta — replace file in public/images */
-  mapTerrain: "/images/peta-malaysia-terrain.jpg",
+  malaysiaLandmark: "/images/KLCC.png",
+  mapTerrain: "/images/MALAYSIA.png",
   /** Hero — Cameron Highlands tea terraces, Pahang, Malaysia */
   heroBackground: "/images/home-bg.jpg",
   heroBackgroundAlt: "Emerald tea plantations in Cameron Highlands, Pahang, Malaysia",

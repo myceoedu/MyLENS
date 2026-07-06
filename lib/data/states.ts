@@ -199,31 +199,18 @@ export const states: StateData[] = [
     name: "W.P. Labuan",
     shortName: "LBN",
     region: "east",
-    schools: 3,
-    videos: 12,
+    schools: 5,
+    videos: 5,
     hiddenGems: ["Labuan War Cemetery", "Layang Layang Atoll", "Papan Island"],
     tourismHighlights: ["Labuan Marine Park", "Financial Duty-Free Island", "WWII Memorial"],
     description:
       "A federal island territory off the Sabah coast, Labuan is a duty-free haven with world-class wreck diving, WWII history, and tranquil tropical beaches.",
     color: "#2D6A4F",
   },
-  {
-    id: "putrajaya",
-    name: "W.P. Putrajaya",
-    shortName: "PJY",
-    region: "peninsular",
-    schools: 2,
-    videos: 8,
-    hiddenGems: ["Taman Botani Putrajaya", "Putrajaya Wetlands Park", "Kompleks Seni Budaya"],
-    tourismHighlights: ["Putra Mosque", "Perdana Putra", "Putrajaya Lake"],
-    description:
-      "Malaysia's purpose-built federal administrative capital, Putrajaya is a city of grand Islamic architecture, manicured gardens, and the serene Putrajaya Lake.",
-    color: "#1B3A6B",
-  },
 ];
 
 export const totalStats = {
-  states: 14,
+  states: states.length,
   schools: states.reduce((sum, s) => sum + s.schools, 0),
   videos: states.reduce((sum, s) => sum + s.videos, 0),
   creators: states.reduce((sum, s) => sum + s.schools * 4, 0),

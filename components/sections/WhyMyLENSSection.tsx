@@ -1,40 +1,67 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { GraduationCap, Video, School, Flag, Trophy } from "lucide-react";
-import { fadeInLeft, fadeInRight, staggerContainer, fadeInUp } from "@/lib/animations";
-import { campaignImages } from "@/lib/data/campaign-images";
 
 const FEATURES = [
   {
     icon: GraduationCap,
     title: "Learn from Industry Experts",
-    desc: "Guided by professional filmmakers, journalists and content creators from across Malaysia.",
   },
   {
     icon: Video,
     title: "Create Original Video Content",
-    desc: "Students produce authentic 45-second stories using real equipment and storytelling techniques.",
   },
   {
     icon: School,
     title: "Represent Their Schools",
-    desc: "Each entry carries the school's pride — a chance to shine on a national stage.",
   },
   {
     icon: Flag,
     title: "Share Untold Malaysian Stories",
-    desc: "Uncover hidden gems, local culture and breathtaking destinations others have never seen.",
   },
   {
     icon: Trophy,
     title: "Compete on a National Platform",
-    desc: "The top creators advance to a grand finale watched by educators, industry leaders and the public.",
   },
 ] as const;
 
-const JOURNEY_STEPS = ["Learn", "Create", "Represent", "Share", "Compete"];
+const editorialFadeUp = {
+  hidden: { opacity: 0, y: 36 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: [0.25, 1, 0.5, 1] },
+  },
+};
+
+const editorialFadeLeft = {
+  hidden: { opacity: 0, x: -44 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.9, ease: [0.25, 1, 0.5, 1] },
+  },
+};
+
+const editorialFadeRight = {
+  hidden: { opacity: 0, x: 44 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.9, ease: [0.25, 1, 0.5, 1] },
+  },
+};
+
+const editorialStagger = {
+  hidden: { opacity: 1 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.12, delayChildren: 0.08 },
+  },
+};
 
 export default function WhyMyLENSSection() {
   const imgRef = useRef<HTMLDivElement>(null);
@@ -45,13 +72,13 @@ export default function WhyMyLENSSection() {
   const imgScale = useTransform(scrollYProgress, [0, 1], [1, 1.05]);
 
   return (
-    <section id="why-mylens" className="bg-white text-[#051B10] py-24 lg:py-32 font-sans overflow-hidden select-none">
+    <section id="why-mylens" className="bg-[#FAF9F5] text-[#051B10] py-24 lg:py-32 font-sans overflow-hidden select-none">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         
         {/* ── HEADER BLOCK ── */}
-        <div className="max-w-3xl mx-auto text-center mb-20 lg:mb-24">
+        <div className="max-w-3xl mx-auto text-center mb-14 lg:mb-16">
           <motion.span
-            variants={fadeInUp}
+            variants={editorialFadeUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
@@ -61,17 +88,17 @@ export default function WhyMyLENSSection() {
           </motion.span>
           
           <motion.h2
-            variants={fadeInUp}
+            variants={editorialFadeUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="text-[#051B10] font-bold text-4xl sm:text-5xl tracking-tight leading-none font-serif mb-4"
+            className="text-[#051B10] font-bold text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-none font-serif mb-4"
           >
             What Is MyLENS?
           </motion.h2>
           
           <motion.span
-            variants={fadeInUp}
+            variants={editorialFadeUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
@@ -81,7 +108,7 @@ export default function WhyMyLENSSection() {
           </motion.span>
           
           <motion.p
-            variants={fadeInUp}
+            variants={editorialFadeUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
@@ -92,97 +119,76 @@ export default function WhyMyLENSSection() {
           </motion.p>
         </div>
 
-        {/* ── TWO COLUMN EDITORIAL PRESENTATION ── */}
-        <div className="flex flex-col lg:flex-row gap-16 lg:gap-20 items-center">
+        {/* ── CINEMATIC EDITORIAL PRESENTATION ── */}
+        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-8 lg:grid-cols-[2fr_3fr] lg:gap-10">
           
-          {/* Left Column: Clean Borderless Framed Imagery */}
+          {/* Left Column: fills its track — no orphan whitespace */}
           <motion.div
             ref={imgRef}
-            variants={fadeInLeft}
+            variants={editorialFadeLeft}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
-            className="w-full lg:w-[50%] relative overflow-hidden rounded-2xl aspect-[4/5] bg-[#FAF7F2]"
+            className="relative h-[380px] w-full overflow-hidden bg-[#051B10] shadow-[0_20px_60px_rgba(5,27,16,0.10)] sm:h-[400px] lg:h-[420px]"
           >
             <motion.div
               style={{ scale: imgScale }}
-              className="absolute inset-0 w-full h-full origin-center"
+              className="absolute inset-0 h-full w-full origin-center"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={campaignImages.creatorSpotlight}
-                alt="Student filming local culture and heritage in Malaysia"
-                className="w-full h-full object-cover"
+              <Image
+                src="/images/KLCC.png"
+                alt="Petronas Twin Towers in Kuala Lumpur, Malaysia"
+                fill
+                sizes="(min-width: 1024px) 40vw, (min-width: 768px) 45vw, 100vw"
+                priority
+                unoptimized
+                className="object-cover object-[center_30%]"
               />
             </motion.div>
 
-            {/* Subtle premium shadow gradient to preserve high legibility */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#051B10]/40 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-black/10 to-transparent pointer-events-none" />
+            <div className="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-[#051B10]/70 via-[#051B10]/15 to-transparent pointer-events-none" />
 
-            <div className="absolute bottom-8 left-8 right-8">
-              <p className="text-white/60 text-[0.6rem] font-bold tracking-[0.3em] uppercase mb-1">
-                Student Creator
+            <div className="absolute bottom-6 left-6 right-6 sm:bottom-7 sm:left-7 sm:right-7">
+              <p className="mb-1.5 text-[0.6rem] font-bold uppercase tracking-[0.3em] text-[#B58A3D]">
+                Kuala Lumpur Icon
               </p>
-              <p className="text-white text-base font-serif italic tracking-wide">
-                Discovering Malaysia through a 45-second lens
+              <p className="font-serif text-base italic font-light tracking-wide text-white/90 sm:text-lg">
+                Discovering Malaysia through its unforgettable landmarks
               </p>
             </div>
           </motion.div>
 
-          {/* Right Column: Pristine Minimalist Index Row List */}
+          {/* Right Column: feature list aligned to image height */}
           <motion.div
-            variants={staggerContainer}
+            variants={editorialStagger}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.1 }}
-            className="w-full lg:w-[50%] flex flex-col"
+            className="group/list w-full"
           >
-            <div className="border-t border-[#051B10]/08">
+            <div className="border-t border-[#051B10]/12">
               {FEATURES.map((feature, i) => {
                 const Icon = feature.icon;
                 return (
                   <motion.div
                     key={feature.title}
-                    variants={fadeInRight}
-                    className="flex gap-6 py-6 border-b border-[#051B10]/08 items-start group transition-colors duration-300"
+                    variants={editorialFadeRight}
+                    className="group/row flex items-center gap-4 border-b border-[#051B10]/12 py-4 transition-all duration-500 ease-out hover:bg-[#F3F1EB]/50 group-hover/list:opacity-40 hover:!opacity-100 sm:gap-5 sm:py-5"
                   >
                     {/* Minimal Clean Typography Index Identifier */}
-                    <span className="font-serif text-sm text-[#B58A3D] font-medium tracking-wider pt-1 min-w-[24px]">
+                    <span className="min-w-[28px] font-serif text-sm font-medium tracking-wider text-[#051B10]/45 transition-colors duration-500 ease-out group-hover/row:text-[#B58A3D]">
                       {String(i + 1).padStart(2, "0")}
                     </span>
 
-                    <div className="flex-1 flex flex-col gap-1">
-                      <div className="flex items-center gap-3">
-                        <Icon className="w-4 h-4 text-[#051B10] stroke-[1.25]" />
-                        <h3 className="text-[#051B10] font-serif text-base sm:text-lg font-medium tracking-tight">
-                          {feature.title}
-                        </h3>
-                      </div>
-                      <p className="text-[#4F6457] text-sm leading-relaxed font-light pl-7 max-w-lg">
-                        {feature.desc}
-                      </p>
-                    </div>
+                    <Icon className="h-4 w-4 shrink-0 text-[#051B10] stroke-[1] transition-colors duration-500 ease-out group-hover/row:text-[#B58A3D]" />
+                    <h3 className="flex-1 font-serif text-base font-medium leading-snug tracking-tight text-[#051B10] sm:text-lg">
+                      {feature.title}
+                    </h3>
                   </motion.div>
                 );
               })}
             </div>
-
-            {/* Journey Timeline Breadcrumb Footer */}
-            <motion.div
-              variants={fadeInUp}
-              className="mt-8 flex flex-wrap items-center gap-x-2 gap-y-1 bg-[#FAF7F2] border border-[#051B10]/04 rounded-full px-5 py-2.5 self-start"
-            >
-              {JOURNEY_STEPS.map((step, i) => (
-                <span key={step} className="flex items-center gap-2">
-                  <span className="text-[0.65rem] font-bold tracking-[0.15em] text-[#051B10] uppercase">
-                    {step}
-                  </span>
-                  {i < YOURNEY_STEPS_LENGTH_CHECK && (
-                    <span className="text-[#B58A3D]/50 text-xs">/</span>
-                  )}
-                </span>
-              ))}
-            </motion.div>
           </motion.div>
 
         </div>
@@ -190,6 +196,3 @@ export default function WhyMyLENSSection() {
     </section>
   );
 }
-
-// Inline fallback evaluation for mapping safely
-const YOURNEY_STEPS_LENGTH_CHECK = JOURNEY_STEPS.length - 1;

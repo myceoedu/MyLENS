@@ -222,6 +222,26 @@ export interface Database {
     Views: Record<string, never>;
     Functions: {
       is_admin: { Args: Record<string, never>; Returns: boolean };
+      get_public_participating_schools: {
+        Args: { p_state_id?: string | null };
+        Returns: {
+          id: string;
+          state_id: string;
+          name: string;
+          points: number;
+          video_count: number;
+          creator_count: number;
+        }[];
+      };
+      get_public_state_stats: {
+        Args: Record<string, never>;
+        Returns: {
+          state_id: string;
+          school_count: number;
+          video_count: number;
+          creator_count: number;
+        }[];
+      };
       school_creator_count: { Args: { target_school: string }; Returns: number };
       validate_school_registration: {
         Args: { p_school_name: string; p_access_token: string };

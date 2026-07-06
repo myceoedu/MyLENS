@@ -22,7 +22,6 @@ export const geoNameToStateId: Record<string, string> = {
   Terengganu: "terengganu",
   "W.P. Kuala Lumpur": "kualalumpur",
   "W.P. Labuan": "labuan",
-  "W.P. Putrajaya": "putrajaya",
 };
 
 export function getStateIdFromFeature(

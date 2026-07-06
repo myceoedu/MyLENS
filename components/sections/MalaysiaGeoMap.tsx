@@ -17,7 +17,7 @@ const WIDTH = 820;
 const HEIGHT = 540;
 const MAP_PADDING = 28;
 
-const SMALL_STATE_IDS = new Set(["kualalumpur", "putrajaya", "labuan"]);
+const SMALL_STATE_IDS = new Set(["kualalumpur", "labuan"]);
 const EAST_STATE_IDS = new Set(["sabah", "sarawak", "labuan"]);
 
 const MAP_FILL_DEFAULT = "#E2E8F0";
