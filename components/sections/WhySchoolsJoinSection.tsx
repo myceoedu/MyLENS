@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { editorialBenefitStagger, fadeInEditorial } from "@/lib/animations";
 
 const BENEFITS = [
   "Discover student talents",
@@ -11,15 +12,6 @@ const BENEFITS = [
   "Represent their school with pride",
 ] as const;
 
-const fadeInEditorial = {
-  hidden: { opacity: 0, y: 28 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
-  },
-};
-
 export default function WhySchoolsJoinSection() {
   return (
     <section
@@ -29,13 +21,7 @@ export default function WhySchoolsJoinSection() {
     >
       <div className="mx-auto max-w-[1100px] px-6 sm:px-8 lg:px-10">
         <motion.div
-          variants={{
-            hidden: { opacity: 1 },
-            visible: {
-              opacity: 1,
-              transition: { staggerChildren: 0.14, delayChildren: 0.05 },
-            },
-          }}
+          variants={editorialBenefitStagger}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.25 }}

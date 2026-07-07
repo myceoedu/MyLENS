@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Video, School, Star } from "lucide-react";
+import { cinematicEase } from "@/lib/animations";
 import {
   getCampaignMapStats,
   MAX_CREATORS_PER_SCHOOL,
@@ -14,8 +15,6 @@ import type { ParticipatingSchool, PublicMapData } from "@/lib/map/types";
 import { cn } from "@/lib/utils";
 
 const MALAYSIA_MAP_SRC = "/images/MALAYSIA.png";
-
-const cinematicEase = [0.25, 1, 0.5, 1] as const;
 
 const STATE_SLOT_VIDEOS = MAX_SCHOOLS_PER_STATE;
 

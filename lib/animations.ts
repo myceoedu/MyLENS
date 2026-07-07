@@ -1,11 +1,16 @@
 import type { Variants } from "framer-motion";
 
+/** Cubic-bezier tuples — must be `as const` for Framer Motion TypeScript. */
+export const standardEase = [0.25, 0.46, 0.45, 0.94] as const;
+export const cinematicEase = [0.25, 1, 0.5, 1] as const;
+export const editorialEase = [0.16, 1, 0.3, 1] as const;
+
 export const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 40 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] },
+    transition: { duration: 0.7, ease: standardEase },
   },
 };
 
@@ -14,7 +19,7 @@ export const fadeInDown: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] },
+    transition: { duration: 0.7, ease: standardEase },
   },
 };
 
@@ -23,7 +28,7 @@ export const fadeInLeft: Variants = {
   visible: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] },
+    transition: { duration: 0.7, ease: standardEase },
   },
 };
 
@@ -32,7 +37,7 @@ export const fadeInRight: Variants = {
   visible: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] },
+    transition: { duration: 0.7, ease: standardEase },
   },
 };
 
@@ -63,7 +68,7 @@ export const scaleIn: Variants = {
   visible: {
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] },
+    transition: { duration: 0.6, ease: standardEase },
   },
 };
 
@@ -82,7 +87,7 @@ export const heroTextVariant: Variants = {
     opacity: 1,
     y: 0,
     filter: "blur(0px)",
-    transition: { duration: 1, ease: [0.25, 0.46, 0.45, 0.94] },
+    transition: { duration: 1, ease: standardEase },
   },
 };
 
@@ -91,7 +96,7 @@ export const slideUp: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94] },
+    transition: { duration: 0.9, ease: standardEase },
   },
 };
 
@@ -99,7 +104,59 @@ export const lineGrow: Variants = {
   hidden: { scaleX: 0, originX: 0 },
   visible: {
     scaleX: 1,
-    transition: { duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.3 },
+    transition: { duration: 0.8, ease: standardEase, delay: 0.3 },
+  },
+};
+
+export const editorialFadeUp: Variants = {
+  hidden: { opacity: 0, y: 36 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: cinematicEase },
+  },
+};
+
+export const editorialFadeLeft: Variants = {
+  hidden: { opacity: 0, x: -44 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.9, ease: cinematicEase },
+  },
+};
+
+export const editorialFadeRight: Variants = {
+  hidden: { opacity: 0, x: 44 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.9, ease: cinematicEase },
+  },
+};
+
+export const editorialStagger: Variants = {
+  hidden: { opacity: 1 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.12, delayChildren: 0.08 },
+  },
+};
+
+export const fadeInEditorial: Variants = {
+  hidden: { opacity: 0, y: 28 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: editorialEase },
+  },
+};
+
+export const editorialBenefitStagger: Variants = {
+  hidden: { opacity: 1 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.14, delayChildren: 0.05 },
   },
 };
 

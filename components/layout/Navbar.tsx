@@ -8,6 +8,7 @@ import { Menu, X } from "lucide-react";
 import { MYLENS_LOGO_SRC } from "@/lib/data/campaign-images";
 import { cn } from "@/lib/utils";
 import { navigateTo } from "@/lib/navigation";
+import { standardEase } from "@/lib/animations";
 
 const NAV_LOGO_WHITE = "/images/mylens-logo-white.svg";
 
@@ -92,7 +93,7 @@ export default function Navbar() {
       <motion.header
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
+        transition={{ duration: 0.55, ease: standardEase }}
         className={cn(
           "fixed top-0 left-0 right-0 z-50 h-20 overflow-visible transition-all duration-500",
           solidNav

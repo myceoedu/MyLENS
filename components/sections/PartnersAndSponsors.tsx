@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { fadeInUp } from "@/lib/animations";
+import { fadeInUp, standardEase } from "@/lib/animations";
 import { partnerLogos } from "@/lib/data/campaign-images";
 
 const PARTNERS = [
@@ -43,7 +43,7 @@ function PartnerLogoCard({
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94], delay: index * 0.08 }}
+      transition={{ duration: 0.7, ease: standardEase, delay: index * 0.08 }}
       className="group flex flex-col items-center justify-center px-8 py-10 text-center sm:px-10 sm:py-12"
     >
       <div className="flex h-[5rem] w-full max-w-[240px] items-center justify-center px-5 transition-transform duration-500 ease-out group-hover:scale-[1.02]">
