@@ -1,28 +1,33 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, isStaleRefreshTokenError } from "@/lib/supabase/server";
 import type { UserRole } from "@/types/auth";
 import type { Profile } from "@/types/profile";
 import { isUserRole } from "@/types/auth";
 
-export async function getSession() {
+async function resolveUser() {
   const supabase = await createClient();
   const {
     data: { user },
     error,
   } = await supabase.auth.getUser();
 
-  if (error || !user) return null;
+  if (isStaleRefreshTokenError(error)) {
+    await supabase.auth.signOut();
+    return { supabase, user: null };
+  }
+
+  if (error || !user) return { supabase, user: null };
+  return { supabase, user };
+}
+
+export async function getSession() {
+  const { user } = await resolveUser();
   return user;
 }
 
 export async function getCurrentProfile(): Promise<Profile | null> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
-
-  if (authError || !user) return null;
+  const { supabase, user } = await resolveUser();
+  if (!user) return null;
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")

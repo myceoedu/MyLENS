@@ -1,9 +1,9 @@
 import { states } from "@/lib/data/states";
-import { createClient } from "@/lib/supabase/server";
+import { createAnonymousClient } from "@/lib/supabase/server";
 import type { ParticipatingSchool, PublicMapData } from "@/lib/map/types";
 
 export async function fetchPublicMapData(): Promise<PublicMapData> {
-  const supabase = await createClient();
+  const supabase = createAnonymousClient();
 
   const { data: schoolRows, error: schoolsError } = await supabase.rpc(
     "get_public_participating_schools",
@@ -11,7 +11,10 @@ export async function fetchPublicMapData(): Promise<PublicMapData> {
   );
 
   if (schoolsError) {
-    console.error("Failed to load participating schools:", schoolsError);
+    console.error(
+      "Failed to load participating schools:",
+      schoolsError.message || schoolsError.code || schoolsError
+    );
     return { schoolsByState: {} };
   }
 
