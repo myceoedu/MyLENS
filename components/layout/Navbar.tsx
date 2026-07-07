@@ -17,7 +17,6 @@ const navLinks = [
   { label: "Student Journey",     href: "#how-it-works" },
   { label: "Youth Creator Awards",href: "#competition" },
   { label: "Stories",             href: "/videos" },
-  { label: "Schools",             href: "/schools" },
 ];
 
 function NavbarWordmark({ solidNav }: { solidNav: boolean }) {

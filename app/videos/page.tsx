@@ -6,7 +6,7 @@ import VideoShowcaseSection from "@/components/sections/VideoShowcaseSection";
 export const metadata = {
   title: "Watch The Stories | MyLENS 2026",
   description:
-    "Browse 300+ authentic short videos created by student teams across every state and territory — nature, food, culture, heritage, adventure and hidden gems.",
+    "Browse curated short films from the MyLENS Malaysia Unseen showcase — nature, food, culture, heritage, adventure and hidden gems.",
 };
 
 export default function VideosPage() {

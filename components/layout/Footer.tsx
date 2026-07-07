@@ -11,7 +11,6 @@ import { SectionTextureLayer } from "@/components/ui/SectionDecor";
 const exploreLinks = [
   { label: "About", href: "#about" },
   { label: "How It Works", href: "#how-it-works" },
-  { label: "Schools", href: "/schools" },
   { label: "Interactive Map", href: "#map" },
   { label: "Stories & Videos", href: "/videos" },
 ];

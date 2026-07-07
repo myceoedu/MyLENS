@@ -16,8 +16,13 @@ import {
 import { staggerContainer, fadeInUp, scaleIn } from "@/lib/animations";
 import { SectionTextureLayer, DecorativeHeader } from "@/components/ui/SectionDecor";
 import { cn } from "@/lib/utils";
+import { getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
+import { getStoryCardLabel } from "@/lib/stories/display-title";
 
 function getStoryImage(video: Video) {
+  if (video.youtubeVideoId) {
+    return getYouTubeThumbnailUrl(video.youtubeVideoId);
+  }
   return storyDestinationImages[video.thumbnail] ?? "/images/about-nature.jpg";
 }
 
@@ -77,6 +82,9 @@ function CinematicPlayIcon({
 /* ─── Story player modal ───────────────────────────────────────────────────── */
 function StoryPlayerModal({ story, onClose }: { story: Video; onClose: () => void }) {
   const image = getStoryImage(story);
+  const embedUrl = story.youtubeVideoId
+    ? getYouTubeEmbedUrl(story.youtubeVideoId)
+    : null;
 
   return (
     <motion.div
@@ -96,46 +104,68 @@ function StoryPlayerModal({ story, onClose }: { story: Video; onClose: () => voi
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative aspect-video overflow-hidden">
-          <Image
-            src={image}
-            alt={story.title}
-            fill
-            className="object-cover campaign-photo-grade"
-            sizes="(max-width: 768px) 100vw, 768px"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/15" />
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <div className="w-16 h-16 rounded-full border border-white/60 bg-black/30 backdrop-blur-sm flex items-center justify-center mb-4">
-              <Play className="w-5 h-5 text-white fill-white ml-0.5" strokeWidth={1} />
+          {embedUrl ? (
+            <iframe
+              src={embedUrl}
+              title={story.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              className="absolute inset-0 h-full w-full border-0"
+            />
+          ) : (
+            <>
+              <Image
+                src={image}
+                alt={story.title}
+                fill
+                unoptimized={!!story.youtubeVideoId}
+                className="object-cover campaign-photo-grade"
+                sizes="(max-width: 768px) 100vw, 768px"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/15" />
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <div className="w-16 h-16 rounded-full border border-white/60 bg-black/30 backdrop-blur-sm flex items-center justify-center mb-4">
+                  <Play className="w-5 h-5 text-white fill-white ml-0.5" strokeWidth={1} />
+                </div>
+                <p className="text-white/55 text-[10px] tracking-[0.28em] uppercase">
+                  Story preview coming soon
+                </p>
+              </div>
+            </>
+          )}
+          {!embedUrl && (
+            <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+              <CategoryBadge category={story.category} />
+              <h3 className="font-serif font-bold text-white text-2xl sm:text-3xl leading-snug mt-3 tracking-tight">
+                {story.title}
+              </h3>
+              <p className="text-white/65 text-xs tracking-[0.18em] uppercase mt-2">
+                {[story.state, story.creator].filter(Boolean).join(" · ")}
+              </p>
             </div>
-            <p className="text-white/55 text-[10px] tracking-[0.28em] uppercase">
-              Story preview coming soon
-            </p>
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
-            <CategoryBadge category={story.category} />
-            <h3 className="font-serif font-bold text-white text-2xl sm:text-3xl leading-snug mt-3 tracking-tight">
-              {story.title}
-            </h3>
-            <p className="text-white/65 text-xs tracking-[0.18em] uppercase mt-2">
-              {story.state} · {story.creator} · {story.duration}
-            </p>
-          </div>
+          )}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full bg-black/30 text-white/70 hover:text-white transition-colors"
+            className="absolute top-4 right-4 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-black/30 text-white/70 hover:text-white transition-colors"
             aria-label="Close"
           >
             <X className="w-5 h-5" strokeWidth={1.5} />
           </button>
         </div>
-        <div className="bg-[#F9F8F4] px-6 py-5 border-t border-slate-200/60">
-          <p className="text-xs tracking-[0.16em] uppercase text-slate-500 mb-1">
-            {story.state}
-          </p>
-          <p className="text-slate-800 font-medium">{story.creator}</p>
-          <p className="text-gray-600 text-sm mt-1">{story.school}</p>
-        </div>
+        {(story.creator || story.school || story.title) && (
+          <div className="bg-[#F9F8F4] px-6 py-5 border-t border-slate-200/60">
+            <CategoryBadge category={story.category} size="sm" />
+            <h3 className="font-serif font-bold text-[#0B130F] text-lg sm:text-xl leading-snug mt-3 tracking-tight">
+              {story.title}
+            </h3>
+            {(story.state || story.creator) && (
+              <p className="text-xs tracking-[0.16em] uppercase text-slate-500 mt-2">
+                {[story.state, story.creator].filter(Boolean).join(" · ")}
+              </p>
+            )}
+            {story.school && <p className="text-gray-600 text-sm mt-1">{story.school}</p>}
+          </div>
+        )}
       </motion.div>
     </motion.div>
   );
@@ -152,6 +182,7 @@ function FeaturedStoryCard({
   className?: string;
 }) {
   const image = getStoryImage(story);
+  const cardLabel = getStoryCardLabel(story);
 
   return (
     <button
@@ -167,12 +198,13 @@ function FeaturedStoryCard({
           src={image}
           alt={story.title}
           fill
+          unoptimized={!!story.youtubeVideoId}
           className="object-cover campaign-photo-grade transition-transform duration-700 ease-out group-hover:scale-105"
           sizes="(max-width: 1024px) 100vw, 55vw"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[42%] bg-gradient-to-t from-black/90 via-black/55 to-transparent" />
 
         <div className="absolute top-4 left-4 z-20">
           <CategoryBadge category={story.category} />
@@ -187,16 +219,21 @@ function FeaturedStoryCard({
           <CinematicPlayIcon size="lg" persistent />
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 z-20 p-5 sm:p-7 lg:p-8">
-          <p className="text-[10px] sm:text-[11px] tracking-[0.24em] uppercase text-white/60 mb-2">
+        <div className="absolute bottom-0 left-0 right-0 z-20 p-5 sm:p-6 lg:p-7">
+          <p className="text-[10px] tracking-[0.22em] uppercase text-white/50 mb-1.5">
             {story.state}
           </p>
-          <h3 className="font-serif font-bold text-white text-2xl sm:text-3xl lg:text-4xl leading-[1.12] tracking-tight mb-3 max-w-lg">
-            {story.title}
+          <h3
+            className="font-serif font-semibold text-white text-lg sm:text-xl lg:text-[1.35rem] leading-snug tracking-tight line-clamp-2 max-w-[16rem] sm:max-w-xs lg:max-w-sm"
+            title={story.title}
+          >
+            {cardLabel}
           </h3>
-          <p className="text-sm text-white/75 tracking-wide">
-            {story.creator}
-          </p>
+          {story.creator && (
+            <p className="mt-2 text-[11px] text-white/55 tracking-wide truncate max-w-[14rem] sm:max-w-xs">
+              {story.creator}
+            </p>
+          )}
         </div>
       </div>
     </button>
@@ -214,6 +251,7 @@ function StoryCard({
   className?: string;
 }) {
   const image = getStoryImage(story);
+  const cardLabel = getStoryCardLabel(story);
 
   return (
     <button
@@ -229,10 +267,12 @@ function StoryCard({
           src={image}
           alt={story.title}
           fill
+          unoptimized={!!story.youtubeVideoId}
           className="object-cover campaign-photo-grade transition-transform duration-600 ease-out group-hover:scale-105"
           sizes="(max-width: 640px) 50vw, 25vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/88 via-black/35 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/92 via-black/30 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-black/85 to-transparent" />
 
         <div className="absolute top-2.5 left-2.5 z-20">
           <CategoryBadge category={story.category} size="sm" />
@@ -248,11 +288,14 @@ function StoryCard({
         </div>
 
         <div className="absolute bottom-0 left-0 right-0 z-10 p-3 sm:p-4">
-          <p className="text-[9px] tracking-[0.2em] uppercase text-white/55 mb-1 truncate">
+          <p className="text-[9px] tracking-[0.2em] uppercase text-white/50 mb-1 truncate">
             {story.state}
           </p>
-          <h3 className="font-serif font-semibold text-white text-sm sm:text-base leading-snug line-clamp-2">
-            {story.title}
+          <h3
+            className="font-serif font-medium text-white text-sm sm:text-[15px] leading-snug line-clamp-2"
+            title={story.title}
+          >
+            {cardLabel}
           </h3>
         </div>
       </div>
@@ -270,7 +313,9 @@ function StoryCategoryPills({
 }) {
   const tabs: { id: VideoCategory | "All"; label: string }[] = [
     { id: "All", label: "All Stories" },
-    ...videoCategories.map((cat) => ({ id: cat, label: cat })),
+    ...videoCategories
+      .filter((cat) => videos.some((v) => v.category === cat))
+      .map((cat) => ({ id: cat, label: cat })),
   ];
 
   return (
@@ -407,6 +452,7 @@ function CinematicVideoCard({
   onPlay: () => void;
 }) {
   const image = getStoryImage(video);
+  const cardLabel = getStoryCardLabel(video);
   const isHero = variant === "hero";
   const isCompact = variant === "compact";
 
@@ -421,10 +467,12 @@ function CinematicVideoCard({
           src={image}
           alt={video.title}
           fill
+          unoptimized={!!video.youtubeVideoId}
           className="object-cover campaign-photo-grade transition-transform duration-600 ease-out group-hover:scale-105"
           sizes={isHero ? "50vw" : "33vw"}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/92 via-black/30 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-t from-black/85 to-transparent" />
 
         <div className="absolute top-2 left-2 z-20">
           <CategoryBadge category={video.category} size={isCompact ? "sm" : "md"} />
@@ -445,20 +493,21 @@ function CinematicVideoCard({
         </div>
 
         <div className="absolute bottom-0 left-0 right-0 z-10 p-3 sm:p-4">
-          <p className="text-[10px] tracking-[0.18em] uppercase text-white/55 mb-1 truncate">
-            {video.state} · {video.creator}
+          <p className="text-[10px] tracking-[0.18em] uppercase text-white/50 mb-1 truncate">
+            {video.state}
           </p>
           <h3
             className={cn(
-              "font-serif text-white leading-snug",
+              "font-serif text-white leading-snug line-clamp-2",
               isHero
-                ? "font-bold text-xl sm:text-2xl line-clamp-2"
+                ? "font-semibold text-lg sm:text-xl max-w-sm"
                 : isCompact
-                  ? "font-semibold text-sm line-clamp-2"
-                  : "font-semibold text-base line-clamp-2"
+                  ? "font-medium text-sm"
+                  : "font-medium text-[15px] sm:text-base"
             )}
+            title={video.title}
           >
-            {video.title}
+            {cardLabel}
           </h3>
         </div>
       </div>
@@ -477,11 +526,13 @@ function EditorialCategoryTabs({
 }) {
   const tabs: { id: VideoCategory | "All"; label: string; count?: number }[] = [
     { id: "All", label: "All", count: videos.length },
-    ...videoCategories.map((cat) => ({
-      id: cat,
-      label: cat,
-      count: videos.filter((v) => v.category === cat).length,
-    })),
+    ...videoCategories
+      .map((cat) => ({
+        id: cat,
+        label: cat,
+        count: videos.filter((v) => v.category === cat).length,
+      }))
+      .filter((t) => t.count > 0),
   ];
 
   return (
