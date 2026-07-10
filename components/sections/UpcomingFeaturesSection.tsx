@@ -6,6 +6,7 @@ import { Trophy, Clapperboard, type LucideIcon } from "lucide-react";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
 import { SectionTextureLayer, DecorativeHeader } from "@/components/ui/SectionDecor";
 import { campaignImages } from "@/lib/data/campaign-images";
+import { getPartnersImageAlt, getPartnersTeaserText } from "@/lib/config/partners";
 import { cn } from "@/lib/utils";
 
 type HeaderType = "native-image" | "gradient" | "remote-image";
@@ -61,11 +62,11 @@ const features: FeatureCard[] = [
     id: "sponsors",
     label: "Partners",
     title: "Supported By",
-    teaser: "Tourism Malaysia, government agencies, and creative industry allies.",
+    teaser: getPartnersTeaserText(),
     launchNote: "Launching in Phase 2 — Our partners in discovery.",
     headerType: "remote-image",
     image: campaignImages.sneakPeek.sponsors,
-    imageAlt: "Tourism Malaysia partners",
+    imageAlt: getPartnersImageAlt(),
     thumbnailHeight: "h-32",
   },
   {

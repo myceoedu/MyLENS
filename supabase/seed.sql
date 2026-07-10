@@ -35,7 +35,7 @@ set
   status = 'active',
   full_name = 'Panel Judge',
   school_id = null
-where email = 'judge@mylens2026.my';
+wher e email = 'judge@mylens2026.my';
 
 -- Activate creators and link to school
 update public.profiles

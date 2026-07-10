@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, School, Users, UserCheck } from "lucide-react";
+import { LayoutDashboard, School, Users, UserCheck, MessageSquare } from "lucide-react";
 
 const links = [
   { href: "/dashboard/admin", label: "Overview", icon: LayoutDashboard, exact: true },
+  { href: "/dashboard/admin/inquiries", label: "Inquiries", icon: MessageSquare },
   { href: "/dashboard/admin/schools", label: "Schools", icon: School },
   { href: "/dashboard/admin/users", label: "Users", icon: Users },
   { href: "/dashboard/admin/users/pending", label: "Pending", icon: UserCheck },

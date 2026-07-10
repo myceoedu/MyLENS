@@ -13,6 +13,8 @@ export default async function AdminDashboardPage() {
     { count: activeSchoolCount },
     { count: pendingCount },
     { count: creatorCount },
+    { count: newSchoolInquiryCount },
+    { count: newPartnershipInquiryCount },
   ] = await Promise.all([
     supabase.from("schools").select("id", { count: "exact", head: true }),
     supabase.from("schools").select("id", { count: "exact", head: true }).eq("status", "active"),
@@ -22,9 +24,18 @@ export default async function AdminDashboardPage() {
       .select("id", { count: "exact", head: true })
       .eq("role", "creator")
       .eq("status", "active"),
+    supabase
+      .from("contact_inquiries")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "new"),
+    supabase
+      .from("partnership_inquiries")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "new"),
   ]);
 
   const pending = pendingCount ?? 0;
+  const newInquiries = (newSchoolInquiryCount ?? 0) + (newPartnershipInquiryCount ?? 0);
 
   return (
     <div className="relative overflow-hidden rounded-3xl border border-zinc-200/80 bg-white shadow-sm">
@@ -86,6 +97,13 @@ export default async function AdminDashboardPage() {
               style={{ fontFamily: "var(--font-inter)" }}
             >
               Review Pending ({pending})
+            </Link>
+            <Link
+              href="/dashboard/admin/inquiries"
+              className="bg-white border border-zinc-200 hover:border-zinc-300 text-zinc-700 text-sm font-medium px-5 py-2.5 rounded-xl transition-all"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              Inquiries{newInquiries > 0 ? ` (${newInquiries} new)` : ""}
             </Link>
             <Link
               href="/dashboard/admin/schools"

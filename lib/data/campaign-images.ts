@@ -46,6 +46,9 @@ export const campaignImages = {
   /** Hero — Cameron Highlands tea terraces, Pahang, Malaysia */
   heroBackground: "/images/home-bg.jpg",
   heroBackgroundAlt: "Emerald tea plantations in Cameron Highlands, Pahang, Malaysia",
+  /** Cinematic teaser poster still — distinct from hero background */
+  teaserPoster: "/images/Thumbnail.png",
+  teaserPosterAlt: "MyLENS 2026 campaign teaser thumbnail",
   /** About section — Malaysia diversity collage */
   aboutCollage: {
     kinabalu: "/images/mount-kinabalu.jpg",

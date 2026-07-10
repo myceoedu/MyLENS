@@ -5,14 +5,19 @@ import { motion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 import { MapPin, Mail, ArrowRight } from "lucide-react";
 import { fadeInUp } from "@/lib/animations";
+import {
+  getVisibleSupporters,
+  supporterGridColsClass,
+  type FooterSupporter,
+} from "@/lib/config/partners";
 import { navigateTo } from "@/lib/navigation";
 import { SectionTextureLayer } from "@/components/ui/SectionDecor";
 
 const exploreLinks = [
-  { label: "About", href: "#about" },
-  { label: "How It Works", href: "#how-it-works" },
+  { label: "About", href: "#why-mylens" },
+  { label: "Student Journey", href: "#journey" },
   { label: "Interactive Map", href: "#map" },
-  { label: "Stories & Videos", href: "/videos" },
+  { label: "Stories & Videos", href: "#videos" },
 ];
 
 const discoverLinks = [
@@ -29,28 +34,30 @@ const socialLinks = [
   { label: "YouTube", href: "#" },
 ];
 
-const supporters = [
-  {
-    name: "Tourism Malaysia",
-    short: "TM",
-    accent: "#0B3C5D",
-  },
-  {
-    name: "MCMC",
-    short: "MCMC",
-    accent: "#1F7A53",
-  },
-  {
-    name: "MDEC",
-    short: "MDEC",
-    accent: "#C41E3A",
-  },
-  {
-    name: "MyCEO Education",
-    short: "MyCEO",
-    accent: "#D4A017",
-  },
-];
+function SupporterLabel({ supporter }: { supporter: FooterSupporter }) {
+  if (supporter.short === "TM") {
+    return (
+      <span className="flex flex-col items-center gap-0.5">
+        <span className="text-[9px] tracking-[0.28em] text-slate-400 group-hover:text-[#0B3C5D]">
+          Tourism
+        </span>
+        <span className="group-hover:text-[#1F7A53]">Malaysia</span>
+      </span>
+    );
+  }
+
+  if (supporter.short === "MDEC") {
+    return (
+      <span className="text-sm sm:text-base group-hover:text-[#C41E3A]">MDEC</span>
+    );
+  }
+
+  return (
+    <span className="text-[9px] sm:text-[10px] tracking-[0.22em] uppercase text-slate-400 group-hover:text-[#D4A017]">
+      MyCEO Education
+    </span>
+  );
+}
 
 const linkClass =
   "text-sm text-gray-600 hover:text-slate-800 transition-colors duration-300 text-left";
@@ -61,6 +68,7 @@ const columnLabelClass =
 export default function Footer() {
   const pathname = usePathname();
   const router = useRouter();
+  const visibleSupporters = getVisibleSupporters();
 
   const handleFooterLink = (href: string) => {
     navigateTo(href, pathname, router);
@@ -229,60 +237,42 @@ export default function Footer() {
         </div>
       </section>
 
-      {/* ── SECTION 3: Official Supporters ── */}
-      <section
-        className="relative border-y"
-        style={{
-          background: "#F9F8F4",
-          borderColor: "rgba(15, 23, 42, 0.08)",
-        }}
-        aria-label="Official supporters"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-12">
-          <p className="text-center text-[11px] tracking-[0.32em] uppercase text-slate-500 font-medium mb-8">
-            Officially Supported By
-          </p>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-10 items-center">
-            {supporters.map((supporter) => (
-              <div
-                key={supporter.name}
-                className="group flex flex-col items-center justify-center text-center cursor-default"
-              >
+      {visibleSupporters.length > 0 && (
+        <section
+          className="relative border-y"
+          style={{
+            background: "#F9F8F4",
+            borderColor: "rgba(15, 23, 42, 0.08)",
+          }}
+          aria-label="Official supporters"
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-12">
+            <p className="text-center text-[11px] tracking-[0.32em] uppercase text-slate-500 font-medium mb-8">
+              Officially Supported By
+            </p>
+            <div
+              className={`grid ${supporterGridColsClass(visibleSupporters.length)} gap-6 lg:gap-10 items-center max-w-3xl mx-auto`}
+            >
+              {visibleSupporters.map((supporter) => (
                 <div
-                  className="flex items-center justify-center w-full h-14 sm:h-16 rounded-lg border border-slate-200/80 bg-white/60 px-4 transition-all duration-500 grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:border-slate-300/80 group-hover:shadow-sm"
+                  key={supporter.id}
+                  className="group flex flex-col items-center justify-center text-center cursor-default"
                 >
-                  <span
-                    className="text-[10px] sm:text-xs font-bold tracking-[0.18em] uppercase transition-colors duration-500 text-slate-500 group-hover:text-[var(--accent)]"
-                    style={{ "--accent": supporter.accent } as CSSProperties}
-                  >
-                    {supporter.short === "TM" ? (
-                      <span className="flex flex-col items-center gap-0.5">
-                        <span className="text-[9px] tracking-[0.28em] text-slate-400 group-hover:text-[#0B3C5D]">
-                          Tourism
-                        </span>
-                        <span className="group-hover:text-[#1F7A53]">Malaysia</span>
-                      </span>
-                    ) : supporter.short === "MCMC" ? (
-                      <span className="text-sm sm:text-base group-hover:text-[#1F7A53]">
-                        MCMC
-                      </span>
-                    ) : supporter.short === "MDEC" ? (
-                      <span className="text-sm sm:text-base group-hover:text-[#C41E3A]">
-                        MDEC
-                      </span>
-                    ) : (
-                      <span className="text-[9px] sm:text-[10px] tracking-[0.22em] uppercase text-slate-400 group-hover:text-[#D4A017]">
-                        MyCEO Education
-                      </span>
-                    )}
-                  </span>
+                  <div className="flex items-center justify-center w-full h-14 sm:h-16 rounded-lg border border-slate-200/80 bg-white/60 px-4 transition-all duration-500 grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:border-slate-300/80 group-hover:shadow-sm">
+                    <span
+                      className="text-[10px] sm:text-xs font-bold tracking-[0.18em] uppercase transition-colors duration-500 text-slate-500 group-hover:text-[var(--accent)]"
+                      style={{ "--accent": supporter.accent } as CSSProperties}
+                    >
+                      <SupporterLabel supporter={supporter} />
+                    </span>
+                  </div>
+                  <span className="sr-only">{supporter.name}</span>
                 </div>
-                <span className="sr-only">{supporter.name}</span>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ── SECTION 4: Bottom Bar ── */}
       <section

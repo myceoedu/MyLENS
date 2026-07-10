@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { heroTextVariant, fadeInUp } from "@/lib/animations";
+import { getHeroKickerText } from "@/lib/config/partners";
 import { campaignImages, CANVAS_OFF_WHITE } from "@/lib/data/campaign-images";
 
 export default function HeroSection() {
@@ -64,7 +65,7 @@ export default function HeroSection() {
           className="text-white/80 text-[0.65rem] font-semibold tracking-[0.45em] uppercase mb-6 drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]"
           style={{ fontFamily: "var(--font-poppins)" }}
         >
-          Supported by Tourism Malaysia
+          {getHeroKickerText()}
         </motion.p>
 
         {/* Main title — MyLENS — directly on image, no card */}
@@ -119,14 +120,6 @@ export default function HeroSection() {
             A national storytelling challenge where students discover hidden stories, develop
             creative skills, and showcase their talents on a national stage.
           </p>
-
-          {/* Stats line */}
-          <p
-            className="text-white/90 font-semibold text-sm tracking-wide"
-            style={{ fontFamily: "var(--font-poppins)" }}
-          >
-            75 Schools&nbsp;&bull;&nbsp;300 Students&nbsp;&bull;&nbsp;One National Grand Finale
-          </p>
         </motion.div>
 
         {/* CTA buttons — outside the card */}
@@ -139,19 +132,17 @@ export default function HeroSection() {
         >
           <motion.button
             onClick={() => document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" })}
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-            className="w-full sm:w-auto text-sm font-semibold px-8 py-3.5 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white transition-colors shadow-lg"
-            style={{ fontFamily: "var(--font-poppins)", boxShadow: "0 8px 24px rgba(21,128,61,0.38)" }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full sm:w-auto rounded-none bg-[#051B10] px-8 py-4 text-[11px] font-bold uppercase tracking-[0.25em] text-[#FAF9F5] transition-colors duration-[400ms] ease-out hover:bg-[#B68A35] hover:text-white"
+            style={{ fontFamily: "var(--font-poppins)" }}
           >
             Register Your School
           </motion.button>
 
           <motion.button
-            onClick={() => document.querySelector("#about")?.scrollIntoView({ behavior: "smooth" })}
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-            className="w-full sm:w-auto text-sm font-semibold px-8 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/40 transition-colors backdrop-blur-sm"
+            onClick={() => document.querySelector("#for-sponsors")?.scrollIntoView({ behavior: "smooth" })}
+            whileTap={{ scale: 0.98 }}
+            className="w-full sm:w-auto rounded-none border border-[#051B10]/20 bg-transparent px-8 py-4 text-[11px] font-bold uppercase tracking-[0.25em] text-[#051B10] transition-all duration-[400ms] ease-out hover:border-transparent hover:bg-[#051B10] hover:text-[#FAF9F5]"
             style={{ fontFamily: "var(--font-poppins)" }}
           >
             Become A Partner

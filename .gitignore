@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# large local media — host on YouTube/CDN instead
+/public/video/*.mp4
+/public/video/*.mov

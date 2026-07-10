@@ -51,7 +51,7 @@ export default function FAQSection() {
     <section
       id="faq"
       aria-labelledby="faq-heading"
-      className="overflow-hidden bg-white py-28 font-sans text-[#0B130F] select-none lg:py-36"
+      className="overflow-hidden border-t border-black/[0.06] bg-white pt-20 pb-28 font-sans text-[#0B130F] select-none lg:pt-24 lg:pb-32"
     >
       <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
         <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-16">

@@ -1,11 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Send, ExternalLink } from "lucide-react";
+import { Mail, Phone, MapPin, Send, ExternalLink, Loader2, AlertCircle } from "lucide-react";
 import { staggerContainer, fadeInUp, fadeInLeft, fadeInRight } from "@/lib/animations";
 import { DecorativeHeader } from "@/components/ui/SectionDecor";
 import { campaignImages } from "@/lib/data/campaign-images";
-import { useState } from "react";
+import { submitContactInquiryAction } from "@/lib/contact/actions";
+import { useState, useTransition } from "react";
 
 const inputClassName =
   "w-full bg-white border border-zinc-200/60 rounded-xl text-slate-800 placeholder-zinc-400 focus:border-zinc-400 focus:ring-1 focus:ring-zinc-300/30 transition-colors py-3 px-4 text-sm outline-none font-sans";
@@ -16,10 +17,21 @@ const labelClassName =
 export default function ContactSection() {
   const [form, setForm] = useState({ name: "", email: "", school: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setError(null);
+    startTransition(async () => {
+      const result = await submitContactInquiryAction(form);
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      setSubmitted(true);
+      setForm({ name: "", email: "", school: "", message: "" });
+    });
   };
 
   return (
@@ -214,13 +226,30 @@ export default function ContactSection() {
 
                     <motion.button
                       type="submit"
-                      whileHover={{ scale: 1.01 }}
-                      whileTap={{ scale: 0.99 }}
-                      className="bg-slate-900 hover:bg-slate-800 text-white font-sans font-medium px-8 py-3 rounded-lg transition-colors w-full flex items-center justify-center gap-2"
+                      disabled={pending}
+                      whileHover={pending ? undefined : { scale: 1.01 }}
+                      whileTap={pending ? undefined : { scale: 0.99 }}
+                      className="bg-slate-900 hover:bg-slate-800 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-sans font-medium px-8 py-3 rounded-lg transition-colors w-full flex items-center justify-center gap-2"
                     >
-                      <Send className="w-4 h-4" />
-                      Send Message
+                      {pending ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Sending…
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4" />
+                          Send Message
+                        </>
+                      )}
                     </motion.button>
+
+                    {error && (
+                      <div className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                        <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                        <p>{error}</p>
+                      </div>
+                    )}
                   </form>
                 </>
               )}

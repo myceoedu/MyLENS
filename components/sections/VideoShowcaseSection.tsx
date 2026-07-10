@@ -351,25 +351,19 @@ function StoryCategoryPills({
 const HOMEPAGE_STORY_COUNT = 5;
 
 function getHomepageStories(category: VideoCategory | "All"): Video[] {
-  const pool =
-    category === "All"
-      ? [...videos].filter((v) => v.featured).sort((a, b) => b.views - a.views)
-      : videos.filter((v) => v.category === category);
-
-  if (pool.length >= HOMEPAGE_STORY_COUNT) {
-    return pool.slice(0, HOMEPAGE_STORY_COUNT);
+  if (category === "All") {
+    const featured = [...videos]
+      .filter((v) => v.featured)
+      .sort((a, b) => b.views - a.views);
+    if (featured.length > 0) {
+      return featured.slice(0, HOMEPAGE_STORY_COUNT);
+    }
+    return [...videos].sort((a, b) => b.views - a.views).slice(0, HOMEPAGE_STORY_COUNT);
   }
 
-  const featured = [...videos]
-    .filter((v) => v.featured)
+  return videos
+    .filter((v) => v.category === category)
     .sort((a, b) => b.views - a.views);
-
-  const merged = [...pool];
-  for (const v of featured) {
-    if (merged.length >= HOMEPAGE_STORY_COUNT) break;
-    if (!merged.find((m) => m.id === v.id)) merged.push(v);
-  }
-  return merged.slice(0, HOMEPAGE_STORY_COUNT);
 }
 
 function HomeStoryGallery({ onBrowseAll }: { onBrowseAll: () => void }) {
@@ -377,8 +371,7 @@ function HomeStoryGallery({ onBrowseAll }: { onBrowseAll: () => void }) {
   const [activeStory, setActiveStory] = useState<Video | null>(null);
   const picks = getHomepageStories(activeCategory);
   const [hero, ...supporting] = picks;
-
-  if (!hero) return null;
+  const singleStory = picks.length === 1;
 
   return (
     <>
@@ -399,20 +392,39 @@ function HomeStoryGallery({ onBrowseAll }: { onBrowseAll: () => void }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.35 }}
-            className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5 auto-rows-fr"
+            className={cn(
+              "grid gap-3 sm:gap-4 lg:gap-5 auto-rows-fr",
+              picks.length === 0
+                ? "grid-cols-1"
+                : singleStory
+                  ? "grid-cols-1 max-w-2xl mx-auto"
+                  : "grid-cols-2 lg:grid-cols-4"
+            )}
           >
-            <motion.div
-              variants={scaleIn}
-              className="col-span-2 row-span-2 min-h-[320px] sm:min-h-[380px] lg:min-h-[480px]"
-            >
-              <FeaturedStoryCard story={hero} onPlay={() => setActiveStory(hero)} />
-            </motion.div>
+            {picks.length === 0 ? (
+              <p className="col-span-full py-16 text-center text-gray-500 text-sm">
+                No stories in this category yet. Check back as student creators add more.
+              </p>
+            ) : (
+              <>
+                <div
+                  className={cn(
+                    "min-w-0",
+                    singleStory
+                      ? "min-h-[320px] sm:min-h-[380px]"
+                      : "col-span-2 row-span-2 min-h-[320px] sm:min-h-[380px] lg:min-h-[480px]"
+                  )}
+                >
+                  <FeaturedStoryCard story={hero} onPlay={() => setActiveStory(hero)} />
+                </div>
 
-            {supporting.map((story, i) => (
-              <motion.div key={story.id} variants={scaleIn} custom={i} className="min-w-0">
-                <StoryCard story={story} onPlay={() => setActiveStory(story)} />
-              </motion.div>
-            ))}
+                {supporting.map((story) => (
+                  <div key={story.id} className="min-w-0">
+                    <StoryCard story={story} onPlay={() => setActiveStory(story)} />
+                  </div>
+                ))}
+              </>
+            )}
           </motion.div>
         </AnimatePresence>
 

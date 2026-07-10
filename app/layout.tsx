@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Cormorant_Garamond } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { MYLENS_LOGO_SRC } from "@/lib/data/campaign-images";
+import { getSiteDescription, getSiteKeywords } from "@/lib/config/partners";
 import "./globals.css";
 
 const inter = Inter({
@@ -24,19 +25,8 @@ export const metadata: Metadata = {
     icon: MYLENS_LOGO_SRC,
     apple: MYLENS_LOGO_SRC,
   },
-  description:
-    "MyLENS: MALAYSIA UNSEEN 2026 is a nationwide youth tourism content competition supported by Tourism Malaysia. Students from 75 schools across every state and territory create 45-second videos showcasing Malaysia's hidden gems.",
-  keywords: [
-    "MyLENS 2026",
-    "Malaysia tourism",
-    "hidden gems Malaysia",
-    "youth content competition",
-    "Tourism Malaysia",
-    "Malaysia Unseen",
-    "young visionaries",
-    "Malaysian schools",
-    "short video competition",
-  ],
+  description: getSiteDescription(),
+  keywords: getSiteKeywords(),
   openGraph: {
     title: "MyLENS: MALAYSIA UNSEEN 2026",
     description: "Malaysia Through Young Visionaries — A nationwide youth tourism content creation competition.",

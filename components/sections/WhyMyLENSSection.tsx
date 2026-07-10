@@ -43,7 +43,7 @@ export default function WhyMyLENSSection() {
   const imgScale = useTransform(scrollYProgress, [0, 1], [1, 1.05]);
 
   return (
-    <section id="why-mylens" className="bg-[#FAF9F5] text-[#051B10] py-24 lg:py-32 font-sans overflow-hidden select-none">
+    <section id="why-mylens" className="bg-[#FAF9F5] text-[#051B10] pt-4 pb-16 lg:pt-6 lg:pb-24 font-sans overflow-hidden select-none">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         
         {/* ── HEADER BLOCK ── */}
@@ -55,7 +55,7 @@ export default function WhyMyLENSSection() {
             viewport={{ once: true }}
             className="text-[#B58A3D] font-medium text-xs tracking-[0.4em] uppercase block mb-4"
           >
-            About The Programme
+            <br></br><br></br><br></br> <br></br><br></br><br></br> <br></br> About The Programme
           </motion.span>
           
           <motion.h2

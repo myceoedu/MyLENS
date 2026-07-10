@@ -13,10 +13,10 @@ import { standardEase } from "@/lib/animations";
 const NAV_LOGO_WHITE = "/images/mylens-logo-white.svg";
 
 const navLinks = [
-  { label: "About MyLENS",        href: "#about" },
-  { label: "Student Journey",     href: "#how-it-works" },
-  { label: "Youth Creator Awards",href: "#competition" },
-  { label: "Stories",             href: "/videos" },
+  { label: "About MyLENS",        href: "#why-mylens" },
+  { label: "Student Journey",     href: "#journey" },
+  { label: "Youth Creator Awards",href: "#awards" },
+  { label: "Stories",             href: "#videos" },
 ];
 
 function NavbarWordmark({ solidNav }: { solidNav: boolean }) {

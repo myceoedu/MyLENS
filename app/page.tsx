@@ -1,6 +1,7 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HeroSection from "@/components/sections/HeroSection";
+import CinematicTeaserSection from "@/components/sections/CinematicTeaserSection";
 import WhyMyLENSSection from "@/components/sections/WhyMyLENSSection";
 import StudentGainsSection from "@/components/sections/StudentGainsSection";
 import JourneySection from "@/components/sections/JourneySection";
@@ -20,6 +21,7 @@ export default function Home() {
       <main className="flex-1">
         {/* ── Phase 1: Complete ── */}
         <HeroSection />
+        <CinematicTeaserSection />
         <WhyMyLENSSection />
         <StudentGainsSection />
         <JourneySection />

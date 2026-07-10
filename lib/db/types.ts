@@ -197,6 +197,78 @@ export interface Database {
           },
         ];
       };
+      contact_inquiries: {
+        Row: {
+          id: string;
+          full_name: string;
+          email: string;
+          school_name: string;
+          message: string;
+          status: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          full_name: string;
+          email: string;
+          school_name: string;
+          message: string;
+          status?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          full_name?: string;
+          email?: string;
+          school_name?: string;
+          message?: string;
+          status?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      partnership_inquiries: {
+        Row: {
+          id: string;
+          company_name: string;
+          full_name: string;
+          job_title: string;
+          email: string;
+          phone: string;
+          website: string | null;
+          message: string;
+          consent_given: boolean;
+          status: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          company_name: string;
+          full_name: string;
+          job_title: string;
+          email: string;
+          phone: string;
+          website?: string | null;
+          message: string;
+          consent_given?: boolean;
+          status?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          company_name?: string;
+          full_name?: string;
+          job_title?: string;
+          email?: string;
+          phone?: string;
+          website?: string | null;
+          message?: string;
+          consent_given?: boolean;
+          status?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       campaign_settings: {
         Row: {
           id: string;
