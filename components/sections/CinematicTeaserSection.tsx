@@ -122,8 +122,8 @@ export default function CinematicTeaserSection() {
                         : "Teaser video not configured"
                     }
                     className={cn(
-                      "absolute inset-0 z-20 flex flex-col items-center justify-center gap-3",
-                      !youtubeId && "cursor-not-allowed"
+                      "absolute inset-0 z-20 flex items-center justify-center",
+                      !youtubeId && "cursor-default"
                     )}
                   >
                     <span
@@ -134,11 +134,6 @@ export default function CinematicTeaserSection() {
                     >
                       <PlayTriangle className="h-5 w-5 translate-x-0.5" />
                     </span>
-                    {!youtubeId && (
-                      <span className="max-w-xs px-4 text-center font-mono text-[10px] uppercase tracking-[0.2em] text-white/80">
-                        Set NEXT_PUBLIC_CAMPAIGN_TEASER_YOUTUBE in .env.local
-                      </span>
-                    )}
                   </motion.button>
                 )}
               </AnimatePresence>
