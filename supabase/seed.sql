@@ -1,14 +1,3 @@
--- MyLENS LMS Phase 0 seed data
--- Prerequisites:
---   1. Run supabase/migrations/001_phase0_foundation.sql first
---   2. Create auth users in Supabase Dashboard → Authentication → Users
---
--- Suggested test users (set User Metadata when creating):
---   admin@mylens2026.my   → { "full_name": "National Admin", "role": "admin" }
---   judge@mylens2026.my   → { "full_name": "Panel Judge", "role": "judge" }
---   creator1@mylens2026.my → { "full_name": "Aisha Mya", "role": "creator" }
---   creator2@mylens2026.my → { "full_name": "Irfan Izuddin", "role": "creator" }
-
 -- Sample schools with event access tokens
 insert into public.schools (slug, name, state_id, status, points, rank, access_token)
 values
@@ -26,16 +15,7 @@ set
   status = 'active',
   full_name = 'National Admin',
   school_id = null
-where email = 'admin@mylens2026.my';
-
--- Activate judge
-update public.profiles
-set
-  role = 'judge',
-  status = 'active',
-  full_name = 'Panel Judge',
-  school_id = null
-wher e email = 'judge@mylens2026.my';
+where email = 'myceoedu@gmail.com';
 
 -- Activate creators and link to school
 update public.profiles
