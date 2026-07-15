@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Cormorant_Garamond } from "next/font/google";
 import { ThemeProvider } from "next-themes";
-import { MYLENS_LOGO_SRC } from "@/lib/data/campaign-images";
 import { getSiteDescription, getSiteKeywords } from "@/lib/config/partners";
 import "./globals.css";
 
@@ -21,10 +20,6 @@ const cormorant = Cormorant_Garamond({
 
 export const metadata: Metadata = {
   title: "MyLENS: MALAYSIA UNSEEN 2026 | Malaysia Through Young Visionaries",
-  icons: {
-    icon: MYLENS_LOGO_SRC,
-    apple: MYLENS_LOGO_SRC,
-  },
   description: getSiteDescription(),
   keywords: getSiteKeywords(),
   openGraph: {
