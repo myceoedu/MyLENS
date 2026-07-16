@@ -19,15 +19,23 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "MyLENS: MALAYSIA UNSEEN 2026 | Malaysia Through Young Visionaries",
+  metadataBase: new URL("https://www.mylensmalaysia.com"),
+  title: {
+    default: "MyLENS: Malaysia Unseen 2026 | Malaysia Through Young Visionaries",
+    template: "%s | MyLENS Malaysia Unseen 2026",
+  },
   description: getSiteDescription(),
   keywords: getSiteKeywords(),
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "MyLENS: MALAYSIA UNSEEN 2026",
     description: "Malaysia Through Young Visionaries — A nationwide youth tourism content creation competition.",
     type: "website",
     locale: "en_MY",
     siteName: "MyLENS: MALAYSIA UNSEEN 2026",
+    url: "/",
   },
   twitter: {
     card: "summary_large_image",
@@ -37,6 +45,13 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 };
 
