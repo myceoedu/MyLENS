@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   CAMPAIGN_TEASER_POSTER_SRC,
@@ -79,11 +80,13 @@ export default function CinematicTeaserSection() {
             <div className="group relative aspect-video overflow-hidden rounded-none border border-black/[0.06] bg-[#FAF9F5]">
               {showCoverStill && (
                 <div className="absolute inset-0 z-[2]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <Image
                     src={CAMPAIGN_TEASER_POSTER_SRC}
                     alt={TEASER_POSTER_ALT}
-                    className="absolute inset-0 h-full w-full object-cover object-center brightness-[1.05] contrast-[1.08] saturate-[1.04]"
+                    fill
+                    priority
+                    sizes="(max-width: 1024px) 100vw, 66vw"
+                    className="object-cover object-center brightness-[1.05] contrast-[1.08] saturate-[1.04]"
                   />
                   <div
                     className="pointer-events-none absolute inset-0 bg-black/20"

@@ -1,10 +1,16 @@
+import { cache } from "react";
 import { redirect } from "next/navigation";
 import { createClient, isStaleRefreshTokenError } from "@/lib/supabase/server";
 import type { UserRole } from "@/types/auth";
 import type { Profile } from "@/types/profile";
 import { isUserRole } from "@/types/auth";
 
-async function resolveUser() {
+/**
+ * Memoized per-request — the dashboard layout, role layouts (admin/creator),
+ * and the page itself each call this; without caching that's a repeated
+ * auth.getUser() network round-trip for every level of nesting.
+ */
+const resolveUser = cache(async function resolveUser() {
   const supabase = await createClient();
   const {
     data: { user },
@@ -18,14 +24,15 @@ async function resolveUser() {
 
   if (error || !user) return { supabase, user: null };
   return { supabase, user };
-}
+});
 
 export async function getSession() {
   const { user } = await resolveUser();
   return user;
 }
 
-export async function getCurrentProfile(): Promise<Profile | null> {
+/** Memoized per-request alongside `resolveUser` — see note above. */
+export const getCurrentProfile = cache(async function getCurrentProfile(): Promise<Profile | null> {
   const { supabase, user } = await resolveUser();
   if (!user) return null;
 
@@ -38,7 +45,7 @@ export async function getCurrentProfile(): Promise<Profile | null> {
   if (profileError || !profile) return null;
 
   return profile as Profile;
-}
+});
 
 export async function requireAuth(): Promise<Profile> {
   const profile = await getCurrentProfile();

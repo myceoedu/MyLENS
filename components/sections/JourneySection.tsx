@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { fadeInLeft, fadeInRight, fadeInUp } from "@/lib/animations";
 
@@ -102,11 +103,12 @@ export default function JourneySection() {
                   transition={{ duration: 0.4, ease: "easeOut" }}
                   className="relative w-full max-w-2xl aspect-[16/10] overflow-hidden rounded-none shadow-sm hover:shadow-md transition-shadow duration-500 bg-[#000000]/5 border border-[#000000]/5"
                 >
-                  <img
+                  <Image
                     src={step.img}
                     alt={step.imgAlt}
-                    className="w-full h-full object-cover object-center transition-transform duration-700 ease-out grayscale-[10%] group-hover:scale-105"
-                    loading="lazy"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover object-center transition-transform duration-700 ease-out grayscale-[10%] group-hover:scale-105"
                   />
                   
                   {/* Subtle Dark Vignette Overlay */}

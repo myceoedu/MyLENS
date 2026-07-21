@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createServerClient } from "@supabase/ssr";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
@@ -5,7 +6,11 @@ import type { Database } from "@/lib/db/types";
 
 export { isStaleRefreshTokenError } from "@/lib/supabase/auth-errors";
 
-export async function createClient() {
+/**
+ * Memoized per-request — layouts, pages, and nested components all resolve
+ * to the same client instance instead of re-reading cookies repeatedly.
+ */
+export const createClient = cache(async function createClient() {
   const cookieStore = await cookies();
 
   return createServerClient<Database>(
@@ -28,7 +33,7 @@ export async function createClient() {
       },
     }
   );
-}
+});
 
 /** Cookie-free client for public reads — avoids stale auth cookie refresh noise. */
 export function createAnonymousClient() {

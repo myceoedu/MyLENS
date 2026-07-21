@@ -144,12 +144,15 @@ function TeaserCard({
     >
       {feature.headerType === "native-image" && feature.image && (
         <div className="px-4 pt-4 sm:px-5 sm:pt-5">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={feature.image}
-            alt={feature.imageAlt ?? ""}
-            className="w-full h-48 object-cover rounded-2xl mb-4 campaign-photo-grade"
-          />
+          <div className="relative h-48 w-full overflow-hidden rounded-2xl mb-4">
+            <Image
+              src={feature.image}
+              alt={feature.imageAlt ?? ""}
+              fill
+              sizes="(max-width: 768px) 100vw, 700px"
+              className="object-cover campaign-photo-grade"
+            />
+          </div>
         </div>
       )}
 

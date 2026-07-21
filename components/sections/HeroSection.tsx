@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { heroTextVariant, fadeInUp } from "@/lib/animations";
@@ -30,12 +31,13 @@ export default function HeroSection() {
         style={{ y }}
         aria-hidden
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={campaignImages.heroBackground}
           alt={campaignImages.heroBackgroundAlt}
-          className="absolute inset-0 w-full h-full object-cover object-center"
-          fetchPriority="high"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
         />
       </motion.div>
 
