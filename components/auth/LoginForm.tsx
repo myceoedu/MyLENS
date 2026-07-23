@@ -3,11 +3,15 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2, LogIn } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { getDashboardPath } from "@/lib/auth/roles";
 import { isUserRole } from "@/types/auth";
-import { AUTH_INPUT_CLASS, AUTH_LABEL_CLASS } from "@/lib/auth/errors";
+import {
+  WORKSPACE_INPUT_CLASS,
+  WORKSPACE_LABEL_CLASS,
+  WORKSPACE_LINK_CLASS,
+} from "@/lib/auth/workspace-form-styles";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 
 interface LoginFormProps {
@@ -34,7 +38,7 @@ export default function LoginForm({ redirectTo, initialError }: LoginFormProps) 
     setLoading(true);
     const supabase = createClient();
 
-    const { error: signInError } = await supabase.auth.signInWithPassword({
+    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
       email: email.trim(),
       password,
     });
@@ -45,9 +49,8 @@ export default function LoginForm({ redirectTo, initialError }: LoginFormProps) 
       return;
     }
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    // signInWithPassword already returns the authenticated user — avoids a redundant round-trip.
+    const user = signInData.user;
 
     if (!user) {
       setLoading(false);
@@ -93,13 +96,13 @@ export default function LoginForm({ redirectTo, initialError }: LoginFormProps) 
 
   if (!isSupabaseConfigured()) {
     return (
-      <div className="rounded-2xl border border-amber-200/80 bg-amber-50/80 p-4 space-y-2">
-        <p className="text-sm font-semibold text-amber-900" style={{ fontFamily: "var(--font-poppins)" }}>
+      <div className="space-y-2 rounded-sm border border-[#B68A35]/40 bg-[#FAF9F5] p-4">
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#B68A35]">
           Supabase not connected
         </p>
-        <p className="text-sm text-amber-800/90" style={{ fontFamily: "var(--font-inter)" }}>
-          Add your URL and anon key to <code className="font-mono">.env.local</code>, then restart{" "}
-          <code className="font-mono">npm run dev</code>.
+        <p className="text-sm text-[#5A655F]">
+          Add your URL and anon key to <code className="font-mono text-[#0B130F]/80">.env.local</code>, then
+          restart <code className="font-mono text-[#0B130F]/80">npm run dev</code>.
         </p>
       </div>
     );
@@ -109,8 +112,7 @@ export default function LoginForm({ redirectTo, initialError }: LoginFormProps) 
     <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
         <div
-          className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
-          style={{ fontFamily: "var(--font-inter)" }}
+          className="rounded-sm border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900"
           role="alert"
         >
           {error}
@@ -118,7 +120,7 @@ export default function LoginForm({ redirectTo, initialError }: LoginFormProps) 
       )}
 
       <div>
-        <label htmlFor="email" className={AUTH_LABEL_CLASS}>
+        <label htmlFor="email" className={WORKSPACE_LABEL_CLASS}>
           Email
         </label>
         <input
@@ -129,21 +131,16 @@ export default function LoginForm({ redirectTo, initialError }: LoginFormProps) 
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@school.edu.my"
-          className={AUTH_INPUT_CLASS}
-          style={{ fontFamily: "var(--font-inter)" }}
+          className={WORKSPACE_INPUT_CLASS}
         />
       </div>
 
       <div>
-        <div className="flex items-center justify-between mb-2">
-          <label htmlFor="password" className={AUTH_LABEL_CLASS + " mb-0"}>
+        <div className="mb-2 flex items-center justify-between gap-3">
+          <label htmlFor="password" className={WORKSPACE_LABEL_CLASS + " mb-0"}>
             Password
           </label>
-          <Link
-            href="/forgot-password"
-            className="text-xs text-emerald-700 hover:text-emerald-900 transition-colors"
-            style={{ fontFamily: "var(--font-inter)" }}
-          >
+          <Link href="/forgot-password" className={WORKSPACE_LINK_CLASS}>
             Forgot password?
           </Link>
         </div>
@@ -155,34 +152,29 @@ export default function LoginForm({ redirectTo, initialError }: LoginFormProps) 
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="••••••••"
-          className={AUTH_INPUT_CLASS}
-          style={{ fontFamily: "var(--font-inter)" }}
+          className={WORKSPACE_INPUT_CLASS}
         />
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full flex items-center justify-center gap-2 bg-emerald-900 hover:bg-emerald-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium rounded-xl py-3.5 transition-all shadow-sm"
-        style={{ fontFamily: "var(--font-poppins)" }}
+        className="flex w-full items-center justify-center gap-2 rounded-none bg-[#051B10] py-3.5 text-xs font-bold uppercase tracking-[0.25em] text-[#FAF9F5] transition-colors duration-300 hover:bg-[#B68A35] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {loading ? (
           <>
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <Loader2 className="h-4 w-4 animate-spin" />
             Signing in…
           </>
         ) : (
-          <>
-            <LogIn className="w-4 h-4" />
-            Sign In
-          </>
+          "Sign In"
         )}
       </button>
 
-      <p className="text-zinc-500 text-sm mt-6 text-center" style={{ fontFamily: "var(--font-inter)" }}>
+      <p className="mt-6 text-center text-sm text-[#5A655F]">
         New team?{" "}
-        <Link href="/register" className="text-emerald-700 hover:underline font-medium">
-          Register with your event token
+        <Link href="/register" className={WORKSPACE_LINK_CLASS}>
+          Register with event token
         </Link>
       </p>
     </form>

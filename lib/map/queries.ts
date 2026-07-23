@@ -1,8 +1,9 @@
+import { unstable_cache } from "next/cache";
 import { states } from "@/lib/data/states";
 import { createAnonymousClient } from "@/lib/supabase/server";
 import type { ParticipatingSchool, PublicMapData } from "@/lib/map/types";
 
-export async function fetchPublicMapData(): Promise<PublicMapData> {
+async function loadPublicMapData(): Promise<PublicMapData> {
   const supabase = createAnonymousClient();
 
   const { data: schoolRows, error: schoolsError } = await supabase.rpc(
@@ -37,5 +38,13 @@ export async function fetchPublicMapData(): Promise<PublicMapData> {
 
   return { schoolsByState };
 }
+
+/**
+ * Public, non-personalized stats — cached for 60s so the homepage map
+ * doesn't hit Supabase on every single request. Same data, same shape.
+ */
+export const fetchPublicMapData = unstable_cache(loadPublicMapData, ["public-map-data"], {
+  revalidate: 60,
+});
 
 export { states };

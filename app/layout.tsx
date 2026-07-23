@@ -64,6 +64,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
+      data-scroll-behavior="smooth"
       className={`${inter.variable} ${cormorant.variable} scroll-smooth`}
     >
       <body className="min-h-full flex flex-col antialiased font-sans text-zinc-600">

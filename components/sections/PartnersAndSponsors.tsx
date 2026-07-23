@@ -79,7 +79,8 @@ function PartnerLogoCard({
           alt={partner.logo.alt}
           width={partner.logo.width}
           height={partner.logo.height}
-          className="h-auto max-h-[4rem] w-auto max-w-full object-contain"
+          className="max-h-[4rem] max-w-full object-contain"
+          style={{ width: "auto", height: "auto" }}
           sizes="(max-width: 768px) 70vw, 220px"
         />
       </div>

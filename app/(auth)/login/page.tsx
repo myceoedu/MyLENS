@@ -29,8 +29,10 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <AuthShell
-      title="Sign In"
-      subtitle="Access your MyLENS student workspace or admin command dashboard."
+      variant="workspace"
+      title="Access"
+      headlineAccent="Workspace"
+      subtitle="National student workspace and admin command — secure sign-in required."
     >
       <LoginForm redirectTo={params.redirectTo} initialError={initialError} />
     </AuthShell>

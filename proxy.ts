@@ -3,7 +3,7 @@ import { updateSession } from "@/lib/supabase/middleware";
 import { canAccessRoute, getDashboardPath } from "@/lib/auth/roles";
 import { isUserRole } from "@/types/auth";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { supabase, supabaseResponse, user } = await updateSession(request);
   const { pathname } = request.nextUrl;
 

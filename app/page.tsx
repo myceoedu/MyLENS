@@ -2,7 +2,6 @@ import dynamic from "next/dynamic";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HeroSection from "@/components/sections/HeroSection";
-import MalaysiaMapSection from "@/components/sections/MalaysiaMapSection";
 
 /**
  * Below-the-fold sections are code-split into separate chunks (still
@@ -14,6 +13,7 @@ const WhyMyLENSSection = dynamic(() => import("@/components/sections/WhyMyLENSSe
 const StudentGainsSection = dynamic(() => import("@/components/sections/StudentGainsSection"));
 const JourneySection = dynamic(() => import("@/components/sections/JourneySection"));
 const YouthCreatorAwardsSection = dynamic(() => import("@/components/sections/YouthCreatorAwardsSection"));
+const MalaysiaMapSection = dynamic(() => import("@/components/sections/MalaysiaMapSection"));
 const VideoShowcaseSection = dynamic(() => import("@/components/sections/VideoShowcaseSection"));
 const WhySchoolsJoinSection = dynamic(() => import("@/components/sections/WhySchoolsJoinSection"));
 const PartnersAndSponsorsSections = dynamic(() => import("@/components/sections/PartnersAndSponsors"));
