@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Film, Plus } from "lucide-react";
 import { requireRole } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { getCreatorContext, isBeforeSubmissionWindow, formatCampaignDate } from "@/lib/creator/queries";
 import { CreatorShell } from "@/components/creator/CreatorShell";
 import SubmissionCard from "@/components/creator/SubmissionCard";
+import { DashboardEmptyState, DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
 import type { Submission } from "@/types/submission";
 
 export default async function SubmissionsListPage() {
@@ -14,7 +15,9 @@ export default async function SubmissionsListPage() {
 
   const { data: submissions } = await supabase
     .from("submissions")
-    .select("*")
+    .select(
+      "id, user_id, school_id, title, description, category, location, state_id, video_url, status, admin_notes, created_at, updated_at"
+    )
     .eq("user_id", profile.id)
     .order("updated_at", { ascending: false });
 
@@ -33,50 +36,33 @@ export default async function SubmissionsListPage() {
   return (
     <div className="space-y-6">
       <CreatorShell>
-        <div className="p-8 md:p-10 space-y-8">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <p
-                className="text-[0.65rem] uppercase tracking-[0.3em] text-emerald-700 font-semibold mb-2"
-                style={{ fontFamily: "var(--font-poppins)" }}
-              >
-                My Submissions
-              </p>
-              <h1
-                className="text-2xl font-bold text-emerald-950"
-                style={{ fontFamily: "var(--font-poppins)" }}
-              >
-                Tourism Story Submissions
-              </h1>
-              {(opensLabel || closesLabel) && (
-                <p className="text-sm text-zinc-500 mt-1.5" style={{ fontFamily: "var(--font-inter)" }}>
-                  {opensLabel && <>Window opens {opensLabel}</>}
-                  {opensLabel && closesLabel && " · "}
-                  {closesLabel && <>closes {closesLabel}</>}
-                </p>
-              )}
-            </div>
-
-            {!windowClosed && !beforeWindow && (
-              <Link
-                href="/dashboard/creator/submissions/new"
-                className="inline-flex items-center gap-2 bg-emerald-900 hover:bg-emerald-800 text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-all shadow-sm shrink-0"
-                style={{ fontFamily: "var(--font-inter)" }}
-              >
-                <Plus className="w-4 h-4" strokeWidth={2.5} />
-                New Submission
-              </Link>
-            )}
-          </div>
+        <div className="space-y-8 p-6 sm:p-8 md:p-10">
+          <DashboardPageHeader
+            eyebrow="Creator submissions"
+            title="Official story entries"
+            description={
+              opensLabel || closesLabel
+                ? `${opensLabel ? `Opens ${opensLabel}` : ""}${opensLabel && closesLabel ? " · " : ""}${closesLabel ? `Closes ${closesLabel}` : ""}`
+                : "Prepare, refine, and submit your Malaysian tourism stories for the MyLENS selection process."
+            }
+            action={
+              !windowClosed && !beforeWindow ? (
+                <Link
+                  href="/dashboard/creator/submissions/new"
+                  className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#10271c] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#1b3d2b]"
+                  style={{ fontFamily: "var(--font-inter)" }}
+                >
+                  <Plus className="h-4 w-4" strokeWidth={2.5} />
+                  New submission
+                </Link>
+              ) : undefined
+            }
+          />
 
           {beforeWindow && (
             <div className="rounded-2xl border border-amber-200/80 bg-amber-50/80 px-5 py-4 text-sm text-amber-800">
-              <span className="font-semibold">Submissions open on {opensLabel}.</span>{" "}
-              Use this time to scout your location, plan your story, and review the{" "}
-              <Link href="/dashboard/creator/resources" className="underline">
-                filming guidelines
-              </Link>
-              .
+              <span className="font-semibold">Entry submissions open on {opensLabel}.</span>{" "}
+              Use this production window to scout your location and shape your story.
             </div>
           )}
 
@@ -88,29 +74,26 @@ export default async function SubmissionsListPage() {
           )}
 
           {list.length === 0 ? (
-            <div className="text-center py-12 space-y-3">
-              <p className="text-3xl">🎬</p>
-              <p
-                className="text-lg font-semibold text-emerald-950"
-                style={{ fontFamily: "var(--font-poppins)" }}
-              >
-                No submissions yet
-              </p>
-              <p className="text-sm text-zinc-500" style={{ fontFamily: "var(--font-inter)" }}>
-                {beforeWindow
-                  ? "Start building your draft now — submissions open soon."
-                  : "Create your first tourism story submission."}
-              </p>
-              {!windowClosed && (
+            <DashboardEmptyState
+              icon={<Film className="h-5 w-5" />}
+              title="No submissions yet"
+              description={
+                beforeWindow
+                  ? "Start developing your story now — submissions open soon."
+                  : "Create your first tourism story submission when you are ready."
+              }
+              action={
+                !windowClosed ? (
                 <Link
                   href="/dashboard/creator/submissions/new"
-                  className="inline-flex items-center gap-2 bg-emerald-900 hover:bg-emerald-800 text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-all shadow-sm mt-2"
+                  className="inline-flex items-center gap-2 rounded-xl bg-[#10271c] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#1b3d2b]"
                 >
                   <Plus className="w-4 h-4" />
-                  Start a new submission
+                  Start a submission
                 </Link>
-              )}
-            </div>
+                ) : undefined
+              }
+            />
           ) : (
             <div className="space-y-8">
               {drafts.length > 0 && (
@@ -119,7 +102,7 @@ export default async function SubmissionsListPage() {
                     className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-3"
                     style={{ fontFamily: "var(--font-poppins)" }}
                   >
-                    Drafts & revisions ({drafts.length})
+                    In development · {drafts.length}
                   </h2>
                   <div className="space-y-3">
                     {drafts.map((s) => (
@@ -135,7 +118,7 @@ export default async function SubmissionsListPage() {
                     className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-3"
                     style={{ fontFamily: "var(--font-poppins)" }}
                   >
-                    Submitted ({submitted.length})
+                    Submitted entries · {submitted.length}
                   </h2>
                   <div className="space-y-3">
                     {submitted.map((s) => (

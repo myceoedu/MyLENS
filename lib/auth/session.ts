@@ -38,7 +38,9 @@ export const getCurrentProfile = cache(async function getCurrentProfile(): Promi
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("*")
+    .select(
+      "id, email, full_name, bio, role, status, school_id, avatar_url, created_at, updated_at"
+    )
     .eq("id", user.id)
     .single();
 
@@ -50,6 +52,13 @@ export const getCurrentProfile = cache(async function getCurrentProfile(): Promi
 export async function requireAuth(): Promise<Profile> {
   const profile = await getCurrentProfile();
   if (!profile) redirect("/login");
+
+  // Previously enforced in proxy.ts on every request (extra Supabase round-trip
+  // per navigation); moved here where the profile is already fetched & cached.
+  if (profile.status !== "active") {
+    redirect("/login?error=account_inactive");
+  }
+
   return profile;
 }
 

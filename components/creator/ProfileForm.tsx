@@ -19,13 +19,20 @@ export default function ProfileForm({ profile, schoolName, stateLabel }: Profile
   const [avatarUrl, setAvatarUrl] = useState(profile.avatar_url ?? "");
   const [saved, setSaved] = useState(false);
 
+  // Derive `saved` from the action result as it changes, per React's
+  // "adjusting state during render" pattern — avoids the extra render pass
+  // (and lint warning) that comes from calling setState inside an effect.
+  const [prevState, setPrevState] = useState(state);
+  if (state !== prevState) {
+    setPrevState(state);
+    setSaved(state?.ok ?? false);
+  }
+
   useEffect(() => {
-    if (state?.ok) {
-      setSaved(true);
-      const timer = setTimeout(() => setSaved(false), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [state]);
+    if (!saved) return;
+    const timer = setTimeout(() => setSaved(false), 3000);
+    return () => clearTimeout(timer);
+  }, [saved]);
 
   return (
     <form action={action} className="space-y-6 max-w-xl">

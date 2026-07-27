@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { MAX_CREATORS_PER_SCHOOL } from "@/lib/config/campaign";
 import { getStateLabel } from "@/lib/admin/schools";
@@ -14,43 +15,98 @@ export interface CreatorContext {
   settings: CampaignSettings | null;
 }
 
-export async function getCreatorContext(profile: Profile): Promise<CreatorContext> {
+const SETTINGS_TTL_MS = 60_000;
+let cachedSettings: CampaignSettings | null | undefined;
+let cachedSettingsAt = 0;
+let inflightSettings: Promise<CampaignSettings | null> | null = null;
+
+async function fetchCampaignSettings(): Promise<CampaignSettings | null> {
+  const now = Date.now();
+  if (cachedSettings !== undefined && now - cachedSettingsAt < SETTINGS_TTL_MS) {
+    return cachedSettings;
+  }
+
+  if (inflightSettings) return inflightSettings;
+
+  inflightSettings = (async () => {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("campaign_settings")
+      .select("id, submission_opens_at, submission_closes_at, updated_at")
+      .limit(1)
+      .maybeSingle();
+
+    cachedSettings = (data as CampaignSettings | null) ?? null;
+    cachedSettingsAt = Date.now();
+    inflightSettings = null;
+    return cachedSettings;
+  })();
+
+  return inflightSettings;
+}
+
+export const getCreatorContext = cache(async function getCreatorContext(
+  profile: Profile,
+  { includeTeammates = false }: { includeTeammates?: boolean } = {}
+): Promise<CreatorContext> {
   const supabase = await createClient();
 
   let school: School | null = null;
   let teammates: CreatorContext["teammates"] = [];
+  let teamCount = 0;
+  const settingsPromise = fetchCampaignSettings();
 
   if (profile.school_id) {
-    const [{ data: schoolData }, { data: teammateData }] = await Promise.all([
-      supabase.from("schools").select("*").eq("id", profile.school_id).single(),
-      supabase
-        .from("profiles")
-        .select("id, full_name, email, avatar_url, bio")
-        .eq("school_id", profile.school_id)
-        .eq("role", "creator")
-        .eq("status", "active")
-        .order("full_name"),
-    ]);
+    if (includeTeammates) {
+      const [{ data: schoolData }, { data: teammateData }] = await Promise.all([
+        supabase
+          .from("schools")
+          .select("id, slug, name, state_id, status, access_token, points, rank, created_at, updated_at")
+          .eq("id", profile.school_id)
+          .single(),
+        supabase
+          .from("profiles")
+          .select("id, full_name, email, avatar_url, bio")
+          .eq("school_id", profile.school_id)
+          .eq("role", "creator")
+          .eq("status", "active")
+          .order("full_name"),
+      ]);
 
-    school = (schoolData as School | null) ?? null;
-    teammates = teammateData ?? [];
+      school = (schoolData as School | null) ?? null;
+      teammates = teammateData ?? [];
+      teamCount = teammates.length;
+    } else {
+      const [{ data: schoolData }, { count }] = await Promise.all([
+        supabase
+          .from("schools")
+          .select("id, slug, name, state_id, status, access_token, points, rank, created_at, updated_at")
+          .eq("id", profile.school_id)
+          .single(),
+        supabase
+          .from("profiles")
+          .select("id", { count: "exact", head: true })
+          .eq("school_id", profile.school_id)
+          .eq("role", "creator")
+          .eq("status", "active"),
+      ]);
+
+      school = (schoolData as School | null) ?? null;
+      teamCount = count ?? 0;
+    }
   }
 
-  const { data: settings } = await supabase
-    .from("campaign_settings")
-    .select("*")
-    .limit(1)
-    .maybeSingle();
+  const settings = await settingsPromise;
 
   return {
     profile,
     school,
     stateLabel: school ? getStateLabel(school.state_id) : null,
     teammates,
-    teamCount: teammates.length,
-    settings: (settings as CampaignSettings | null) ?? null,
+    teamCount,
+    settings,
   };
-}
+});
 
 export function buildCampaignSteps(
   profile: Profile,
@@ -62,6 +118,7 @@ export function buildCampaignSteps(
   const now = new Date();
   const opensAt = settings?.submission_opens_at ? new Date(settings.submission_opens_at) : null;
   const submissionsOpen = opensAt ? now >= opensAt : false;
+  const readyForClass = registered && hasTeam;
 
   const registerStatus: CampaignStep["status"] = registered ? "complete" : "current";
   const teamStatus: CampaignStep["status"] = !registered
@@ -69,11 +126,19 @@ export function buildCampaignSteps(
     : hasTeam
       ? "complete"
       : "current";
-  const captureStatus: CampaignStep["status"] =
-    !registered || !hasTeam ? "upcoming" : submissionsOpen ? "complete" : "current";
+  const classStatus: CampaignStep["status"] = !readyForClass
+    ? "upcoming"
+    : submissionsOpen
+      ? "complete"
+      : "current";
+  const captureStatus: CampaignStep["status"] = !readyForClass
+    ? "upcoming"
+    : submissionsOpen
+      ? "complete"
+      : "upcoming";
   const submitStatus: CampaignStep["status"] = submissionsOpen
     ? "current"
-    : registered && hasTeam
+    : readyForClass
       ? "upcoming"
       : "locked";
 
@@ -89,6 +154,12 @@ export function buildCampaignSteps(
       label: "Team",
       description: `Join your school team — up to ${MAX_CREATORS_PER_SCHOOL} creators per school.`,
       status: teamStatus,
+    },
+    {
+      id: "class",
+      label: "Class",
+      description: "Complete Creator Academy lessons and prepare your filmmaking craft.",
+      status: classStatus,
     },
     {
       id: "capture",

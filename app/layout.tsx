@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter, Cormorant_Garamond } from "next/font/google";
-import { ThemeProvider } from "next-themes";
 import { getSiteDescription, getSiteKeywords } from "@/lib/config/partners";
 import "./globals.css";
 
@@ -63,19 +62,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      suppressHydrationWarning
       data-scroll-behavior="smooth"
       className={`${inter.variable} ${cormorant.variable} scroll-smooth`}
     >
       <body className="min-h-full flex flex-col antialiased font-sans text-zinc-600">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem={false}
-          disableTransitionOnChange={false}
-        >
-          {children}
-        </ThemeProvider>
+        {children}
       </body>
     </html>
   );

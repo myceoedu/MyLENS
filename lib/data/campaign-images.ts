@@ -13,24 +13,29 @@ export const campaignPhotoGradeStyle = {
 /** Site logo & favicon — /public/images/icon.png */
 export const MYLENS_LOGO_SRC = "/images/icon.png";
 
+/**
+ * width/height must match each source file's real aspect ratio (verified via
+ * sharp metadata) — Next/Image uses these to reserve layout space, and a
+ * mismatched ratio causes distorted intrinsic-size warnings in dev.
+ */
 export const partnerLogos = {
   tourismMalaysia: {
     src: "/images/Logo-tourism.webp",
     alt: "Tourism Malaysia",
     width: 220,
-    height: 72,
+    height: 110,
   },
   mdec: {
     src: "/images/Logo-MDEC.png",
     alt: "MDEC",
-    width: 160,
-    height: 64,
+    width: 180,
+    height: 100,
   },
   myceo: {
     src: "/images/Logo-MyCeo.png",
     alt: "MyCEO Education",
     width: 180,
-    height: 64,
+    height: 120,
   },
 } as const;
 

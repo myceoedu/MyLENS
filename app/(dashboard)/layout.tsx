@@ -16,22 +16,38 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
+  if (profile.status !== "active") {
+    redirect("/login?error=account_inactive");
+  }
+
   return (
-    <div className="min-h-screen bg-[#fafaf7] text-emerald-950">
-      <header className="border-b border-zinc-200/80 bg-white/90 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between gap-4">
+    <div className="min-h-screen bg-[#f7f7f3] text-emerald-950">
+      <header className="sticky top-0 z-40 border-b border-[#dedbd2] bg-[#fbfbf8]/95 backdrop-blur-md">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
           <div className="flex items-center min-w-0">
-            <p
-              className="text-[0.65rem] uppercase tracking-[0.3em] text-emerald-700 font-semibold mr-5 shrink-0 hidden sm:block"
-              style={{ fontFamily: "var(--font-poppins)" }}
+            <Link
+              href="/dashboard"
+              className="mr-5 hidden shrink-0 border-r border-[#dedbd2] pr-5 sm:block"
+              aria-label="MyLENS dashboard home"
             >
-              MyLENS LMS
-            </p>
+              <p
+                className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#9a722a]"
+                style={{ fontFamily: "var(--font-poppins)" }}
+              >
+                MyLENS
+              </p>
+              <p
+                className="mt-0.5 text-[9px] uppercase tracking-[0.18em] text-zinc-400"
+                style={{ fontFamily: "var(--font-inter)" }}
+              >
+                Workspace
+              </p>
+            </Link>
             <p className="min-w-0 truncate" style={{ fontFamily: "var(--font-inter)" }}>
-              <span className="text-zinc-800 font-semibold text-sm">
+              <span className="text-sm font-semibold text-[#10271c]">
                 {profile.full_name ?? profile.email}
               </span>
-              <span className="bg-zinc-100 text-zinc-600 border border-zinc-200 text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-md ml-2 inline-block align-middle">
+              <span className="ml-2 inline-block rounded-full border border-[#dcd6c8] bg-[#f5f1e9] px-2 py-0.5 align-middle text-[9px] uppercase tracking-[0.13em] text-[#706452]">
                 {profile.role}
               </span>
             </p>
@@ -39,7 +55,7 @@ export default async function DashboardLayout({
           <div className="flex items-center gap-3">
             <Link
               href="/"
-              className="text-sm text-emerald-800 hover:text-emerald-950 transition-colors hidden sm:inline"
+              className="hidden text-xs font-medium text-zinc-500 transition-colors hover:text-[#10271c] sm:inline"
               style={{ fontFamily: "var(--font-inter)" }}
             >
               Public site
@@ -48,7 +64,7 @@ export default async function DashboardLayout({
           </div>
         </div>
       </header>
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">{children}</main>
+      <main className="mx-auto max-w-7xl px-4 py-7 sm:px-6 sm:py-8 lg:px-8 lg:py-10">{children}</main>
     </div>
   );
 }

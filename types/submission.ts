@@ -40,11 +40,11 @@ export const STATUS_CONFIG: Record<
   rejected:  { label: "Rejected",    color: "text-red-700",    bg: "bg-red-50",        border: "border-red-200"    },
 };
 
-export const CATEGORY_CONFIG: Record<VideoCategory, { emoji: string; color: string; bg: string }> = {
-  "Nature":      { emoji: "🌿", color: "text-emerald-800", bg: "bg-emerald-50 border-emerald-200"  },
-  "Food":        { emoji: "🍜", color: "text-amber-800",   bg: "bg-amber-50 border-amber-200"      },
-  "Culture":     { emoji: "🎭", color: "text-indigo-800",  bg: "bg-indigo-50 border-indigo-200"    },
-  "Heritage":    { emoji: "🏛️", color: "text-stone-800",   bg: "bg-stone-50 border-stone-200"      },
-  "Adventure":   { emoji: "🧗", color: "text-teal-800",    bg: "bg-teal-50 border-teal-200"        },
-  "Hidden Gems": { emoji: "💎", color: "text-violet-800",  bg: "bg-violet-50 border-violet-200"    },
+export const CATEGORY_CONFIG: Record<VideoCategory, { code: string; color: string; bg: string }> = {
+  "Nature":      { code: "NAT", color: "text-emerald-800", bg: "bg-emerald-50 border-emerald-200"  },
+  "Food":        { code: "FOD", color: "text-amber-800",   bg: "bg-amber-50 border-amber-200"      },
+  "Culture":     { code: "CUL", color: "text-indigo-800",  bg: "bg-indigo-50 border-indigo-200"    },
+  "Heritage":    { code: "HER", color: "text-stone-800",   bg: "bg-stone-50 border-stone-200"      },
+  "Adventure":   { code: "ADV", color: "text-teal-800",    bg: "bg-teal-50 border-teal-200"        },
+  "Hidden Gems": { code: "GEM", color: "text-violet-800",  bg: "bg-violet-50 border-violet-200"    },
 };

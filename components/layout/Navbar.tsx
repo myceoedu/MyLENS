@@ -5,12 +5,9 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { MYLENS_LOGO_SRC } from "@/lib/data/campaign-images";
 import { cn } from "@/lib/utils";
 import { navigateTo } from "@/lib/navigation";
 import { standardEase } from "@/lib/animations";
-
-const NAV_LOGO_WHITE = "/images/mylens-logo-white.svg";
 
 const navLinks = [
   { label: "About MyLENS",        href: "#why-mylens" },
@@ -44,10 +41,6 @@ function NavbarWordmark({ solidNav }: { solidNav: boolean }) {
       >
         MALAYSIA UNSEEN 2026
       </p>
-
-      {/* Image paths preserved — emblem hidden (typographic wordmark only) */}
-      <img src={MYLENS_LOGO_SRC} alt="" className="hidden" aria-hidden="true" />
-      <img src={NAV_LOGO_WHITE} alt="" className="hidden" aria-hidden="true" />
     </div>
   );
 }

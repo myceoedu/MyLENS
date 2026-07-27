@@ -1,5 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import UserStatusActions from "@/components/admin/UserStatusActions";
+import { DashboardEmptyState, DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
+import { UserCheck } from "lucide-react";
 
 export default async function AdminPendingUsersPage() {
   const supabase = await createClient();
@@ -21,24 +23,20 @@ export default async function AdminPendingUsersPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1
-          className="text-2xl font-bold text-emerald-950"
-          style={{ fontFamily: "var(--font-poppins)" }}
-        >
-          Pending Approvals
-        </h1>
-        <p className="text-zinc-600 text-sm" style={{ fontFamily: "var(--font-inter)" }}>
-          Review and activate creator accounts after they register with a valid school token.
-        </p>
-      </div>
+    <div className="space-y-7">
+      <DashboardPageHeader
+        eyebrow="Account operations"
+        title="Pending approvals"
+        description="Review creator registrations and activate verified accounts associated with a participating school."
+      />
 
-      <div className="bg-white border border-zinc-200/80 rounded-3xl shadow-sm overflow-hidden">
+      <div className="overflow-hidden rounded-[1.5rem] border border-[#e2ded5] bg-white shadow-[0_16px_34px_-28px_rgba(16,39,28,0.4)]">
         {(pending ?? []).length === 0 ? (
-          <p className="px-8 py-12 text-center text-zinc-500 text-sm">
-            No pending accounts — all caught up.
-          </p>
+          <DashboardEmptyState
+            icon={<UserCheck className="h-5 w-5" />}
+            title="All approvals are up to date"
+            description="New creator registrations with valid school tokens will appear here."
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm" style={{ fontFamily: "var(--font-inter)" }}>

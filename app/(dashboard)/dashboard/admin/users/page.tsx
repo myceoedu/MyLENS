@@ -1,15 +1,45 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { getStateLabel } from "@/lib/admin/schools";
 import UserStatusActions from "@/components/admin/UserStatusActions";
+import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
+import DashboardPagination from "@/components/dashboard/DashboardPagination";
+import type { UserRole, UserStatus } from "@/types/auth";
 
-export default async function AdminUsersPage() {
+const PAGE_SIZE = 25;
+
+export default async function AdminUsersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; q?: string; role?: string; status?: string }>;
+}) {
   const supabase = await createClient();
+  const { page, q: rawQuery, role: rawRole, status: rawStatus } = await searchParams;
+  const currentPage = Math.max(1, Number.parseInt(page ?? "1", 10) || 1);
+  const rangeStart = (currentPage - 1) * PAGE_SIZE;
+  const query = rawQuery?.trim().slice(0, 80) ?? "";
+  const searchTerm = query.replaceAll(/[,%()]/g, "");
+  const role = ["creator", "admin", "judge"].includes(rawRole ?? "")
+    ? (rawRole as UserRole)
+    : undefined;
+  const status = ["pending", "active", "suspended"].includes(rawStatus ?? "")
+    ? (rawStatus as UserStatus)
+    : undefined;
 
-  const { data: users } = await supabase
+  let usersQuery = supabase
     .from("profiles")
-    .select("id, full_name, email, role, status, school_id, created_at")
+    .select("id, full_name, email, role, status, school_id, created_at", { count: "exact" })
     .order("created_at", { ascending: false });
+
+  if (searchTerm) {
+    usersQuery = usersQuery.or(`full_name.ilike.%${searchTerm}%,email.ilike.%${searchTerm}%`);
+  }
+  if (role) usersQuery = usersQuery.eq("role", role);
+  if (status) usersQuery = usersQuery.eq("status", status);
+
+  const { data: users, count: userCount } = await usersQuery.range(
+    rangeStart,
+    rangeStart + PAGE_SIZE - 1
+  );
 
   const schoolIds = [...new Set((users ?? []).map((u) => u.school_id).filter(Boolean))] as string[];
   const schoolNames: Record<string, string> = {};
@@ -22,28 +52,69 @@ export default async function AdminUsersPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1
-            className="text-2xl font-bold text-emerald-950"
-            style={{ fontFamily: "var(--font-poppins)" }}
+    <div className="space-y-7">
+      <DashboardPageHeader
+        eyebrow="Account operations"
+        title="Users and access"
+        description="Review all creator, judge, and administrator accounts across the MyLENS workspace."
+        action={
+          <Link
+            href="/dashboard/admin/users/pending"
+            className="rounded-xl border border-[#d8d2c5] bg-white px-5 py-3 text-sm font-medium text-[#10271c] transition-colors hover:border-[#bba978]"
           >
-            Users
-          </h1>
-          <p className="text-zinc-600 text-sm" style={{ fontFamily: "var(--font-inter)" }}>
-            All LMS accounts across creators, judges, and admins.
-          </p>
-        </div>
-        <Link
-          href="/dashboard/admin/users/pending"
-          className="bg-white border border-zinc-200/80 hover:border-emerald-200 text-emerald-900 text-sm font-medium rounded-xl px-5 py-3 transition-all"
-        >
-          Pending approvals →
-        </Link>
-      </div>
+            Pending approvals
+          </Link>
+        }
+      />
 
-      <div className="bg-white border border-zinc-200/80 rounded-3xl shadow-sm overflow-hidden">
+      <div className="overflow-hidden rounded-[1.5rem] border border-[#e2ded5] bg-white shadow-[0_16px_34px_-28px_rgba(16,39,28,0.4)]">
+        <form className="grid gap-3 border-b border-zinc-100 p-4 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_10rem_10rem_auto] sm:p-5">
+          <label className="sr-only" htmlFor="user-search">
+            Search users
+          </label>
+          <input
+            id="user-search"
+            name="q"
+            type="search"
+            defaultValue={query}
+            placeholder="Search name or email"
+            className="min-w-0 border border-[#ded8ca] bg-white px-3 py-2.5 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#8d6928]"
+          />
+          <label className="sr-only" htmlFor="user-role">
+            Filter by role
+          </label>
+          <select
+            id="user-role"
+            name="role"
+            defaultValue={role ?? ""}
+            className="border border-[#ded8ca] bg-white px-3 py-2.5 text-sm text-zinc-700 outline-none focus:border-[#8d6928]"
+          >
+            <option value="">All roles</option>
+            <option value="creator">Creators</option>
+            <option value="admin">Administrators</option>
+            <option value="judge">Judges</option>
+          </select>
+          <label className="sr-only" htmlFor="user-status">
+            Filter by status
+          </label>
+          <select
+            id="user-status"
+            name="status"
+            defaultValue={status ?? ""}
+            className="border border-[#ded8ca] bg-white px-3 py-2.5 text-sm text-zinc-700 outline-none focus:border-[#8d6928]"
+          >
+            <option value="">All statuses</option>
+            <option value="active">Active</option>
+            <option value="pending">Pending</option>
+            <option value="suspended">Suspended</option>
+          </select>
+          <button
+            type="submit"
+            className="bg-[#10271c] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#1b3d2b]"
+          >
+            Apply
+          </button>
+        </form>
         <div className="overflow-x-auto">
           <table className="w-full text-sm" style={{ fontFamily: "var(--font-inter)" }}>
             <thead>
@@ -101,9 +172,23 @@ export default async function AdminUsersPage() {
                   </td>
                 </tr>
               ))}
+              {(users ?? []).length === 0 && (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center text-zinc-500">
+                    No users match the current filters.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
+        <DashboardPagination
+          pathname="/dashboard/admin/users"
+          currentPage={currentPage}
+          pageSize={PAGE_SIZE}
+          totalItems={userCount ?? 0}
+          query={{ q: query, role, status }}
+        />
       </div>
     </div>
   );

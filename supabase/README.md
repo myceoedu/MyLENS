@@ -79,6 +79,15 @@ Run migration: `005_phase3_creator_portal.sql`
 If creator login fails with "Could not load your profile" after 005, also run:
 `006_fix_profiles_rls_recursion.sql`
 
+## Learning Hub
+
+- `/dashboard/admin/learning` — create modules, schedule online classes, and publish recordings or documents
+- `/dashboard/creator/learning` — creator-only learning viewer with personal completion tracking
+- Private uploads are stored in the `learning-content` Supabase Storage bucket
+- Large recordings should use an unlisted YouTube or Vimeo URL
+
+Run migrations in order: `012_learning_hub.sql`, then `013_learning_progress.sql`
+
 ## Folder map
 
 ```

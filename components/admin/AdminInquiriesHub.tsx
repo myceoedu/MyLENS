@@ -6,6 +6,7 @@ import PartnershipInquiriesPanel from "@/components/admin/PartnershipInquiriesPa
 import type { ContactInquiry } from "@/types/contact-inquiry";
 import type { PartnershipInquiry } from "@/types/partnership-inquiry";
 import { cn } from "@/lib/utils";
+import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
 
 type InquiryTab = "school" | "partnership";
 
@@ -41,21 +42,14 @@ export default function AdminInquiriesHub({
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1
-          className="text-2xl font-bold text-emerald-950"
-          style={{ fontFamily: "var(--font-poppins)" }}
-        >
-          Inquiries
-        </h1>
-        <p className="text-zinc-600 text-sm mt-1" style={{ fontFamily: "var(--font-inter)" }}>
-          Review school registration messages and corporate partnership requests — reply by email,
-          then update status here.
-        </p>
-      </div>
+    <div className="space-y-7">
+      <DashboardPageHeader
+        eyebrow="Communications"
+        title="Inquiries"
+        description="Review school registration messages and partnership requests, then record the follow-up status."
+      />
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 border-b border-[#dfd9cd] pb-3">
         {tabs.map((t) => {
           const newCount = t.id === "school" ? schoolNew : partnershipNew;
           return (
@@ -64,10 +58,10 @@ export default function AdminInquiriesHub({
               type="button"
               onClick={() => setTab(t.id)}
               className={cn(
-                "inline-flex flex-col items-start gap-0.5 rounded-2xl border px-5 py-3 text-left transition-all",
+                "inline-flex flex-col items-start gap-0.5 rounded-xl px-4 py-2.5 text-left transition-colors",
                 tab === t.id
-                  ? "border-emerald-900 bg-emerald-900 text-white shadow-sm"
-                  : "border-zinc-200 bg-white text-zinc-700 hover:border-emerald-200"
+                  ? "bg-[#10271c] text-white shadow-sm"
+                  : "bg-white text-zinc-700 ring-1 ring-[#e2ded5] hover:text-[#10271c] hover:ring-[#cfc09a]"
               )}
             >
               <span className="text-sm font-semibold">{t.label}</span>

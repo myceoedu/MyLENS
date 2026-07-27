@@ -4,37 +4,21 @@ import type { CampaignStep } from "@/types/campaign";
 
 export default function CampaignProgress({ steps }: { steps: CampaignStep[] }) {
   return (
-    <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
+    <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5 lg:gap-4">
       {steps.map((step, index) => {
-        const isCaptureActive = step.id === "capture" && step.status === "current";
-
         return (
           <li
             key={step.id}
             className={cn(
-              "group relative bg-white/85 backdrop-blur-sm border rounded-[1.25rem] p-5 lg:p-6 shadow-sm",
-              "transition-all duration-300 ease-out",
-              "hover:shadow-lg hover:shadow-[#2d4a3e]/10 hover:-translate-y-1 hover:scale-[1.02]",
-              index % 2 === 1 && "lg:mt-3",
-              step.status === "complete" && "border-emerald-700/25 bg-emerald-50/40",
-              step.status === "current" && !isCaptureActive && "border-amber-500/35 ring-1 ring-amber-400/20",
+              "group relative rounded-[1.25rem] border bg-white/85 p-5 shadow-[0_12px_28px_-24px_rgba(16,39,28,0.38)] lg:p-6",
+              step.status === "complete" && "border-emerald-700/25 bg-emerald-50/35",
+              step.status === "current" && "border-[#c8b077] ring-1 ring-[#e6dbc0]",
               step.status === "upcoming" && "border-[#e8dcc8]/80",
-              step.status === "locked" && "border-[#e8dcc8]/60 opacity-70",
-              isCaptureActive &&
-                "border-amber-500/50 ring-2 ring-amber-400/35 shadow-[0_0_28px_-6px_rgba(212,160,84,0.55)] animate-capture-glow"
+              step.status === "locked" && "border-[#e8dcc8]/60 opacity-70"
             )}
           >
-            {isCaptureActive && (
-              <span
-                className="absolute -top-2.5 left-5 px-2.5 py-0.5 rounded-full text-[9px] uppercase tracking-[0.2em] font-semibold bg-gradient-to-r from-emerald-800 to-[#8b6914] text-amber-50 shadow-sm"
-                style={{ fontFamily: "var(--font-inter)" }}
-              >
-                Active now
-              </span>
-            )}
-
             <div className="flex items-center gap-3 mb-3 mt-1">
-              <StepIcon status={step.status} index={index} isCaptureActive={isCaptureActive} />
+              <StepIcon status={step.status} index={index} />
               <div>
                 <p
                   className="text-[0.6rem] uppercase tracking-[0.28em] text-[#6b5d4f] font-semibold"
@@ -84,14 +68,12 @@ export default function CampaignProgress({ steps }: { steps: CampaignStep[] }) {
 function StepIcon({
   status,
   index,
-  isCaptureActive,
 }: {
   status: CampaignStep["status"];
   index: number;
-  isCaptureActive?: boolean;
 }) {
   const base =
-    "w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105";
+    "flex h-10 w-10 shrink-0 items-center justify-center rounded-full";
 
   if (status === "complete") {
     return (
@@ -114,9 +96,7 @@ function StepIcon({
       className={cn(
         base,
         status === "current"
-          ? isCaptureActive
-            ? "bg-gradient-to-br from-emerald-800 to-[#6b5a20] text-amber-50 border border-amber-400/40 shadow-md shadow-amber-500/25"
-            : "bg-amber-50 text-[#8b6914] border border-amber-400/40"
+          ? "border border-[#c8b077] bg-[#f5efe4] text-[#8b6914]"
           : "bg-[#faf6ee] text-[#6b5d4f] border border-[#e8dcc8]"
       )}
     >

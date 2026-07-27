@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ExternalLink, MapPin } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Clapperboard, ExternalLink, MapPin } from "lucide-react";
 import { requireRole } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { getCreatorContext } from "@/lib/creator/queries";
@@ -11,7 +11,7 @@ import CategoryPill from "@/components/creator/CategoryPill";
 import SubmissionForm from "@/components/creator/SubmissionForm";
 import SubmitReviewButton from "@/components/creator/SubmitReviewButton";
 import DeleteSubmissionButton from "@/components/creator/DeleteSubmissionButton";
-import { states } from "@/lib/data/states";
+import { STATE_OPTIONS } from "@/lib/data/state-options";
 import { getStateLabel } from "@/lib/admin/schools";
 import type { Submission } from "@/types/submission";
 import type { VideoCategory } from "@/lib/data/videos";
@@ -62,16 +62,28 @@ export default async function SubmissionDetailPage({ params }: PageProps) {
               Back to submissions
             </Link>
 
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="space-y-2">
+            <div className="border border-[#dfd9cd] bg-white/75 p-5 sm:p-6">
+              <div className="flex items-start justify-between gap-5">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-[#10271c] text-[#e4c784]">
+                    <Clapperboard className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[#9a722a]">
+                      Official MyLENS entry
+                    </p>
+                    <p className="mt-1 font-mono text-[10px] tracking-[0.1em] text-zinc-400">
+                      ENTRY / {submission.id.slice(0, 8).toUpperCase()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-6 space-y-2">
                 <div className="flex flex-wrap items-center gap-2">
                   <StatusBadge status={submission.status} />
                   <CategoryPill category={submission.category as VideoCategory} />
                 </div>
-                <h1
-                  className="text-2xl font-bold text-emerald-950"
-                  style={{ fontFamily: "var(--font-poppins)" }}
-                >
+                <h1 className="font-serif text-3xl font-semibold tracking-tight text-[#10271c]">
                   {submission.title}
                 </h1>
                 <p className="flex items-center gap-1.5 text-sm text-zinc-500">
@@ -100,8 +112,9 @@ export default async function SubmissionDetailPage({ params }: PageProps) {
 
           {/* Approved notice */}
           {submission.status === "approved" && (
-            <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/80 px-5 py-4 text-sm text-emerald-800">
-              🎉 Your submission has been approved. It is now in the judging queue.
+            <div className="flex items-start gap-3 rounded-2xl border border-emerald-200/80 bg-emerald-50/80 px-5 py-4 text-sm text-emerald-800">
+              <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" />
+              <p>Your submission has been approved. It is now in the judging queue.</p>
             </div>
           )}
 
@@ -145,7 +158,7 @@ export default async function SubmissionDetailPage({ params }: PageProps) {
               <SubmissionForm
                 mode="edit"
                 defaultValues={submission}
-                states={states.map((s) => ({ id: s.id, name: s.name }))}
+                states={[...STATE_OPTIONS]}
                 saveAction={boundUpdateAction}
                 isWindowClosed={windowClosed}
               />

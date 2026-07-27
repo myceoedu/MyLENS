@@ -2,7 +2,9 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { requireRole } from "@/lib/auth/session";
+import AdminAttentionPanel from "@/components/admin/AdminAttentionPanel";
 import AdminStatCard from "@/components/admin/AdminStatCard";
+import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
 
 export default async function AdminDashboardPage() {
   await requireRole(["admin"]);
@@ -38,30 +40,13 @@ export default async function AdminDashboardPage() {
   const newInquiries = (newSchoolInquiryCount ?? 0) + (newPartnershipInquiryCount ?? 0);
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-zinc-200/80 bg-white shadow-sm">
-      <div
-        className="absolute inset-0 bg-[url('/images/batik.jpg')] bg-cover bg-center opacity-[0.012] pointer-events-none filter grayscale"
-        aria-hidden="true"
-      />
-
-      <div className="relative space-y-8 p-8 md:p-10">
-        <section>
-          <p
-            className="text-zinc-400 text-[11px] font-semibold tracking-wider uppercase mb-1 block"
-            style={{ fontFamily: "var(--font-inter)" }}
-          >
-            Command Center
-          </p>
-          <h1
-            className="text-2xl font-bold text-emerald-950 mb-2 tracking-tight"
-            style={{ fontFamily: "var(--font-serif)" }}
-          >
-            National Admin Overview
-          </h1>
-          <p className="text-zinc-600 text-sm max-w-2xl" style={{ fontFamily: "var(--font-inter)" }}>
-            Manage schools, access tokens, and creator approvals across the MyLENS 2026 campaign.
-          </p>
-        </section>
+    <div className="relative overflow-hidden rounded-[2rem] border border-[#dfd9cd] bg-[#fbfbf8] shadow-[0_20px_55px_-42px_rgba(16,39,28,0.45)]">
+      <div className="relative space-y-8 p-6 sm:p-8 md:p-10">
+        <DashboardPageHeader
+          eyebrow="Operations overview"
+          title="National campaign workspace"
+          description="Monitor participating schools, creator access, inquiries, and academy operations from one place."
+        />
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <AdminStatCard label="Schools" value={schoolCount ?? 0} hint="All registered schools" />
@@ -75,9 +60,11 @@ export default async function AdminDashboardPage() {
           <AdminStatCard label="Active Creators" value={creatorCount ?? 0} />
         </div>
 
-        <section className="border-t border-zinc-200/80 pt-8">
+        <AdminAttentionPanel pendingCreators={pending} newInquiries={newInquiries} />
+
+        <section className="border-t border-[#dfd9cd] pt-8">
           <h2
-            className="text-zinc-400 text-[11px] font-semibold tracking-wider uppercase mb-4 block"
+            className="mb-4 block text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9a722a]"
             style={{ fontFamily: "var(--font-inter)" }}
           >
             Quick actions
@@ -85,7 +72,7 @@ export default async function AdminDashboardPage() {
           <div className="flex flex-wrap items-center gap-3">
             <Link
               href="/dashboard/admin/schools/new"
-              className="bg-emerald-900 hover:bg-emerald-800 text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-2"
+              className="flex items-center gap-2 rounded-xl bg-[#10271c] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#1b3d2b]"
               style={{ fontFamily: "var(--font-inter)" }}
             >
               <Plus className="w-4 h-4" strokeWidth={2.5} />
@@ -93,21 +80,21 @@ export default async function AdminDashboardPage() {
             </Link>
             <Link
               href="/dashboard/admin/users/pending"
-              className="bg-white border border-zinc-200 hover:border-zinc-300 text-zinc-700 text-sm font-medium px-5 py-2.5 rounded-xl transition-all"
+              className="rounded-xl border border-[#ddd8ce] bg-white px-5 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:border-[#bba978] hover:text-[#10271c]"
               style={{ fontFamily: "var(--font-inter)" }}
             >
               Review Pending ({pending})
             </Link>
             <Link
               href="/dashboard/admin/inquiries"
-              className="bg-white border border-zinc-200 hover:border-zinc-300 text-zinc-700 text-sm font-medium px-5 py-2.5 rounded-xl transition-all"
+              className="rounded-xl border border-[#ddd8ce] bg-white px-5 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:border-[#bba978] hover:text-[#10271c]"
               style={{ fontFamily: "var(--font-inter)" }}
             >
               Inquiries{newInquiries > 0 ? ` (${newInquiries} new)` : ""}
             </Link>
             <Link
               href="/dashboard/admin/schools"
-              className="bg-white border border-zinc-200 hover:border-zinc-300 text-zinc-700 text-sm font-medium px-5 py-2.5 rounded-xl transition-all"
+              className="rounded-xl border border-[#ddd8ce] bg-white px-5 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:border-[#bba978] hover:text-[#10271c]"
               style={{ fontFamily: "var(--font-inter)" }}
             >
               View Schools

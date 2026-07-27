@@ -134,6 +134,135 @@ export interface Database {
         };
         Relationships: [];
       };
+      learning_modules: {
+        Row: {
+          id: string;
+          title: string;
+          description: string | null;
+          sort_order: number;
+          published: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          description?: string | null;
+          sort_order?: number;
+          published?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          description?: string | null;
+          sort_order?: number;
+          published?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      learning_items: {
+        Row: {
+          id: string;
+          module_id: string;
+          title: string;
+          description: string | null;
+          content_type: "live_class" | "recorded_video" | "document" | "external_link";
+          content_url: string | null;
+          storage_path: string | null;
+          starts_at: string | null;
+          duration_minutes: number | null;
+          sort_order: number;
+          published: boolean;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          module_id: string;
+          title: string;
+          description?: string | null;
+          content_type: "live_class" | "recorded_video" | "document" | "external_link";
+          content_url?: string | null;
+          storage_path?: string | null;
+          starts_at?: string | null;
+          duration_minutes?: number | null;
+          sort_order?: number;
+          published?: boolean;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          module_id?: string;
+          title?: string;
+          description?: string | null;
+          content_type?: "live_class" | "recorded_video" | "document" | "external_link";
+          content_url?: string | null;
+          storage_path?: string | null;
+          starts_at?: string | null;
+          duration_minutes?: number | null;
+          sort_order?: number;
+          published?: boolean;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "learning_items_module_id_fkey";
+            columns: ["module_id"];
+            isOneToOne: false;
+            referencedRelation: "learning_modules";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "learning_items_created_by_fkey";
+            columns: ["created_by"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      learning_item_progress: {
+        Row: {
+          user_id: string;
+          item_id: string;
+          completed_at: string;
+        };
+        Insert: {
+          user_id: string;
+          item_id: string;
+          completed_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          item_id?: string;
+          completed_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "learning_item_progress_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "learning_item_progress_item_id_fkey";
+            columns: ["item_id"];
+            isOneToOne: false;
+            referencedRelation: "learning_items";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       submissions: {
         Row: {
           id: string;

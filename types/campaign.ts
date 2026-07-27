@@ -17,7 +17,7 @@ export interface CampaignSettings {
   updated_at: string;
 }
 
-export type CampaignStepId = "register" | "team" | "capture" | "submit";
+export type CampaignStepId = "register" | "team" | "class" | "capture" | "submit";
 
 export interface CampaignStep {
   id: CampaignStepId;

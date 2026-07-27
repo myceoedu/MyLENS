@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import VideosPageHero from "@/components/sections/VideosPageHero";
 import VideoShowcaseSection from "@/components/sections/VideoShowcaseSection";
 
 export const metadata: Metadata = {
@@ -24,7 +23,6 @@ export default function VideosPage() {
     <div className="flex flex-col min-h-screen section-off-white">
       <Navbar />
       <main className="flex-1">
-        <VideosPageHero />
         <VideoShowcaseSection />
       </main>
       <Footer />

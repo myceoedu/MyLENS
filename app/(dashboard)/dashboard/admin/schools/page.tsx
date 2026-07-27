@@ -3,14 +3,38 @@ import { MAX_CREATORS_PER_SCHOOL } from "@/lib/config/campaign";
 import { createClient } from "@/lib/supabase/server";
 import { getStateLabel } from "@/lib/admin/schools";
 import TokenCopyButton from "@/components/admin/TokenCopyButton";
+import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
+import DashboardPagination from "@/components/dashboard/DashboardPagination";
+import type { SchoolStatus } from "@/types/auth";
 
-export default async function AdminSchoolsPage() {
+const PAGE_SIZE = 25;
+
+export default async function AdminSchoolsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; q?: string; status?: string }>;
+}) {
   const supabase = await createClient();
+  const { page, q: rawQuery, status: rawStatus } = await searchParams;
+  const currentPage = Math.max(1, Number.parseInt(page ?? "1", 10) || 1);
+  const rangeStart = (currentPage - 1) * PAGE_SIZE;
+  const query = rawQuery?.trim().slice(0, 80) ?? "";
+  const status = ["active", "pending", "archived"].includes(rawStatus ?? "")
+    ? (rawStatus as SchoolStatus)
+    : undefined;
 
-  const { data: schools } = await supabase
+  let schoolsQuery = supabase
     .from("schools")
-    .select("id, name, state_id, status, access_token, created_at")
+    .select("id, name, state_id, status, access_token, created_at", { count: "exact" })
     .order("name");
+
+  if (query) schoolsQuery = schoolsQuery.ilike("name", `%${query}%`);
+  if (status) schoolsQuery = schoolsQuery.eq("status", status);
+
+  const { data: schools, count: schoolCount } = await schoolsQuery.range(
+    rangeStart,
+    rangeStart + PAGE_SIZE - 1
+  );
 
   const schoolIds = (schools ?? []).map((s) => s.id);
   const creatorCounts: Record<string, number> = {};
@@ -31,28 +55,55 @@ export default async function AdminSchoolsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1
-            className="text-2xl font-bold text-emerald-950"
-            style={{ fontFamily: "var(--font-poppins)" }}
+    <div className="space-y-7">
+      <DashboardPageHeader
+        eyebrow="Campaign operations"
+        title="Participating schools"
+        description="Manage participating schools, capacity, and secure event access tokens."
+        action={
+          <Link
+            href="/dashboard/admin/schools/new"
+            className="rounded-xl bg-[#10271c] px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-[#1b3d2b]"
           >
-            Schools
-          </h1>
-          <p className="text-zinc-600 text-sm" style={{ fontFamily: "var(--font-inter)" }}>
-            Manage participating schools and event access tokens.
-          </p>
-        </div>
-        <Link
-          href="/dashboard/admin/schools/new"
-          className="bg-emerald-900 hover:bg-emerald-800 text-white text-sm font-medium rounded-xl px-5 py-3 transition-all"
-        >
-          + Add School
-        </Link>
-      </div>
+            Add school
+          </Link>
+        }
+      />
 
-      <div className="bg-white border border-zinc-200/80 rounded-3xl shadow-sm overflow-hidden">
+      <div className="overflow-hidden rounded-[1.5rem] border border-[#e2ded5] bg-white shadow-[0_16px_34px_-28px_rgba(16,39,28,0.4)]">
+        <form className="flex flex-col gap-3 border-b border-zinc-100 p-4 sm:flex-row sm:items-center sm:p-5">
+          <label className="sr-only" htmlFor="school-search">
+            Search schools
+          </label>
+          <input
+            id="school-search"
+            name="q"
+            type="search"
+            defaultValue={query}
+            placeholder="Search schools"
+            className="min-w-0 flex-1 border border-[#ded8ca] bg-white px-3 py-2.5 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#8d6928]"
+          />
+          <label className="sr-only" htmlFor="school-status">
+            Filter by school status
+          </label>
+          <select
+            id="school-status"
+            name="status"
+            defaultValue={status ?? ""}
+            className="border border-[#ded8ca] bg-white px-3 py-2.5 text-sm text-zinc-700 outline-none focus:border-[#8d6928]"
+          >
+            <option value="">All statuses</option>
+            <option value="active">Active</option>
+            <option value="pending">Pending</option>
+            <option value="archived">Archived</option>
+          </select>
+          <button
+            type="submit"
+            className="bg-[#10271c] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#1b3d2b]"
+          >
+            Apply
+          </button>
+        </form>
         <div className="overflow-x-auto">
           <table className="w-full text-sm" style={{ fontFamily: "var(--font-inter)" }}>
             <thead>
@@ -115,16 +166,29 @@ export default async function AdminSchoolsPage() {
               {(schools ?? []).length === 0 && (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center text-zinc-500">
-                    No schools yet.{" "}
-                    <Link href="/dashboard/admin/schools/new" className="text-emerald-700 underline">
-                      Add your first school
-                    </Link>
+                    {query || status ? (
+                      "No schools match the current filters."
+                    ) : (
+                      <>
+                        No schools yet.{" "}
+                        <Link href="/dashboard/admin/schools/new" className="text-emerald-700 underline">
+                          Add your first school
+                        </Link>
+                      </>
+                    )}
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
+        <DashboardPagination
+          pathname="/dashboard/admin/schools"
+          currentPage={currentPage}
+          pageSize={PAGE_SIZE}
+          totalItems={schoolCount ?? 0}
+          query={{ q: query, status }}
+        />
       </div>
     </div>
   );

@@ -20,7 +20,7 @@ export default function CategoryPill({
       )}
       style={{ fontFamily: "var(--font-inter)" }}
     >
-      <span>{cfg.emoji}</span>
+      <span className="font-mono text-[8px] font-semibold tracking-[0.08em]">{cfg.code}</span>
       {category}
     </span>
   );

@@ -22,7 +22,6 @@ interface SubmissionFormProps {
 }
 
 export default function SubmissionForm({
-  mode,
   defaultValues,
   defaultStateId,
   states,
@@ -39,13 +38,20 @@ export default function SubmissionForm({
 
   const formRef = useRef<HTMLFormElement>(null);
 
+  // Derive `saved` from the action result as it changes, per React's
+  // "adjusting state during render" pattern — avoids the extra render pass
+  // (and lint warning) that comes from calling setState inside an effect.
+  const [prevState, setPrevState] = useState(state);
+  if (state !== prevState) {
+    setPrevState(state);
+    setSaved(state?.ok ?? false);
+  }
+
   useEffect(() => {
-    if (state?.ok) {
-      setSaved(true);
-      const t = setTimeout(() => setSaved(false), 3000);
-      return () => clearTimeout(t);
-    }
-  }, [state]);
+    if (!saved) return;
+    const t = setTimeout(() => setSaved(false), 3000);
+    return () => clearTimeout(t);
+  }, [saved]);
 
   return (
     <form ref={formRef} action={formAction} className="space-y-6">
@@ -107,7 +113,9 @@ export default function SubmissionForm({
                   onChange={() => setSelectedCategory(cat)}
                   className="sr-only"
                 />
-                <span>{cfg.emoji}</span>
+                <span className="font-mono text-[9px] font-semibold tracking-[0.08em]">
+                  {cfg.code}
+                </span>
                 {cat}
               </label>
             );

@@ -22,29 +22,37 @@ export default function TeamMemberCard({
   return (
     <article
       className={cn(
-        "bg-white border rounded-2xl p-5 shadow-sm",
-        isCurrentUser ? "border-emerald-200 ring-1 ring-emerald-100" : "border-zinc-200/80"
+        "border bg-white p-5 shadow-[0_12px_28px_-24px_rgba(16,39,28,0.4)]",
+        isCurrentUser ? "border-[#c7b47e] ring-1 ring-[#e8dfc4]" : "border-[#e2ded5]"
       )}
     >
       <div className="flex items-start gap-4">
-        <div className="w-12 h-12 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center overflow-hidden shrink-0">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#ded8ca] bg-[#f5efe4]">
           {avatarUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
+            <img
+              src={avatarUrl}
+              alt=""
+              width={48}
+              height={48}
+              className="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
           ) : (
-            <User className="w-5 h-5 text-emerald-700" />
+            <User className="h-5 w-5 text-[#8d6928]" />
           )}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 flex-wrap">
             <h3
-              className="text-sm font-semibold text-emerald-950"
+              className="text-sm font-semibold text-[#10271c]"
               style={{ fontFamily: "var(--font-poppins)" }}
             >
               {displayName}
             </h3>
             {isCurrentUser && (
-              <span className="bg-emerald-900 text-white text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-md">
+              <span className="rounded-full bg-[#10271c] px-2 py-0.5 text-[9px] uppercase tracking-[0.12em] text-white">
                 You
               </span>
             )}
