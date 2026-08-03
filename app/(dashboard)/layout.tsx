@@ -1,7 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import LogoutButton from "@/components/auth/LogoutButton";
 import { getCurrentProfile } from "@/lib/auth/session";
+import { MYLENS_LOGO_SRC } from "@/lib/data/campaign-images";
 
 export const dynamic = "force-dynamic";
 
@@ -21,27 +23,37 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-[#f7f7f3] text-emerald-950">
-      <header className="sticky top-0 z-40 border-b border-[#dedbd2] bg-[#fbfbf8]/95 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-          <div className="flex items-center min-w-0">
+    <div className="min-h-screen bg-[#FAF9F5] text-[#1A2332]">
+      <header className="sticky top-0 z-40 border-b border-[#e2ded5] bg-white/95 backdrop-blur-md">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2 sm:px-6 lg:px-8">
+          <div className="flex min-w-0 items-center">
             <Link
               href="/dashboard"
-              className="mr-5 hidden shrink-0 border-r border-[#dedbd2] pr-5 sm:block"
+              className="mr-5 hidden shrink-0 items-center gap-3 border-r border-[#e2ded5] pr-5 sm:flex"
               aria-label="MyLENS dashboard home"
             >
-              <p
-                className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#9a722a]"
-                style={{ fontFamily: "var(--font-poppins)" }}
-              >
-                MyLENS
-              </p>
-              <p
-                className="mt-0.5 text-[9px] uppercase tracking-[0.18em] text-zinc-400"
-                style={{ fontFamily: "var(--font-inter)" }}
-              >
-                Workspace
-              </p>
+              <Image
+                src={MYLENS_LOGO_SRC}
+                alt="MyLENS"
+                width={48}
+                height={48}
+                className="h-12 w-12 object-contain"
+                priority
+              />
+              <span>
+                <p
+                  className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#B68A35]"
+                  style={{ fontFamily: "var(--font-poppins)" }}
+                >
+                  MyLENS
+                </p>
+                <p
+                  className="mt-0.5 text-[9px] uppercase tracking-[0.18em] text-zinc-400"
+                  style={{ fontFamily: "var(--font-inter)" }}
+                >
+                  Workspace
+                </p>
+              </span>
             </Link>
             <p className="min-w-0 truncate" style={{ fontFamily: "var(--font-inter)" }}>
               <span className="text-sm font-semibold text-[#10271c]">

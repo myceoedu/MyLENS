@@ -23,7 +23,8 @@ export default function CreatorNextStep({
   const nextStep = !hasSchool
     ? {
         title: "Confirm your school assignment",
-        description: "Your creator account needs a school assignment before you can join a campaign team.",
+        description:
+          "Your creator account needs a school assignment before you can join a campaign team.",
         href: "/dashboard/creator/profile",
         label: "Review profile",
         icon: Users,
@@ -39,7 +40,8 @@ export default function CreatorNextStep({
       : submissionsOpen
         ? {
             title: "Prepare your video submission",
-            description: "The submission window is open. Save a draft or submit your finished tourism story.",
+            description:
+              "The submission window is open. Save a draft or submit your finished tourism story.",
             href: "/dashboard/creator/submissions/new",
             label: "Create submission",
             icon: Film,
@@ -55,18 +57,20 @@ export default function CreatorNextStep({
   const Icon = nextStep.icon;
 
   return (
-    <section className="border border-[#d9d4c9] bg-white/80 p-5 shadow-[0_14px_30px_-26px_rgba(16,39,28,0.45)] sm:p-6">
+    <section className="border border-[#e2ded5] bg-white p-5 sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-5">
         <div className="flex min-w-0 items-start gap-4">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#10271c] text-white">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center border border-[#e8dfc4] bg-[#FAF9F5] text-[#B68A35]">
             <Icon className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9a722a]">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#B68A35]">
               Your next step
             </p>
-            <h2 className="mt-1 font-serif text-xl font-semibold text-[#10271c]">{nextStep.title}</h2>
-            <p className="mt-2 max-w-xl text-sm leading-6 text-zinc-600">{nextStep.description}</p>
+            <h2 className="mt-1 font-serif text-xl font-semibold text-[#1A2332]">
+              {nextStep.title}
+            </h2>
+            <p className="mt-2 max-w-xl text-sm leading-6 text-[#5A6A7E]">{nextStep.description}</p>
           </div>
         </div>
         <Link

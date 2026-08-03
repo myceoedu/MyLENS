@@ -100,9 +100,9 @@ export default function ContactSection() {
               {
                 icon: Phone,
                 label: "Call Us",
-                value: "+603 1234 5678",
+                value: "+601 7228 0677",
                 sub: "Mon–Fri, 9am–6pm",
-                href: "tel:+60312345678",
+                href: "tel:+60172280677",
               },
               {
                 icon: MapPin,
@@ -127,7 +127,7 @@ export default function ContactSection() {
                   <p className="text-slate-800 font-sans font-semibold text-lg mb-0.5">
                     {item.value}
                   </p>
-                  <p className="text-gray-600 font-sans text-xs">{item.sub}</p>
+                  <p className="text-gray-600 font-sans text-xs">{item.sub}</p> 
                 </div>
               </motion.a>
             ))}

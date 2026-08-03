@@ -66,7 +66,7 @@ export default async function CreatorDashboardPage() {
 
           <section className="space-y-5">
             <h2
-              className="text-sm font-semibold uppercase tracking-[0.22em] text-[#4a3f35]"
+              className="text-sm font-semibold uppercase tracking-[0.22em] text-[#B68A35]"
               style={{ fontFamily: "var(--font-serif)" }}
             >
               Delegate pathway

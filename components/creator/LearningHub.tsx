@@ -193,14 +193,14 @@ export default function LearningHub({
 
   if (modules.length === 0 || allItems.length === 0) {
     return (
-      <div className="rounded-[2rem] border border-dashed border-zinc-300 bg-white px-6 py-20 text-center shadow-sm">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50">
-          <BookOpen className="h-6 w-6 text-emerald-700" />
+      <div className="border border-dashed border-[#ddd8ce] bg-white px-6 py-20 text-center">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center border border-[#e8dfc4] bg-[#FAF9F5]">
+          <BookOpen className="h-6 w-6 text-[#B68A35]" />
         </div>
-        <h2 className="mt-5 font-serif text-2xl font-semibold text-emerald-950">
+        <h2 className="mt-5 font-serif text-2xl font-semibold text-[#1A2332]">
           The academy opens soon
         </h2>
-        <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-zinc-500">
+        <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[#5A6A7E]">
           Your administrator has not published any creator training yet.
         </p>
       </div>
@@ -208,23 +208,23 @@ export default function LearningHub({
   }
 
   return (
-    <section className="overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white shadow-[0_20px_60px_-42px_rgba(6,36,25,0.45)]">
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-200/70 px-6 py-5 md:px-8">
+    <section className="overflow-hidden border border-[#e2ded5] bg-white">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#e2ded5] px-6 py-5 md:px-8">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#a77d2f]">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#B68A35]">
             Academy curriculum
           </p>
-          <h2 className="mt-1 font-serif text-xl font-semibold text-emerald-950">
+          <h2 className="mt-1 font-serif text-xl font-semibold text-[#1A2332]">
             Learning workspace
           </h2>
         </div>
         <div className="min-w-36">
-          <p className="text-right text-xs font-medium text-zinc-500">
+          <p className="text-right text-xs font-medium text-[#5A6A7E]">
             {completionPercent}% complete
           </p>
-          <div className="mt-2 h-1 overflow-hidden bg-zinc-100">
+          <div className="mt-2 h-1 overflow-hidden bg-[#f0ebe1]">
             <div
-              className="h-full bg-[#b68a35] transition-[width] duration-300"
+              className="h-full bg-[#B68A35] transition-[width] duration-300"
               style={{ width: `${completionPercent}%` }}
             />
           </div>
@@ -232,19 +232,19 @@ export default function LearningHub({
       </div>
 
       <div className="grid lg:min-h-[620px] lg:grid-cols-[320px_minmax(0,1fr)]">
-        <aside className="border-b border-zinc-200/70 bg-[#f7f7f3] lg:border-r lg:border-b-0">
+        <aside className="border-b border-[#e2ded5] bg-[#FAF9F5] lg:border-r lg:border-b-0">
           <div className="space-y-1 p-3 sm:p-4 lg:max-h-[620px] lg:overflow-y-auto">
             {modules.map((module, moduleIndex) => (
-              <section key={module.id} className="overflow-hidden rounded-2xl">
+              <section key={module.id} className="overflow-hidden">
                 <div className="flex items-start gap-3 px-3 pb-2 pt-4">
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-emerald-900/15 bg-white font-serif text-xs font-semibold text-emerald-900">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center border border-[#e8dfc4] bg-white font-serif text-xs font-semibold text-[#B68A35]">
                     {String(moduleIndex + 1).padStart(2, "0")}
                   </span>
                   <div className="min-w-0 pt-0.5">
-                    <h3 className="text-sm font-semibold leading-snug text-emerald-950">
+                    <h3 className="text-sm font-semibold leading-snug text-[#1A2332]">
                       {module.title}
                     </h3>
-                    <p className="mt-1 text-[10px] uppercase tracking-[0.14em] text-zinc-500">
+                    <p className="mt-1 text-[10px] uppercase tracking-[0.14em] text-[#8A98B0]">
                       {module.items.length} {module.items.length === 1 ? "lesson" : "lessons"}
                     </p>
                   </div>
@@ -261,16 +261,16 @@ export default function LearningHub({
                         type="button"
                         onClick={() => setSelectedId(item.id)}
                         className={cn(
-                          "relative flex w-full items-start gap-3 rounded-xl py-3 pr-3 pl-7 text-left transition-all duration-200",
+                          "relative flex w-full items-start gap-3 py-3 pr-3 pl-7 text-left transition-colors duration-200",
                           active
-                            ? "bg-[#08291d] text-white shadow-sm"
-                            : "text-zinc-600 hover:bg-white hover:text-emerald-950"
+                            ? "bg-white text-[#1A2332] ring-1 ring-[#B68A35]/40"
+                            : "text-[#5A6A7E] hover:bg-white hover:text-[#1A2332]"
                         )}
                       >
                         <span
                           className={cn(
                             "absolute left-2.5 top-4 font-mono text-[9px]",
-                            active ? "text-[#d3ad62]" : "text-zinc-300"
+                            active ? "text-[#B68A35]" : "text-zinc-300"
                           )}
                         >
                           {itemIndex + 1}
@@ -278,7 +278,7 @@ export default function LearningHub({
                         <Icon
                           className={cn(
                             "mt-0.5 h-4 w-4 shrink-0",
-                            active ? "text-emerald-200" : "text-emerald-700"
+                            active ? "text-[#B68A35]" : "text-zinc-400"
                           )}
                         />
                         <span className="min-w-0">
@@ -286,10 +286,7 @@ export default function LearningHub({
                             <span>{item.title}</span>
                             {complete && (
                               <CheckCircle2
-                                className={cn(
-                                  "mt-0.5 h-3.5 w-3.5 shrink-0",
-                                  active ? "text-[#d3ad62]" : "text-emerald-700"
-                                )}
+                                className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600"
                                 aria-label="Completed"
                               />
                             )}
@@ -297,7 +294,7 @@ export default function LearningHub({
                           <span
                             className={cn(
                               "mt-1.5 block text-[10px] font-semibold uppercase tracking-[0.12em]",
-                              active ? "text-white/45" : "text-zinc-400"
+                              active ? "text-[#B68A35]" : "text-zinc-400"
                             )}
                           >
                             {LEARNING_CONTENT_LABELS[item.content_type]}
@@ -315,28 +312,28 @@ export default function LearningHub({
         {selectedItem && (
           <article className="min-w-0 bg-white">
             <div className="px-6 py-7 md:px-9 md:py-8">
-              <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.15em] text-zinc-400">
+              <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.15em] text-[#8A98B0]">
                 <span>{selectedModule?.title}</span>
-                <span className="text-zinc-200">/</span>
-                <span className="text-[#a77d2f]">
+                <span className="text-[#e2ded5]">/</span>
+                <span className="text-[#B68A35]">
                   {LEARNING_CONTENT_LABELS[selectedItem.content_type]}
                 </span>
               </div>
 
               <div className="mt-4 flex flex-wrap items-start justify-between gap-5">
                 <div className="max-w-3xl">
-                  <h2 className="font-serif text-2xl font-semibold leading-tight text-emerald-950 sm:text-3xl">
+                  <h2 className="font-serif text-2xl font-semibold leading-tight text-[#1A2332] sm:text-3xl">
                     {selectedItem.title}
                   </h2>
                   {selectedItem.description && (
-                    <p className="mt-3 text-sm leading-7 text-zinc-600">
+                    <p className="mt-3 text-sm leading-7 text-[#5A6A7E]">
                       {selectedItem.description}
                     </p>
                   )}
                 </div>
                 {selectedItem.duration_minutes && (
-                  <span className="inline-flex shrink-0 items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1.5 text-[11px] text-zinc-500">
-                    <Clock3 className="h-3.5 w-3.5 text-emerald-700" />
+                  <span className="inline-flex shrink-0 items-center gap-2 border border-[#e2ded5] bg-[#FAF9F5] px-3 py-1.5 text-[11px] text-[#5A6A7E]">
+                    <Clock3 className="h-3.5 w-3.5 text-[#B68A35]" />
                     {selectedItem.duration_minutes} min
                   </span>
                 )}
@@ -350,7 +347,7 @@ export default function LearningHub({
                     "inline-flex items-center gap-2 border px-3.5 py-2 text-xs font-semibold transition-colors disabled:cursor-wait disabled:opacity-60",
                     completedIds.has(selectedItem.id)
                       ? "border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100"
-                      : "border-[#d8d2c5] bg-white text-[#10271c] hover:border-[#bba978]"
+                      : "border-[#ddd8ce] bg-white text-[#1A2332] hover:border-[#B68A35]"
                   )}
                 >
                   {completedIds.has(selectedItem.id) ? (
@@ -368,17 +365,17 @@ export default function LearningHub({
               </div>
             </div>
 
-            <div className="border-y border-zinc-100 bg-[#fbfbf8] px-6 py-6 md:px-9 md:py-8">
+            <div className="border-y border-[#e2ded5] bg-[#FAF9F5] px-6 py-6 md:px-9 md:py-8">
               <ContentViewer key={selectedItem.id} item={selectedItem} />
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-5 md:px-9">
-              <p className="text-xs leading-5 text-zinc-400">
+              <p className="text-xs leading-5 text-[#8A98B0]">
                 Official MyLENS creator learning material
               </p>
               {selectedItem.content_type === "recorded_video" && (
-                <p className="flex items-center gap-2 text-xs text-zinc-400">
-                  <PlayCircle className="h-4 w-4 text-emerald-700" />
+                <p className="flex items-center gap-2 text-xs text-[#8A98B0]">
+                  <PlayCircle className="h-4 w-4 text-[#B68A35]" />
                   Full-screen playback available
                 </p>
               )}

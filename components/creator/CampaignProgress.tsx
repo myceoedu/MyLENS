@@ -4,30 +4,30 @@ import type { CampaignStep } from "@/types/campaign";
 
 export default function CampaignProgress({ steps }: { steps: CampaignStep[] }) {
   return (
-    <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5 lg:gap-4">
+    <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5 lg:gap-3">
       {steps.map((step, index) => {
         return (
           <li
             key={step.id}
             className={cn(
-              "group relative rounded-[1.25rem] border bg-white/85 p-5 shadow-[0_12px_28px_-24px_rgba(16,39,28,0.38)] lg:p-6",
-              step.status === "complete" && "border-emerald-700/25 bg-emerald-50/35",
-              step.status === "current" && "border-[#c8b077] ring-1 ring-[#e6dbc0]",
-              step.status === "upcoming" && "border-[#e8dcc8]/80",
-              step.status === "locked" && "border-[#e8dcc8]/60 opacity-70"
+              "group relative border bg-white p-5",
+              step.status === "complete" && "border-emerald-200/80 bg-emerald-50/30",
+              step.status === "current" && "border-[#B68A35]/50 ring-1 ring-[#B68A35]/20",
+              step.status === "upcoming" && "border-[#e2ded5]",
+              step.status === "locked" && "border-[#e8e2d6] opacity-70"
             )}
           >
-            <div className="flex items-center gap-3 mb-3 mt-1">
+            <div className="mb-3 mt-1 flex items-center gap-3">
               <StepIcon status={step.status} index={index} />
               <div>
                 <p
-                  className="text-[0.6rem] uppercase tracking-[0.28em] text-[#6b5d4f] font-semibold"
+                  className="text-[0.6rem] font-semibold uppercase tracking-[0.28em] text-[#8A98B0]"
                   style={{ fontFamily: "var(--font-inter)" }}
                 >
                   Step {index + 1}
                 </p>
                 <p
-                  className="text-base font-semibold text-[#2c2419] leading-tight"
+                  className="text-base font-semibold leading-tight text-[#1A2332]"
                   style={{ fontFamily: "var(--font-serif)" }}
                 >
                   {step.label}
@@ -35,18 +35,18 @@ export default function CampaignProgress({ steps }: { steps: CampaignStep[] }) {
               </div>
             </div>
             <p
-              className="text-xs text-[#5c5046] leading-relaxed"
+              className="text-xs leading-relaxed text-[#5A6A7E]"
               style={{ fontFamily: "var(--font-inter)" }}
             >
               {step.description}
             </p>
             <p
               className={cn(
-                "mt-4 text-[10px] uppercase tracking-[0.18em] font-semibold",
-                step.status === "complete" && "text-emerald-800",
-                step.status === "current" && "text-[#8b6914]",
-                step.status === "upcoming" && "text-[#9a8b7a]",
-                step.status === "locked" && "text-[#9a8b7a]"
+                "mt-4 text-[10px] font-semibold uppercase tracking-[0.18em]",
+                step.status === "complete" && "text-emerald-700",
+                step.status === "current" && "text-[#B68A35]",
+                step.status === "upcoming" && "text-[#8A98B0]",
+                step.status === "locked" && "text-[#8A98B0]"
               )}
               style={{ fontFamily: "var(--font-inter)" }}
             >
@@ -72,21 +72,20 @@ function StepIcon({
   status: CampaignStep["status"];
   index: number;
 }) {
-  const base =
-    "flex h-10 w-10 shrink-0 items-center justify-center rounded-full";
+  const base = "flex h-10 w-10 shrink-0 items-center justify-center rounded-full";
 
   if (status === "complete") {
     return (
-      <div className={cn(base, "bg-emerald-800 text-amber-50 shadow-sm shadow-emerald-900/20")}>
-        <Check className="w-4 h-4" strokeWidth={2.5} />
+      <div className={cn(base, "bg-emerald-700 text-white")}>
+        <Check className="h-4 w-4" strokeWidth={2.5} />
       </div>
     );
   }
 
   if (status === "locked") {
     return (
-      <div className={cn(base, "bg-[#f5ebe0] text-[#9a8b7a] border border-[#e8dcc8]")}>
-        <Lock className="w-3.5 h-3.5" />
+      <div className={cn(base, "border border-[#e2ded5] bg-[#FAF9F5] text-[#8A98B0]")}>
+        <Lock className="h-3.5 w-3.5" />
       </div>
     );
   }
@@ -96,11 +95,11 @@ function StepIcon({
       className={cn(
         base,
         status === "current"
-          ? "border border-[#c8b077] bg-[#f5efe4] text-[#8b6914]"
-          : "bg-[#faf6ee] text-[#6b5d4f] border border-[#e8dcc8]"
+          ? "border border-[#B68A35]/50 bg-[#FAF9F5] text-[#B68A35]"
+          : "border border-[#e2ded5] bg-[#FAF9F5] text-[#5A6A7E]"
       )}
     >
-      <Circle className="w-3.5 h-3.5" />
+      <Circle className="h-3.5 w-3.5" />
       <span className="sr-only">Step {index + 1}</span>
     </div>
   );

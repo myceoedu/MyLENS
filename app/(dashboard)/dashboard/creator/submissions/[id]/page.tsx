@@ -62,14 +62,14 @@ export default async function SubmissionDetailPage({ params }: PageProps) {
               Back to submissions
             </Link>
 
-            <div className="border border-[#dfd9cd] bg-white/75 p-5 sm:p-6">
+            <div className="border border-[#e2ded5] bg-white p-5 sm:p-6">
               <div className="flex items-start justify-between gap-5">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-[#10271c] text-[#e4c784]">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-[#e8dfc4] bg-[#FAF9F5] text-[#B68A35]">
                     <Clapperboard className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[#9a722a]">
+                    <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[#B68A35]">
                       Official MyLENS entry
                     </p>
                     <p className="mt-1 font-mono text-[10px] tracking-[0.1em] text-zinc-400">
@@ -83,7 +83,7 @@ export default async function SubmissionDetailPage({ params }: PageProps) {
                   <StatusBadge status={submission.status} />
                   <CategoryPill category={submission.category as VideoCategory} />
                 </div>
-                <h1 className="font-serif text-3xl font-semibold tracking-tight text-[#10271c]">
+                <h1 className="font-serif text-3xl font-semibold tracking-tight text-[#1A2332]">
                   {submission.title}
                 </h1>
                 <p className="flex items-center gap-1.5 text-sm text-zinc-500">
