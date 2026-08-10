@@ -48,9 +48,9 @@ export default function CreatorNextStep({
           }
         : {
             title: "Develop your filmmaking skills",
-            description: "Use Learning to prepare your story before submissions open.",
+            description: "Study lessons and complete assignments before submissions open.",
             href: "/dashboard/creator/learning",
-            label: "Open learning",
+            label: "Open lessons",
             icon: BookOpen,
           };
 

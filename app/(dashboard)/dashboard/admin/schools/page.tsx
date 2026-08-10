@@ -1,13 +1,29 @@
 import Link from "next/link";
+import { ArrowRight, Plus, School as SchoolIcon } from "lucide-react";
 import { MAX_CREATORS_PER_SCHOOL } from "@/lib/config/campaign";
 import { createClient } from "@/lib/supabase/server";
 import { getStateLabel } from "@/lib/admin/schools";
 import TokenCopyButton from "@/components/admin/TokenCopyButton";
-import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
+import {
+  AdminCard,
+  AdminEmptyState,
+  AdminPage,
+  AdminPageHeader,
+  StatusPill,
+  adminButton,
+  adminField,
+  adminTable,
+} from "@/components/admin/AdminUI";
 import DashboardPagination from "@/components/dashboard/DashboardPagination";
 import type { SchoolStatus } from "@/types/auth";
 
 const PAGE_SIZE = 25;
+
+const STATUS_TONE = {
+  active: "emerald",
+  pending: "amber",
+  archived: "neutral",
+} as const;
 
 export default async function AdminSchoolsPage({
   searchParams,
@@ -54,23 +70,23 @@ export default async function AdminSchoolsPage({
     }
   }
 
+  const hasFilters = Boolean(query || status);
+
   return (
-    <div className="space-y-7">
-      <DashboardPageHeader
+    <AdminPage>
+      <AdminPageHeader
         eyebrow="Campaign operations"
-        title="Participating schools"
-        description="Manage participating schools, capacity, and secure event access tokens."
-        action={
-          <Link
-            href="/dashboard/admin/schools/new"
-            className="rounded-xl bg-[#10271c] px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-[#1b3d2b]"
-          >
+        title="Schools"
+        description="Manage participating schools, team capacity, and secure access tokens."
+        actions={
+          <Link href="/dashboard/admin/schools/new" className={adminButton.primary}>
+            <Plus className="h-4 w-4" strokeWidth={2.5} />
             Add school
           </Link>
         }
       />
 
-      <div className="overflow-hidden rounded-[1.5rem] border border-[#e2ded5] bg-white shadow-[0_16px_34px_-28px_rgba(16,39,28,0.4)]">
+      <AdminCard>
         <form className="flex flex-col gap-3 border-b border-zinc-100 p-4 sm:flex-row sm:items-center sm:p-5">
           <label className="sr-only" htmlFor="school-search">
             Search schools
@@ -81,7 +97,7 @@ export default async function AdminSchoolsPage({
             type="search"
             defaultValue={query}
             placeholder="Search schools"
-            className="min-w-0 flex-1 border border-[#ded8ca] bg-white px-3 py-2.5 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#8d6928]"
+            className={`${adminField} sm:flex-1`}
           />
           <label className="sr-only" htmlFor="school-status">
             Filter by school status
@@ -90,98 +106,86 @@ export default async function AdminSchoolsPage({
             id="school-status"
             name="status"
             defaultValue={status ?? ""}
-            className="border border-[#ded8ca] bg-white px-3 py-2.5 text-sm text-zinc-700 outline-none focus:border-[#8d6928]"
+            className={`${adminField} sm:w-44`}
           >
             <option value="">All statuses</option>
             <option value="active">Active</option>
             <option value="pending">Pending</option>
             <option value="archived">Archived</option>
           </select>
-          <button
-            type="submit"
-            className="bg-[#10271c] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#1b3d2b]"
-          >
+          <button type="submit" className={adminButton.primary}>
             Apply
           </button>
         </form>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm" style={{ fontFamily: "var(--font-inter)" }}>
-            <thead>
-              <tr className="border-b border-zinc-100 bg-zinc-50/50 text-left">
-                <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
-                  School
-                </th>
-                <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
-                  State
-                </th>
-                <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
-                  Creators
-                </th>
-                <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
-                  Token
-                </th>
-                <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
-                  Status
-                </th>
-                <th className="px-6 py-4" />
-              </tr>
-            </thead>
-            <tbody>
-              {(schools ?? []).map((school) => (
-                <tr key={school.id} className="border-b border-zinc-50 hover:bg-zinc-50/30">
-                  <td className="px-6 py-4 font-medium text-zinc-900">{school.name}</td>
-                  <td className="px-6 py-4 text-zinc-600">{getStateLabel(school.state_id)}</td>
-                  <td className="px-6 py-4 text-zinc-600">
-                    {creatorCounts[school.id] ?? 0}
-                    <span className="text-zinc-400"> / {MAX_CREATORS_PER_SCHOOL}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    {school.access_token ? (
-                      <TokenCopyButton token={school.access_token} />
-                    ) : (
-                      <span className="text-zinc-400">—</span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={
-                        school.status === "active"
-                          ? "text-emerald-700 font-medium"
-                          : "text-zinc-500"
-                      }
-                    >
-                      {school.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <Link
-                      href={`/dashboard/admin/schools/${school.id}`}
-                      className="text-emerald-800 hover:text-emerald-950 font-medium"
-                    >
-                      Manage →
-                    </Link>
-                  </td>
+
+        {(schools ?? []).length === 0 ? (
+          <AdminEmptyState
+            icon={<SchoolIcon className="h-5 w-5" />}
+            title={hasFilters ? "No schools match these filters" : "No schools yet"}
+            description={
+              hasFilters
+                ? "Try a different name or status."
+                : "Add your first participating school to generate an access token."
+            }
+            action={
+              hasFilters ? undefined : (
+                <Link href="/dashboard/admin/schools/new" className={adminButton.primary}>
+                  <Plus className="h-4 w-4" strokeWidth={2.5} />
+                  Add school
+                </Link>
+              )
+            }
+          />
+        ) : (
+          <div className={adminTable.wrapper}>
+            <table className={adminTable.table}>
+              <thead>
+                <tr className={adminTable.head}>
+                  <th className={adminTable.th}>School</th>
+                  <th className={adminTable.th}>State</th>
+                  <th className={adminTable.th}>Creators</th>
+                  <th className={adminTable.th}>Access token</th>
+                  <th className={adminTable.th}>Status</th>
+                  <th className={adminTable.th} />
                 </tr>
-              ))}
-              {(schools ?? []).length === 0 && (
-                <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-zinc-500">
-                    {query || status ? (
-                      "No schools match the current filters."
-                    ) : (
-                      <>
-                        No schools yet.{" "}
-                        <Link href="/dashboard/admin/schools/new" className="text-emerald-700 underline">
-                          Add your first school
-                        </Link>
-                      </>
-                    )}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {(schools ?? []).map((school) => (
+                  <tr key={school.id} className={adminTable.row}>
+                    <td className={adminTable.tdStrong}>{school.name}</td>
+                    <td className={adminTable.td}>{getStateLabel(school.state_id)}</td>
+                    <td className={adminTable.td}>
+                      {creatorCounts[school.id] ?? 0}
+                      <span className="text-zinc-400"> / {MAX_CREATORS_PER_SCHOOL}</span>
+                    </td>
+                    <td className={adminTable.td}>
+                      {school.access_token ? (
+                        <TokenCopyButton token={school.access_token} />
+                      ) : (
+                        <span className="text-zinc-400">—</span>
+                      )}
+                    </td>
+                    <td className={adminTable.td}>
+                      <StatusPill tone={STATUS_TONE[school.status] ?? "neutral"}>
+                        {school.status}
+                      </StatusPill>
+                    </td>
+                    <td className={`${adminTable.td} text-right`}>
+                      <Link
+                        href={`/dashboard/admin/schools/${school.id}`}
+                        className="inline-flex items-center gap-1 text-sm font-medium text-[#0F3A2C] hover:underline"
+                      >
+                        Manage
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
         <DashboardPagination
           pathname="/dashboard/admin/schools"
           currentPage={currentPage}
@@ -189,7 +193,7 @@ export default async function AdminSchoolsPage({
           totalItems={schoolCount ?? 0}
           query={{ q: query, status }}
         />
-      </div>
-    </div>
+      </AdminCard>
+    </AdminPage>
   );
 }

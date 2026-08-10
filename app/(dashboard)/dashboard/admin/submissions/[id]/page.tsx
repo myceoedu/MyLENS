@@ -51,7 +51,7 @@ export default async function AdminSubmissionDetailPage({ params }: PageProps) {
     <div className="space-y-6">
       <Link
         href="/dashboard/admin/submissions"
-        className="inline-flex items-center gap-1.5 text-sm text-emerald-800 transition-colors hover:text-emerald-950"
+        className="inline-flex items-center gap-1.5 text-sm text-zinc-500 transition-colors hover:text-zinc-900"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to submissions
@@ -59,7 +59,7 @@ export default async function AdminSubmissionDetailPage({ params }: PageProps) {
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <div className="space-y-6">
-          <header className="rounded-[1.5rem] border border-[#e2ded5] bg-white p-6 shadow-sm sm:p-8">
+          <header className="rounded-xl border border-zinc-200 bg-white p-6 sm:p-8">
             <div className="mb-4 flex flex-wrap items-center gap-2">
               <StatusBadge status={submission.status} />
               {isVideoCategory(submission.category) ? (
@@ -70,7 +70,10 @@ export default async function AdminSubmissionDetailPage({ params }: PageProps) {
                 </span>
               )}
             </div>
-            <h1 className="font-serif text-3xl font-semibold tracking-tight text-[#10271c]">
+            <h1
+              className="font-serif text-3xl font-semibold tracking-tight text-zinc-900"
+              style={{ fontFamily: "var(--font-serif)" }}
+            >
               {submission.title}
             </h1>
             {submission.description && (
@@ -81,10 +84,10 @@ export default async function AdminSubmissionDetailPage({ params }: PageProps) {
 
             <dl className="mt-6 grid gap-4 sm:grid-cols-2">
               <div>
-                <dt className="text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-400">
+                <dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-500">
                   Creator
                 </dt>
-                <dd className="mt-1 text-sm text-[#10271c]">
+                <dd className="mt-1 text-sm text-zinc-900">
                   {profile?.full_name ?? "Unknown"}
                   {profile?.email ? (
                     <span className="mt-0.5 block text-zinc-500">{profile.email}</span>
@@ -92,10 +95,10 @@ export default async function AdminSubmissionDetailPage({ params }: PageProps) {
                 </dd>
               </div>
               <div>
-                <dt className="text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-400">
+                <dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-500">
                   School
                 </dt>
-                <dd className="mt-1 text-sm text-[#10271c]">
+                <dd className="mt-1 text-sm text-zinc-900">
                   {school ? (
                     <Link
                       href={`/dashboard/admin/schools/${school.id}`}
@@ -109,11 +112,11 @@ export default async function AdminSubmissionDetailPage({ params }: PageProps) {
                 </dd>
               </div>
               <div>
-                <dt className="text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-400">
+                <dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-500">
                   Location
                 </dt>
-                <dd className="mt-1 inline-flex items-start gap-1.5 text-sm text-[#10271c]">
-                  <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#9a722a]" />
+                <dd className="mt-1 inline-flex items-start gap-1.5 text-sm text-zinc-900">
+                  <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#B08D3F]" />
                   <span>
                     {submission.location}
                     <span className="block text-zinc-500">
@@ -123,10 +126,10 @@ export default async function AdminSubmissionDetailPage({ params }: PageProps) {
                 </dd>
               </div>
               <div>
-                <dt className="text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-400">
+                <dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-500">
                   Updated
                 </dt>
-                <dd className="mt-1 text-sm text-[#10271c]">
+                <dd className="mt-1 text-sm text-zinc-900">
                   {formatSubmissionDate(submission.updated_at)}
                   <span className="mt-0.5 block text-zinc-500">
                     Created {formatSubmissionDate(submission.created_at)}
@@ -136,8 +139,8 @@ export default async function AdminSubmissionDetailPage({ params }: PageProps) {
             </dl>
 
             {submission.admin_notes && (
-              <div className="mt-6 rounded-xl border border-amber-200/80 bg-amber-50/70 px-4 py-3 text-sm text-amber-900">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-700">
+              <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-700">
                   Current admin notes
                 </p>
                 <p className="mt-1 whitespace-pre-wrap">{submission.admin_notes}</p>
@@ -147,15 +150,13 @@ export default async function AdminSubmissionDetailPage({ params }: PageProps) {
 
           <section className="space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9a722a]">
-                Video
-              </h2>
+              <h2 className="text-sm font-semibold text-zinc-900">Video</h2>
               {submission.video_url && (
                 <a
                   href={submission.video_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-900 hover:underline"
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-[#0F3A2C] hover:underline"
                 >
                   Open original
                   <ExternalLink className="h-3.5 w-3.5" />

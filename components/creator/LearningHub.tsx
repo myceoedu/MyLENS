@@ -8,6 +8,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Circle,
+  ClipboardList,
   Clock3,
   ExternalLink,
   FileText,
@@ -16,23 +17,28 @@ import {
   Video,
 } from "lucide-react";
 import { extractYouTubeId } from "@/lib/youtube";
-import {
-  LEARNING_CONTENT_LABELS,
-  type LearningContentType,
-  type LearningItem,
-  type LearningModule,
+import type {
+  LearningContentType,
+  LearningItem,
+  LearningModule,
+  LearningTaskSubmission,
 } from "@/types/learning";
 import { cn } from "@/lib/utils";
 import { setLearningItemCompletionAction } from "@/lib/learning/actions";
+import CreatorLearningNav from "@/components/creator/CreatorLearningNav";
+import LearningTaskSubmitForm from "@/components/creator/LearningTaskSubmitForm";
+import { formatTaskDate } from "@/lib/learning/tasks";
 
 type BrowseFilter = "all" | LearningContentType;
 
-const TYPE_ORDER: LearningContentType[] = [
+const LESSON_TYPE_ORDER: LearningContentType[] = [
   "live_class",
   "recorded_video",
   "document",
   "external_link",
 ];
+
+const TYPE_ORDER: LearningContentType[] = [...LESSON_TYPE_ORDER, "task"];
 
 const TYPE_META: Record<
   LearningContentType,
@@ -71,6 +77,13 @@ const TYPE_META: Record<
     badge: "bg-sky-600 text-white",
     bar: "bg-sky-600",
     soft: "bg-sky-50 border-sky-200",
+  },
+  task: {
+    short: "Task",
+    Icon: ClipboardList,
+    badge: "bg-violet-700 text-white",
+    bar: "bg-violet-700",
+    soft: "bg-violet-50 border-violet-200",
   },
 };
 
@@ -277,6 +290,26 @@ function ContentViewer({ item }: { item: LearningItem }) {
     );
   }
 
+  if (item.content_type === "task") {
+    return (
+      <div className={cn("border p-6", meta.soft)}>
+        <div className="flex items-start gap-4">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center border border-violet-200 bg-white text-violet-700">
+            <ClipboardList className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-violet-800">
+              Assignment
+            </p>
+            {item.due_at ? (
+              <p className="mt-2 text-xs text-zinc-500">Due {formatTaskDate(item.due_at)}</p>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={cn("border p-6", meta.soft)}>
       <div className="flex items-start gap-4">
@@ -312,11 +345,33 @@ function ContentViewer({ item }: { item: LearningItem }) {
 export default function LearningHub({
   modules,
   completedItemIds,
+  taskSubmissions = {},
+  userId,
+  mode = "lessons",
+  openTaskCount = 0,
 }: {
   modules: LearningModule[];
   completedItemIds: string[];
+  taskSubmissions?: Record<string, LearningTaskSubmission>;
+  userId: string;
+  mode?: "lessons" | "all";
+  openTaskCount?: number;
 }) {
-  const allItems = useMemo(() => modules.flatMap((m) => m.items), [modules]);
+  const lessonModules = useMemo(() => {
+    if (mode !== "lessons") return modules;
+    return modules
+      .map((module) => ({
+        ...module,
+        items: module.items.filter((item) => item.content_type !== "task"),
+      }))
+      .filter((module) => module.items.length > 0);
+  }, [modules, mode]);
+
+  const typeOrder = mode === "lessons" ? LESSON_TYPE_ORDER : TYPE_ORDER;
+  const allItems = useMemo(
+    () => lessonModules.flatMap((m) => m.items),
+    [lessonModules]
+  );
 
   const itemById = useMemo(() => {
     const map = new Map<string, LearningItem>();
@@ -326,9 +381,9 @@ export default function LearningHub({
 
   const moduleTitleById = useMemo(() => {
     const map = new Map<string, string>();
-    for (const module of modules) map.set(module.id, module.title);
+    for (const module of lessonModules) map.set(module.id, module.title);
     return map;
-  }, [modules]);
+  }, [lessonModules]);
 
   const typeCounts = useMemo(() => {
     const counts: Record<LearningContentType, number> = {
@@ -336,6 +391,7 @@ export default function LearningHub({
       recorded_video: 0,
       document: 0,
       external_link: 0,
+      task: 0,
     };
     for (const item of allItems) {
       if (item.content_type in counts) counts[item.content_type] += 1;
@@ -345,11 +401,11 @@ export default function LearningHub({
 
   const availableFilters = useMemo(() => {
     const filters: BrowseFilter[] = ["all"];
-    for (const type of TYPE_ORDER) {
+    for (const type of typeOrder) {
       if (typeCounts[type] > 0) filters.push(type);
     }
     return filters;
-  }, [typeCounts]);
+  }, [typeCounts, typeOrder]);
 
   const [filter, setFilter] = useState<BrowseFilter>("all");
   const [selectedId, setSelectedId] = useState<string | null>(() =>
@@ -371,7 +427,7 @@ export default function LearningHub({
   }, [selectedId, itemById, allItems]);
 
   const filteredModules = useMemo(() => {
-    return modules
+    return lessonModules
       .map((module) => ({
         module,
         items: module.items.filter((item) =>
@@ -379,7 +435,7 @@ export default function LearningHub({
         ),
       }))
       .filter((group) => group.items.length > 0);
-  }, [modules, filter]);
+  }, [lessonModules, filter]);
 
   const filteredItems = useMemo(
     () => filteredModules.flatMap((group) => group.items),
@@ -447,14 +503,27 @@ export default function LearningHub({
     });
   }
 
-  if (modules.length === 0 || allItems.length === 0) {
+  if (lessonModules.length === 0 || allItems.length === 0) {
     return (
-      <div className="border border-dashed border-zinc-200 bg-white px-6 py-16 text-center">
-        <BookOpen className="mx-auto h-8 w-8 text-zinc-400" />
-        <h2 className="mt-4 text-lg font-semibold text-zinc-900">No lessons published yet</h2>
-        <p className="mt-2 text-sm text-zinc-500">
-          Your administrator has not published training material.
-        </p>
+      <div className="bg-white">
+        <header className="border-b border-zinc-200 px-4 py-5 sm:px-5">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#B08D3F]">
+            Academy
+          </p>
+          <h1
+            className="mt-1 text-2xl font-medium tracking-tight text-zinc-900 sm:text-[1.75rem]"
+            style={{ fontFamily: "var(--font-serif)" }}
+          >
+            Lessons
+          </h1>
+        </header>
+        {mode === "lessons" ? (
+          <CreatorLearningNav active="lessons" openTaskCount={openTaskCount} />
+        ) : null}
+        <div className="px-6 py-16 text-center">
+          <BookOpen className="mx-auto h-8 w-8 text-zinc-400" />
+          <h2 className="mt-4 text-lg font-semibold text-zinc-900">No lessons yet</h2>
+        </div>
       </div>
     );
   }
@@ -462,28 +531,37 @@ export default function LearningHub({
   return (
     <div className="bg-white">
       {/* LMS toolbar */}
-      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-200 px-4 py-4 sm:px-5">
+      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-200 px-4 py-5 sm:px-5">
         <div>
-          <h1 className="text-lg font-semibold text-zinc-900">Learning</h1>
-          <p className="mt-0.5 text-sm text-zinc-500">
-            {modules.length} modules · {allItems.length} lessons
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#B08D3F]">
+            Academy
           </p>
+          <h1
+            className="mt-1 text-2xl font-medium tracking-tight text-zinc-900 sm:text-[1.75rem]"
+            style={{ fontFamily: "var(--font-serif)" }}
+          >
+            Lessons
+          </h1>
         </div>
         <div className="min-w-[10rem]">
           <div className="flex items-center justify-between gap-3 text-xs text-zinc-600">
             <span>Progress</span>
-            <span className="font-medium text-zinc-900">
+            <span className="font-medium tabular-nums text-zinc-900">
               {completedCount}/{allItems.length} ({completionPercent}%)
             </span>
           </div>
-          <div className="mt-1.5 h-2 overflow-hidden bg-zinc-100">
+          <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-zinc-100">
             <div
-              className="h-full bg-emerald-600 transition-[width] duration-300"
+              className="h-full rounded-full bg-[#0F3A2C] transition-[width] duration-300"
               style={{ width: `${completionPercent}%` }}
             />
           </div>
         </div>
       </header>
+
+      {mode === "lessons" ? (
+        <CreatorLearningNav active="lessons" openTaskCount={openTaskCount} />
+      ) : null}
 
       {/* Type filters — primary navigation */}
       <div className="flex flex-wrap gap-2 border-b border-zinc-200 bg-white px-4 py-3 sm:px-5">
@@ -664,37 +742,52 @@ export default function LearningHub({
                   ) : null}
                 </div>
 
-                <div className="mt-4 flex flex-wrap items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => toggleCompletion(selectedItem.id)}
-                    disabled={isPending && pendingItemId === selectedItem.id}
-                    className={cn(
-                      "inline-flex items-center gap-2 border px-3 py-2 text-xs font-semibold transition-colors disabled:cursor-wait disabled:opacity-60",
-                      completedIds.has(selectedItem.id)
-                        ? "border-emerald-600 bg-emerald-600 text-white hover:bg-emerald-700"
-                        : "border-zinc-300 bg-white text-zinc-800 hover:border-zinc-500"
-                    )}
-                  >
-                    {completedIds.has(selectedItem.id) ? (
-                      <CheckCircle2 className="h-4 w-4" />
-                    ) : (
-                      <Circle className="h-4 w-4" />
-                    )}
-                    {completedIds.has(selectedItem.id)
-                      ? "Completed"
-                      : "Mark as complete"}
-                  </button>
-                  {completionError ? (
-                    <p className="text-xs text-red-600" role="alert">
-                      Could not update progress. Try again.
-                    </p>
-                  ) : null}
-                </div>
+                {selectedItem.content_type !== "task" ? (
+                  <div className="mt-4 flex flex-wrap items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => toggleCompletion(selectedItem.id)}
+                      disabled={isPending && pendingItemId === selectedItem.id}
+                      className={cn(
+                        "inline-flex items-center gap-2 border px-3 py-2 text-xs font-semibold transition-colors disabled:cursor-wait disabled:opacity-60",
+                        completedIds.has(selectedItem.id)
+                          ? "border-emerald-600 bg-emerald-600 text-white hover:bg-emerald-700"
+                          : "border-zinc-300 bg-white text-zinc-800 hover:border-zinc-500"
+                      )}
+                    >
+                      {completedIds.has(selectedItem.id) ? (
+                        <CheckCircle2 className="h-4 w-4" />
+                      ) : (
+                        <Circle className="h-4 w-4" />
+                      )}
+                      {completedIds.has(selectedItem.id)
+                        ? "Completed"
+                        : "Mark as complete"}
+                    </button>
+                    {completionError ? (
+                      <p className="text-xs text-red-600" role="alert">
+                        Could not update progress. Try again.
+                      </p>
+                    ) : null}
+                  </div>
+                ) : completedIds.has(selectedItem.id) ? (
+                  <p className="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-emerald-700">
+                    <CheckCircle2 className="h-4 w-4" />
+                    Approved and completed
+                  </p>
+                ) : null}
               </div>
 
-              <div className="border-t border-zinc-200 px-5 py-6 sm:px-7">
+              <div className="space-y-4 border-t border-zinc-200 px-5 py-6 sm:px-7">
                 <ContentViewer key={selectedItem.id} item={selectedItem} />
+                {selectedItem.content_type === "task" ? (
+                  <LearningTaskSubmitForm
+                    key={`task-form-${selectedItem.id}-${taskSubmissions[selectedItem.id]?.updated_at ?? "new"}`}
+                    item={selectedItem}
+                    submission={taskSubmissions[selectedItem.id] ?? null}
+                    userId={userId}
+                  />
+                ) : null}
               </div>
 
               <nav

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { requireRole } from "@/lib/auth/session";
 import type { LearningContentType } from "@/types/learning";
+import { isLearningTaskMode } from "@/lib/learning/tasks";
 
 export type LearningActionResult = { ok: true } | { ok: false; error: string };
 
@@ -27,6 +28,8 @@ export interface LearningItemInput {
   durationMinutes?: number;
   sortOrder?: number;
   published?: boolean;
+  submissionMode?: string;
+  dueAt?: string;
 }
 
 const VALID_CONTENT_TYPES: LearningContentType[] = [
@@ -34,6 +37,7 @@ const VALID_CONTENT_TYPES: LearningContentType[] = [
   "recorded_video",
   "document",
   "external_link",
+  "task",
 ];
 
 async function requireAdminClient() {
@@ -59,7 +63,9 @@ function validHttpUrl(value: string | null) {
 
 function refreshLearningPages() {
   revalidatePath("/dashboard/admin/learning");
+  revalidatePath("/dashboard/admin/learning/assignments");
   revalidatePath("/dashboard/creator/learning");
+  revalidatePath("/dashboard/creator/learning/tasks");
 }
 
 export async function setLearningItemCompletionAction(
@@ -68,6 +74,19 @@ export async function setLearningItemCompletionAction(
 ): Promise<LearningActionResult> {
   const profile = await requireRole(["creator"]);
   const supabase = await createClient();
+
+  const { data: item } = await supabase
+    .from("learning_items")
+    .select("content_type")
+    .eq("id", itemId)
+    .maybeSingle();
+
+  if (item?.content_type === "task") {
+    return {
+      ok: false,
+      error: "Tasks are completed when an admin approves your submission.",
+    };
+  }
 
   const { error } = completed
     ? await supabase
@@ -125,7 +144,17 @@ export async function saveLearningItemAction(
   if (!VALID_CONTENT_TYPES.includes(input.contentType)) {
     return { ok: false, error: "Choose a valid content type." };
   }
-  if (!contentUrl && !storagePath) {
+
+  const isTask = input.contentType === "task";
+  const submissionMode =
+    isTask && input.submissionMode && isLearningTaskMode(input.submissionMode)
+      ? input.submissionMode
+      : null;
+
+  if (isTask && !submissionMode) {
+    return { ok: false, error: "Choose how students should submit this task." };
+  }
+  if (!isTask && !contentUrl && !storagePath) {
     return { ok: false, error: "Provide a URL or upload a file." };
   }
   if (!validHttpUrl(contentUrl)) {
@@ -135,14 +164,22 @@ export async function saveLearningItemAction(
     return { ok: false, error: "Live classes require a date and time." };
   }
 
+  const dueAt = isTask ? cleanOptional(input.dueAt) : null;
+  if (dueAt) {
+    const parsed = new Date(dueAt);
+    if (Number.isNaN(parsed.getTime())) {
+      return { ok: false, error: "Due date is invalid." };
+    }
+  }
+
   const { profile, supabase } = await requireAdminClient();
   const values = {
     module_id: input.moduleId,
     title,
     description: cleanOptional(input.description),
     content_type: input.contentType,
-    content_url: contentUrl,
-    storage_path: storagePath,
+    content_url: isTask ? null : contentUrl,
+    storage_path: isTask ? null : storagePath,
     starts_at: input.contentType === "live_class" ? cleanOptional(input.startsAt) : null,
     duration_minutes:
       input.durationMinutes && input.durationMinutes > 0
@@ -151,6 +188,8 @@ export async function saveLearningItemAction(
     sort_order: Math.max(0, Math.trunc(input.sortOrder ?? 0)),
     published: input.published ?? false,
     created_by: profile.id,
+    submission_mode: submissionMode,
+    due_at: dueAt,
   };
 
   const query = input.id

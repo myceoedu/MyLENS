@@ -170,7 +170,12 @@ export interface Database {
           module_id: string;
           title: string;
           description: string | null;
-          content_type: "live_class" | "recorded_video" | "document" | "external_link";
+          content_type:
+            | "live_class"
+            | "recorded_video"
+            | "document"
+            | "external_link"
+            | "task";
           content_url: string | null;
           storage_path: string | null;
           starts_at: string | null;
@@ -180,13 +185,20 @@ export interface Database {
           created_by: string | null;
           created_at: string;
           updated_at: string;
+          submission_mode: "text" | "link" | "file" | "mixed" | null;
+          due_at: string | null;
         };
         Insert: {
           id?: string;
           module_id: string;
           title: string;
           description?: string | null;
-          content_type: "live_class" | "recorded_video" | "document" | "external_link";
+          content_type:
+            | "live_class"
+            | "recorded_video"
+            | "document"
+            | "external_link"
+            | "task";
           content_url?: string | null;
           storage_path?: string | null;
           starts_at?: string | null;
@@ -196,13 +208,20 @@ export interface Database {
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          submission_mode?: "text" | "link" | "file" | "mixed" | null;
+          due_at?: string | null;
         };
         Update: {
           id?: string;
           module_id?: string;
           title?: string;
           description?: string | null;
-          content_type?: "live_class" | "recorded_video" | "document" | "external_link";
+          content_type?:
+            | "live_class"
+            | "recorded_video"
+            | "document"
+            | "external_link"
+            | "task";
           content_url?: string | null;
           storage_path?: string | null;
           starts_at?: string | null;
@@ -212,6 +231,8 @@ export interface Database {
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          submission_mode?: "text" | "link" | "file" | "mixed" | null;
+          due_at?: string | null;
         };
         Relationships: [
           {
@@ -226,6 +247,97 @@ export interface Database {
             columns: ["created_by"];
             isOneToOne: false;
             referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      learning_task_submissions: {
+        Row: {
+          id: string;
+          item_id: string;
+          user_id: string;
+          school_id: string | null;
+          answer_text: string | null;
+          answer_url: string | null;
+          storage_path: string | null;
+          status:
+            | "draft"
+            | "submitted"
+            | "in_review"
+            | "approved"
+            | "revision"
+            | "rejected";
+          admin_notes: string | null;
+          attempt: number;
+          submitted_at: string | null;
+          reviewed_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          item_id: string;
+          user_id: string;
+          school_id?: string | null;
+          answer_text?: string | null;
+          answer_url?: string | null;
+          storage_path?: string | null;
+          status?:
+            | "draft"
+            | "submitted"
+            | "in_review"
+            | "approved"
+            | "revision"
+            | "rejected";
+          admin_notes?: string | null;
+          attempt?: number;
+          submitted_at?: string | null;
+          reviewed_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          item_id?: string;
+          user_id?: string;
+          school_id?: string | null;
+          answer_text?: string | null;
+          answer_url?: string | null;
+          storage_path?: string | null;
+          status?:
+            | "draft"
+            | "submitted"
+            | "in_review"
+            | "approved"
+            | "revision"
+            | "rejected";
+          admin_notes?: string | null;
+          attempt?: number;
+          submitted_at?: string | null;
+          reviewed_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "learning_task_submissions_item_id_fkey";
+            columns: ["item_id"];
+            isOneToOne: false;
+            referencedRelation: "learning_items";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "learning_task_submissions_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "learning_task_submissions_school_id_fkey";
+            columns: ["school_id"];
+            isOneToOne: false;
+            referencedRelation: "schools";
             referencedColumns: ["id"];
           },
         ];

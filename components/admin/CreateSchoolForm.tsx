@@ -13,11 +13,10 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="bg-sky-900 hover:bg-sky-800 disabled:opacity-60 text-white font-medium rounded-xl py-3 px-6 transition-all shadow-sm inline-flex items-center gap-2"
-      style={{ fontFamily: "var(--font-poppins)" }}
+      className="inline-flex items-center gap-2 rounded-lg bg-[#0F3A2C] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#175a44] disabled:opacity-60"
     >
-      {pending && <Loader2 className="w-4 h-4 animate-spin" />}
-      Create School & Generate Token
+      {pending && <Loader2 className="h-4 w-4 animate-spin" />}
+      Create school and generate token
     </button>
   );
 }
@@ -31,12 +30,12 @@ export default function CreateSchoolForm() {
   return (
     <form action={formAction} className="space-y-5 max-w-lg">
       {state && !state.ok && (
-        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+        <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
           {state.error}
         </div>
       )}
       {state?.ok && (
-        <div className="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-900">
+        <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
           School created with a new access token. View it in the schools list.
         </div>
       )}

@@ -9,51 +9,73 @@ import {
   LayoutDashboard,
   MessageSquare,
   School,
-  UserCheck,
   Users,
 } from "lucide-react";
 
-const links = [
+export interface AdminNavCounts {
+  submissions?: number;
+  inquiries?: number;
+  people?: number;
+  learning?: number;
+}
+
+interface AdminNavLink {
+  href: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+  exact?: boolean;
+  badge?: keyof AdminNavCounts;
+}
+
+const links: AdminNavLink[] = [
   { href: "/dashboard/admin", label: "Overview", icon: LayoutDashboard, exact: true },
-  { href: "/dashboard/admin/submissions", label: "Submissions", icon: Film },
-  { href: "/dashboard/admin/inquiries", label: "Inquiries", icon: MessageSquare },
-  { href: "/dashboard/admin/learning", label: "Learning", icon: GraduationCap },
+  { href: "/dashboard/admin/submissions", label: "Submissions", icon: Film, badge: "submissions" },
+  { href: "/dashboard/admin/inquiries", label: "Inquiries", icon: MessageSquare, badge: "inquiries" },
+  { href: "/dashboard/admin/users", label: "People", icon: Users, badge: "people" },
   { href: "/dashboard/admin/schools", label: "Schools", icon: School },
-  { href: "/dashboard/admin/users", label: "Users", icon: Users },
-  { href: "/dashboard/admin/users/pending", label: "Pending", icon: UserCheck },
+  { href: "/dashboard/admin/learning", label: "Learning", icon: GraduationCap, badge: "learning" },
 ];
 
-export default function AdminNav() {
+export default function AdminNav({ counts = {} }: { counts?: AdminNavCounts }) {
   const pathname = usePathname();
 
   return (
     <nav
       aria-label="Admin workspace navigation"
-      className="mb-8 -mx-4 overflow-x-auto border-y border-[#dedbd2] bg-[#fbfbf8] px-4 py-2 sm:mx-0 sm:rounded-2xl sm:border sm:px-2"
+      className="mb-7 -mx-4 overflow-x-auto border-b border-zinc-200 bg-white px-4 sm:mx-0 sm:rounded-xl sm:border sm:px-2 sm:py-1.5"
     >
-      <div className="flex min-w-max items-center gap-1">
-        <span className="hidden px-3 text-[9px] font-semibold uppercase tracking-[0.2em] text-amber-600 lg:block">
-          Admin
-        </span>
-      {links.map(({ href, label, icon: Icon, exact }) => {
-        const active = exact ? pathname === href : pathname.startsWith(href);
-        return (
-          <Link
-            key={href}
-            href={href}
-            className={cn(
-              "inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-colors",
-              active
-                ? "bg-sky-900 text-white shadow-sm"
-                                : "text-zinc-600 hover:bg-sky-50 hover:text-sky-900"
-            )}
-            style={{ fontFamily: "var(--font-inter)" }}
-          >
-            <Icon className="w-4 h-4" />
-            {label}
-          </Link>
-        );
-      })}
+      <div className="flex min-w-max items-center gap-0.5">
+        {links.map(({ href, label, icon: Icon, exact, badge }) => {
+          const active = exact ? pathname === href : pathname.startsWith(href);
+          const count = badge ? (counts[badge] ?? 0) : 0;
+
+          return (
+            <Link
+              key={href}
+              href={href}
+              aria-current={active ? "page" : undefined}
+              className={cn(
+                "group inline-flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                active
+                  ? "bg-[#0F3A2C] text-white"
+                  : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
+              )}
+            >
+              <Icon className={cn("h-4 w-4", active ? "text-white" : "text-zinc-400")} />
+              {label}
+              {count > 0 && (
+                <span
+                  className={cn(
+                    "ml-0.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[11px] font-semibold tabular-nums",
+                    active ? "bg-white/15 text-white" : "bg-amber-100 text-amber-700"
+                  )}
+                >
+                  {count > 99 ? "99+" : count}
+                </span>
+              )}
+            </Link>
+          );
+        })}
       </div>
     </nav>
   );

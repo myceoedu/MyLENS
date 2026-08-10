@@ -32,7 +32,15 @@ export default async function CreatorDashboardPage() {
     getCreatorLearningModules(),
     getCreatorCompletedLearningItemIds(profile.id),
   ]);
-  const lessonCount = modules.reduce((total, module) => total + module.items.length, 0);
+  const lessonIds = new Set(
+    modules.flatMap((module) =>
+      module.items
+        .filter((item) => item.content_type !== "task")
+        .map((item) => item.id)
+    )
+  );
+  const lessonCount = lessonIds.size;
+  const completedLessons = completedItemIds.filter((id) => lessonIds.has(id)).length;
   const nextClass =
     modules
       .flatMap((module) => module.items)
@@ -59,7 +67,7 @@ export default async function CreatorDashboardPage() {
           id: submission.id,
           status: submission.status as SubmissionStatus,
         }))}
-        completedLessons={completedItemIds.length}
+        completedLessons={completedLessons}
         lessonCount={lessonCount}
         nextClass={
           nextClass

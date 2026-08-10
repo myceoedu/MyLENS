@@ -11,7 +11,7 @@ const LearningAdminPanel = dynamic(() => import("@/components/admin/LearningAdmi
   ),
 });
 
-export default async function AdminLearningPage() {
+export default async function AdminLearningAssignmentsPage() {
   await requireRole(["admin"]);
   const supabase = await createClient();
   const [modules, taskQueueResult] = await Promise.all([
@@ -22,24 +22,24 @@ export default async function AdminLearningPage() {
       .in("status", ["submitted", "in_review"]),
   ]);
 
-  const lessons = modules.flatMap((module) =>
-    module.items.filter((item) => item.content_type !== "task")
+  const assignments = modules.flatMap((module) =>
+    module.items.filter((item) => item.content_type === "task")
   );
-  const publishedCount = lessons.filter((item) => item.published).length;
+  const publishedCount = assignments.filter((item) => item.published).length;
   const pendingTasks =
     taskQueueResult.error?.code === "42P01" ? 0 : (taskQueueResult.count ?? 0);
 
   return (
     <AdminPage>
-      <AdminPageHeader eyebrow="Academy" title="Lessons" />
+      <AdminPageHeader eyebrow="Academy" title="Assignments" />
 
-      <LearningWorkspaceNav active="lessons" reviewCount={pendingTasks} />
+      <LearningWorkspaceNav active="assignments" reviewCount={pendingTasks} />
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {[
-          ["Modules", modules.length],
-          ["Lessons", lessons.length],
+          ["Assignments", assignments.length],
           ["Published", publishedCount],
+          ["Awaiting review", pendingTasks],
         ].map(([label, value]) => (
           <AdminCard key={label} className="px-4 py-3.5">
             <p className="text-2xl font-semibold tabular-nums text-zinc-900">{value}</p>
@@ -50,7 +50,7 @@ export default async function AdminLearningPage() {
         ))}
       </div>
 
-      <LearningAdminPanel modules={modules} mode="lessons" />
+      <LearningAdminPanel modules={modules} mode="assignments" />
     </AdminPage>
   );
 }

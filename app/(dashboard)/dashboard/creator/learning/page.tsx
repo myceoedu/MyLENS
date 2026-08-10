@@ -4,6 +4,7 @@ import { requireRole } from "@/lib/auth/session";
 import {
   getCreatorCompletedLearningItemIds,
   getCreatorLearningModules,
+  getCreatorTaskSubmissionsByItem,
 } from "@/lib/learning/queries";
 
 const LearningHub = dynamic(() => import("@/components/creator/LearningHub"), {
@@ -12,14 +13,30 @@ const LearningHub = dynamic(() => import("@/components/creator/LearningHub"), {
 
 export default async function CreatorLearningPage() {
   const profile = await requireRole(["creator"]);
-  const [modules, completedItemIds] = await Promise.all([
+  const [modules, completedItemIds, taskSubmissions] = await Promise.all([
     getCreatorLearningModules(),
     getCreatorCompletedLearningItemIds(profile.id),
+    getCreatorTaskSubmissionsByItem(profile.id),
   ]);
+
+  const openTaskCount = modules
+    .flatMap((module) => module.items)
+    .filter((item) => item.content_type === "task")
+    .filter((item) => {
+      const status = taskSubmissions[item.id]?.status;
+      return !status || status === "draft" || status === "revision";
+    }).length;
 
   return (
     <CreatorShell>
-      <LearningHub modules={modules} completedItemIds={completedItemIds} />
+      <LearningHub
+        modules={modules}
+        completedItemIds={completedItemIds}
+        taskSubmissions={taskSubmissions}
+        userId={profile.id}
+        mode="lessons"
+        openTaskCount={openTaskCount}
+      />
     </CreatorShell>
   );
 }

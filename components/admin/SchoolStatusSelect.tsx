@@ -26,7 +26,7 @@ export default function SchoolStatusSelect({
           router.refresh();
         });
       }}
-      className="bg-zinc-50/50 border border-zinc-200 rounded-xl text-sm text-zinc-900 py-2 px-3 outline-none focus:border-sky-600"
+      className="rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-900 outline-none transition-colors focus:border-[#0F3A2C] focus:ring-2 focus:ring-[#0F3A2C]/10 disabled:opacity-60"
     >
       <option value="active">Active</option>
       <option value="pending">Pending</option>

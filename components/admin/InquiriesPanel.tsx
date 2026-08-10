@@ -24,6 +24,12 @@ import {
   INQUIRY_STATUS_STYLES,
 } from "@/lib/admin/inquiries";
 import AdminStatCard from "@/components/admin/AdminStatCard";
+import {
+  AdminCard,
+  AdminEmptyState,
+  adminButton,
+  adminTable,
+} from "@/components/admin/AdminUI";
 import type { ContactInquiry, InquiryStatus } from "@/types/contact-inquiry";
 import { cn } from "@/lib/utils";
 
@@ -84,8 +90,8 @@ export default function InquiriesPanel({ inquiries }: { inquiries: ContactInquir
   ];
 
   return (
-    <div className="space-y-8">
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="space-y-6">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <AdminStatCard label="Total inquiries" value={stats.total} hint="All time" />
         <AdminStatCard
           label="New"
@@ -94,30 +100,36 @@ export default function InquiriesPanel({ inquiries }: { inquiries: ContactInquir
           variant="pending"
         />
         <AdminStatCard label="This week" value={stats.thisWeek} hint="Last 7 days" />
-        <AdminStatCard label="Contacted" value={stats.contacted} hint="Follow-up in progress" />
+        <AdminStatCard
+          label="Contacted"
+          value={stats.contacted}
+          hint="Follow-up in progress"
+          variant="active"
+        />
       </div>
 
-      <div className="bg-white border border-zinc-200/80 rounded-3xl shadow-sm overflow-hidden">
-        <div className="p-5 sm:p-6 border-b border-zinc-100 space-y-4">
+      <AdminCard>
+        <div className="space-y-4 border-b border-zinc-100 p-4 sm:p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5">
               {filterTabs.map((tab) => (
                 <button
                   key={tab.id}
                   type="button"
                   onClick={() => setFilter(tab.id)}
+                  aria-pressed={filter === tab.id}
                   className={cn(
-                    "inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border transition-all",
+                    "inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors",
                     filter === tab.id
-                                          ? "bg-sky-900 text-white border-sky-900"
-                                          : "bg-white text-zinc-600 border-zinc-200 hover:border-sky-200 hover:text-sky-900"
+                      ? "border-[#0F3A2C] bg-[#0F3A2C] text-white"
+                      : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300 hover:text-zinc-900"
                   )}
                 >
                   {tab.label}
                   <span
                     className={cn(
-                      "text-xs px-1.5 py-0.5 rounded-md",
-                      filter === tab.id ? "bg-white/15" : "bg-zinc-100"
+                      "rounded-full px-1.5 text-[11px] font-semibold tabular-nums",
+                      filter === tab.id ? "bg-white/15" : "bg-zinc-100 text-zinc-600"
                     )}
                   >
                     {tab.count}
@@ -131,120 +143,106 @@ export default function InquiriesPanel({ inquiries }: { inquiries: ContactInquir
                 type="button"
                 onClick={() => router.refresh()}
                 disabled={pending}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border border-zinc-200 text-zinc-700 hover:border-zinc-300 disabled:opacity-60"
+                className={adminButton.secondary}
               >
-                <RefreshCw className={cn("w-4 h-4", pending && "animate-spin")} />
+                <RefreshCw className={cn("h-4 w-4", pending && "animate-spin")} />
                 Refresh
               </button>
               <button
                 type="button"
                 onClick={handleExport}
                 disabled={inquiries.length === 0}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-sky-900 text-white hover:bg-sky-800 disabled:opacity-50"
+                className={adminButton.primary}
               >
-                <Download className="w-4 h-4" />
+                <Download className="h-4 w-4" />
                 Export CSV
               </button>
             </div>
           </div>
 
           <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
             <input
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search name, email, school, or message…"
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-200 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-sky-300 focus:ring-1 focus:ring-sky-200 outline-none"
+              className="w-full rounded-lg border border-zinc-200 py-2.5 pl-10 pr-4 text-sm text-zinc-900 outline-none transition-colors placeholder:text-zinc-400 focus:border-[#0F3A2C] focus:ring-2 focus:ring-[#0F3A2C]/10"
             />
           </div>
 
           {error && (
-            <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">
+            <p className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
               {error}
             </p>
           )}
         </div>
 
         {filtered.length === 0 ? (
-          <div className="px-6 py-16 text-center">
-            <MessageSquare className="w-10 h-10 text-zinc-300 mx-auto mb-4" />
-            <p className="text-zinc-800 font-medium mb-1">
-              {inquiries.length === 0 ? "No inquiries yet" : "No matches for this filter"}
-            </p>
-            <p className="text-sm text-zinc-500 max-w-sm mx-auto">
-              {inquiries.length === 0
+          <AdminEmptyState
+            icon={<MessageSquare className="h-5 w-5" />}
+            title={inquiries.length === 0 ? "No inquiries yet" : "No matches for this filter"}
+            description={
+              inquiries.length === 0
                 ? "When someone fills in Join The Journey on the homepage, their message will appear here."
-                : "Try a different filter or search term."}
-            </p>
-          </div>
+                : "Try a different filter or search term."
+            }
+          />
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className={adminTable.wrapper}>
+            <table className={adminTable.table}>
               <thead>
-                <tr className="border-b border-zinc-100 bg-zinc-50/50 text-left">
-                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-sky-700 font-semibold">
-                    Name
-                  </th>
-                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-sky-700 font-semibold">
-                    Email
-                  </th>
-                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-sky-700 font-semibold">
-                    School
-                  </th>
-                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-sky-700 font-semibold">
-                    Message
-                  </th>
-                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-sky-700 font-semibold">
-                    Date
-                  </th>
-                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-sky-700 font-semibold">
-                    Status
-                  </th>
-                  <th className="px-6 py-4" />
+                <tr className={adminTable.head}>
+                  <th className={adminTable.th}>Name</th>
+                  <th className={adminTable.th}>Email</th>
+                  <th className={adminTable.th}>School</th>
+                  <th className={adminTable.th}>Message</th>
+                  <th className={adminTable.th}>Date</th>
+                  <th className={adminTable.th}>Status</th>
+                  <th className={adminTable.th} />
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((row) => (
-                  <tr key={row.id} className="border-b border-zinc-50 hover:bg-zinc-50/40 align-top">
-                    <td className="px-6 py-4 font-medium text-zinc-900 whitespace-nowrap">
+                  <tr key={row.id} className={cn(adminTable.row, "align-top")}>
+                    <td className={cn(adminTable.tdStrong, "whitespace-nowrap")}>
                       {row.full_name}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className={adminTable.td}>
                       <a
                         href={`mailto:${row.email}`}
-                        className="text-sky-800 hover:underline inline-flex items-center gap-1.5"
+                        className="inline-flex items-center gap-1.5 text-[#0F3A2C] hover:underline"
                       >
-                        <Mail className="w-3.5 h-3.5 shrink-0" />
+                        <Mail className="h-3.5 w-3.5 shrink-0" />
                         {row.email}
                       </a>
                     </td>
-                    <td className="px-6 py-4 text-zinc-600 max-w-[10rem]">{row.school_name}</td>
-                    <td className="px-6 py-4 text-zinc-600 max-w-xs">
+                    <td className={cn(adminTable.td, "max-w-[10rem]")}>{row.school_name}</td>
+                    <td className={cn(adminTable.td, "max-w-xs")}>
                       <p className="line-clamp-2">{row.message}</p>
                       <button
                         type="button"
                         onClick={() => setSelected(row)}
-                        className="mt-1 text-xs font-medium text-sky-800 hover:underline"
+                        className="mt-1 text-xs font-medium text-[#0F3A2C] hover:underline"
                       >
                         Read full message
                       </button>
                     </td>
-                    <td className="px-6 py-4 text-zinc-500 whitespace-nowrap text-xs">
+                    <td className={cn(adminTable.td, "whitespace-nowrap text-xs text-zinc-500")}>
                       {formatInquiryDate(row.created_at)}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className={adminTable.td}>
                       <span
                         className={cn(
-                          "inline-flex px-2.5 py-1 rounded-lg text-xs font-medium border",
+                          "inline-flex rounded-full border px-2.5 py-1 text-xs font-medium",
                           INQUIRY_STATUS_STYLES[row.status]
                         )}
                       >
                         {INQUIRY_STATUS_LABELS[row.status]}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-col items-end gap-2 min-w-[9rem]">
+                    <td className={adminTable.td}>
+                      <div className="flex min-w-[9rem] flex-col items-end gap-2">
                         {row.status === "new" && (
                           <button
                             type="button"
@@ -252,7 +250,7 @@ export default function InquiriesPanel({ inquiries }: { inquiries: ContactInquir
                             onClick={() =>
                               runAction(() => updateInquiryStatusAction(row.id, "contacted"))
                             }
-                            className="text-xs font-medium text-sky-800 border border-sky-200 rounded-lg px-3 py-1.5 hover:bg-sky-50 disabled:opacity-60"
+                            className="rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-700 transition-colors hover:border-zinc-300 hover:text-zinc-900 disabled:opacity-60"
                           >
                             Mark contacted
                           </button>
@@ -264,7 +262,7 @@ export default function InquiriesPanel({ inquiries }: { inquiries: ContactInquir
                             onClick={() =>
                               runAction(() => updateInquiryStatusAction(row.id, "closed"))
                             }
-                            className="text-xs font-medium text-zinc-700 border border-zinc-200 rounded-lg px-3 py-1.5 hover:bg-zinc-50 disabled:opacity-60"
+                            className="rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-700 transition-colors hover:border-zinc-300 hover:text-zinc-900 disabled:opacity-60"
                           >
                             Mark closed
                           </button>
@@ -273,10 +271,8 @@ export default function InquiriesPanel({ inquiries }: { inquiries: ContactInquir
                           <button
                             type="button"
                             disabled={pending}
-                            onClick={() =>
-                              runAction(() => updateInquiryStatusAction(row.id, "new"))
-                            }
-                            className="text-xs font-medium text-amber-800 border border-amber-200 rounded-lg px-3 py-1.5 hover:bg-amber-50 disabled:opacity-60"
+                            onClick={() => runAction(() => updateInquiryStatusAction(row.id, "new"))}
+                            className="rounded-lg border border-amber-200 px-3 py-1.5 text-xs font-medium text-amber-700 transition-colors hover:bg-amber-50 disabled:opacity-60"
                           >
                             Reopen
                           </button>
@@ -289,12 +285,12 @@ export default function InquiriesPanel({ inquiries }: { inquiries: ContactInquir
                               runAction(() => deleteInquiryAction(row.id));
                             }
                           }}
-                          className="inline-flex items-center gap-1 text-xs font-medium text-red-700 border border-red-200 rounded-lg px-3 py-1.5 hover:bg-red-50 disabled:opacity-60"
+                          className={adminButton.danger}
                         >
                           {pending ? (
-                            <Loader2 className="w-3 h-3 animate-spin" />
+                            <Loader2 className="h-3 w-3 animate-spin" />
                           ) : (
-                            <Trash2 className="w-3 h-3" />
+                            <Trash2 className="h-3 w-3" />
                           )}
                           Delete
                         </button>
@@ -306,7 +302,7 @@ export default function InquiriesPanel({ inquiries }: { inquiries: ContactInquir
             </table>
           </div>
         )}
-      </div>
+      </AdminCard>
 
       {selected && (
         <div
@@ -314,7 +310,7 @@ export default function InquiriesPanel({ inquiries }: { inquiries: ContactInquir
           onClick={() => setSelected(null)}
         >
           <div
-            className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[85vh] overflow-y-auto p-6 sm:p-8"
+            className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-xl bg-white p-6 shadow-xl sm:p-8"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-4 mb-4">
@@ -333,7 +329,7 @@ export default function InquiriesPanel({ inquiries }: { inquiries: ContactInquir
             </div>
             <a
               href={`mailto:${selected.email}`}
-              className="inline-flex items-center gap-2 text-sm text-emerald-800 font-medium mb-4 hover:underline"
+              className="mb-4 inline-flex items-center gap-2 text-sm font-medium text-[#0F3A2C] hover:underline"
             >
               <Mail className="w-4 h-4" />
               {selected.email}

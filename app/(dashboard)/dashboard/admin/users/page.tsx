@@ -1,11 +1,27 @@
-import Link from "next/link";
+import { Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import UserStatusActions from "@/components/admin/UserStatusActions";
-import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
+import AdminSubTabs from "@/components/admin/AdminSubTabs";
+import {
+  AdminCard,
+  AdminEmptyState,
+  AdminPage,
+  AdminPageHeader,
+  StatusPill,
+  adminButton,
+  adminField,
+  adminTable,
+} from "@/components/admin/AdminUI";
 import DashboardPagination from "@/components/dashboard/DashboardPagination";
 import type { UserRole, UserStatus } from "@/types/auth";
 
 const PAGE_SIZE = 25;
+
+const STATUS_TONE = {
+  active: "emerald",
+  pending: "amber",
+  suspended: "rose",
+} as const;
 
 export default async function AdminUsersPage({
   searchParams,
@@ -36,10 +52,10 @@ export default async function AdminUsersPage({
   if (role) usersQuery = usersQuery.eq("role", role);
   if (status) usersQuery = usersQuery.eq("status", status);
 
-  const { data: users, count: userCount } = await usersQuery.range(
-    rangeStart,
-    rangeStart + PAGE_SIZE - 1
-  );
+  const [{ data: users, count: userCount }, { count: pendingCount }] = await Promise.all([
+    usersQuery.range(rangeStart, rangeStart + PAGE_SIZE - 1),
+    supabase.from("profiles").select("id", { count: "exact", head: true }).eq("status", "pending"),
+  ]);
 
   const schoolIds = [...new Set((users ?? []).map((u) => u.school_id).filter(Boolean))] as string[];
   const schoolNames: Record<string, string> = {};
@@ -51,23 +67,29 @@ export default async function AdminUsersPage({
     }
   }
 
+  const hasFilters = Boolean(query || role || status);
+
   return (
-    <div className="space-y-7">
-      <DashboardPageHeader
+    <AdminPage>
+      <AdminPageHeader
         eyebrow="Account operations"
-        title="Users and access"
-        description="Review all creator, judge, and administrator accounts across the MyLENS workspace."
-        action={
-          <Link
-            href="/dashboard/admin/users/pending"
-            className="rounded-xl border border-[#d8d2c5] bg-white px-5 py-3 text-sm font-medium text-[#10271c] transition-colors hover:border-[#bba978]"
-          >
-            Pending approvals
-          </Link>
-        }
+        title="People"
+        description="Creator, judge, and administrator accounts across the MyLENS workspace."
       />
 
-      <div className="overflow-hidden rounded-[1.5rem] border border-[#e2ded5] bg-white shadow-[0_16px_34px_-28px_rgba(16,39,28,0.4)]">
+      <AdminSubTabs
+        tabs={[
+          { href: "/dashboard/admin/users", label: "All accounts", active: true },
+          {
+            href: "/dashboard/admin/users/pending",
+            label: "Pending approval",
+            count: pendingCount ?? 0,
+            active: false,
+          },
+        ]}
+      />
+
+      <AdminCard>
         <form className="grid gap-3 border-b border-zinc-100 p-4 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_10rem_10rem_auto] sm:p-5">
           <label className="sr-only" htmlFor="user-search">
             Search users
@@ -78,17 +100,12 @@ export default async function AdminUsersPage({
             type="search"
             defaultValue={query}
             placeholder="Search name or email"
-            className="min-w-0 border border-[#ded8ca] bg-white px-3 py-2.5 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#8d6928]"
+            className={adminField}
           />
           <label className="sr-only" htmlFor="user-role">
             Filter by role
           </label>
-          <select
-            id="user-role"
-            name="role"
-            defaultValue={role ?? ""}
-            className="border border-[#ded8ca] bg-white px-3 py-2.5 text-sm text-zinc-700 outline-none focus:border-[#8d6928]"
-          >
+          <select id="user-role" name="role" defaultValue={role ?? ""} className={adminField}>
             <option value="">All roles</option>
             <option value="creator">Creators</option>
             <option value="admin">Administrators</option>
@@ -97,91 +114,66 @@ export default async function AdminUsersPage({
           <label className="sr-only" htmlFor="user-status">
             Filter by status
           </label>
-          <select
-            id="user-status"
-            name="status"
-            defaultValue={status ?? ""}
-            className="border border-[#ded8ca] bg-white px-3 py-2.5 text-sm text-zinc-700 outline-none focus:border-[#8d6928]"
-          >
+          <select id="user-status" name="status" defaultValue={status ?? ""} className={adminField}>
             <option value="">All statuses</option>
             <option value="active">Active</option>
             <option value="pending">Pending</option>
             <option value="suspended">Suspended</option>
           </select>
-          <button
-            type="submit"
-            className="bg-[#10271c] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#1b3d2b]"
-          >
+          <button type="submit" className={adminButton.primary}>
             Apply
           </button>
         </form>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm" style={{ fontFamily: "var(--font-inter)" }}>
-            <thead>
-              <tr className="border-b border-zinc-100 bg-zinc-50/50 text-left">
-                <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
-                  Name
-                </th>
-                <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
-                  Email
-                </th>
-                <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
-                  Role
-                </th>
-                <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
-                  School
-                </th>
-                <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
-                  Status
-                </th>
-                <th className="px-6 py-4" />
-              </tr>
-            </thead>
-            <tbody>
-              {(users ?? []).map((user) => (
-                <tr key={user.id} className="border-b border-zinc-50 hover:bg-zinc-50/30">
-                  <td className="px-6 py-4 font-medium text-zinc-900">
-                    {user.full_name ?? "—"}
-                  </td>
-                  <td className="px-6 py-4 text-zinc-600">{user.email}</td>
-                  <td className="px-6 py-4 text-zinc-600 capitalize">{user.role}</td>
-                  <td className="px-6 py-4 text-zinc-600">
-                    {user.school_id ? (schoolNames[user.school_id] ?? "—") : "—"}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={
-                        user.status === "active"
-                          ? "text-emerald-700 font-medium"
-                          : user.status === "pending"
-                            ? "text-amber-600 font-medium"
-                            : "text-zinc-500"
-                      }
-                    >
-                      {user.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    {user.role === "creator" && (
-                      <UserStatusActions
-                        profileId={user.id}
-                        status={user.status}
-                        showApprove
-                      />
-                    )}
-                  </td>
+
+        {(users ?? []).length === 0 ? (
+          <AdminEmptyState
+            icon={<Users className="h-5 w-5" />}
+            title={hasFilters ? "No accounts match these filters" : "No accounts yet"}
+            description={
+              hasFilters
+                ? "Try a different name, role, or status."
+                : "Accounts appear here once creators register with a school token."
+            }
+          />
+        ) : (
+          <div className={adminTable.wrapper}>
+            <table className={adminTable.table}>
+              <thead>
+                <tr className={adminTable.head}>
+                  <th className={adminTable.th}>Name</th>
+                  <th className={adminTable.th}>Email</th>
+                  <th className={adminTable.th}>Role</th>
+                  <th className={adminTable.th}>School</th>
+                  <th className={adminTable.th}>Status</th>
+                  <th className={adminTable.th} />
                 </tr>
-              ))}
-              {(users ?? []).length === 0 && (
-                <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-zinc-500">
-                    No users match the current filters.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {(users ?? []).map((user) => (
+                  <tr key={user.id} className={adminTable.row}>
+                    <td className={adminTable.tdStrong}>{user.full_name ?? "—"}</td>
+                    <td className={adminTable.td}>{user.email}</td>
+                    <td className={`${adminTable.td} capitalize`}>{user.role}</td>
+                    <td className={adminTable.td}>
+                      {user.school_id ? (schoolNames[user.school_id] ?? "—") : "—"}
+                    </td>
+                    <td className={adminTable.td}>
+                      <StatusPill tone={STATUS_TONE[user.status] ?? "neutral"}>
+                        {user.status}
+                      </StatusPill>
+                    </td>
+                    <td className={`${adminTable.td} text-right`}>
+                      {user.role === "creator" && (
+                        <UserStatusActions profileId={user.id} status={user.status} showApprove />
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
         <DashboardPagination
           pathname="/dashboard/admin/users"
           currentPage={currentPage}
@@ -189,7 +181,7 @@ export default async function AdminUsersPage({
           totalItems={userCount ?? 0}
           query={{ q: query, role, status }}
         />
-      </div>
-    </div>
+      </AdminCard>
+    </AdminPage>
   );
 }

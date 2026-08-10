@@ -4,9 +4,16 @@ import { createClient } from "@/lib/supabase/server";
 import { requireRole } from "@/lib/auth/session";
 import StatusBadge from "@/components/creator/StatusBadge";
 import CategoryPill from "@/components/creator/CategoryPill";
-import { DashboardEmptyState, DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
 import DashboardPagination from "@/components/dashboard/DashboardPagination";
 import AdminStatCard from "@/components/admin/AdminStatCard";
+import {
+  AdminCard,
+  AdminEmptyState,
+  AdminPage,
+  AdminPageHeader,
+  adminButton,
+  adminField,
+} from "@/components/admin/AdminUI";
 import {
   ADMIN_SUBMISSION_FILTERS,
   filterLabel,
@@ -93,9 +100,9 @@ export default async function AdminSubmissionsPage({
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-red-200 bg-red-50 px-6 py-8 text-center">
-        <p className="mb-2 font-medium text-red-800">Could not load submissions</p>
-        <p className="text-sm text-red-600">
+      <div className="rounded-xl border border-rose-200 bg-rose-50 px-6 py-8 text-center">
+        <p className="mb-2 font-medium text-rose-800">Could not load submissions</p>
+        <p className="text-sm text-rose-600">
           Run migration <code className="font-mono text-xs">007_phase4_submissions.sql</code> in
           Supabase, then refresh. ({error.message})
         </p>
@@ -140,94 +147,101 @@ export default async function AdminSubmissionsPage({
   const total = totalCount ?? 0;
 
   return (
-    <div className="space-y-7">
-      <DashboardPageHeader
+    <AdminPage>
+      <AdminPageHeader
         eyebrow="Campaign entries"
         title="Video submissions"
         description="Review creator tourism videos, request edits, and approve entries for judging."
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-3">
         <AdminStatCard
           label="Needs review"
           value={queueCount ?? 0}
           hint="Submitted + in review"
           variant="pending"
         />
-        <AdminStatCard label="Newly submitted" value={submittedCount ?? 0} />
-        <AdminStatCard label="Approved" value={approvedCount ?? 0} hint="In judging queue" />
+        <AdminStatCard
+          label="Newly submitted"
+          value={submittedCount ?? 0}
+          hint="Not opened yet"
+          variant="schools"
+        />
+        <AdminStatCard
+          label="Approved"
+          value={approvedCount ?? 0}
+          hint="In judging queue"
+          variant="active"
+        />
       </div>
 
-      <div className="overflow-hidden rounded-[1.5rem] border border-[#e2ded5] bg-white shadow-[0_16px_34px_-28px_rgba(16,39,28,0.4)]">
-        <form className="flex flex-col gap-3 border-b border-zinc-100 p-4 sm:flex-row sm:items-center sm:p-5">
-          <label className="sr-only" htmlFor="submission-search">
-            Search submissions
-          </label>
-          <input
-            id="submission-search"
-            name="q"
-            type="search"
-            defaultValue={query}
-            placeholder="Search by title"
-            className="min-w-0 flex-1 rounded-xl border border-[#ddd8ce] bg-[#fbfbf8] px-3 py-2.5 text-sm outline-none focus:border-[#bba978] focus:bg-white"
-          />
-          <input type="hidden" name="status" value={filter} />
-          <button
-            type="submit"
-            className="rounded-xl bg-[#10271c] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1b3d2b]"
-          >
-            Search
-          </button>
-        </form>
+      <AdminCard>
+        <div className="flex flex-col gap-4 border-b border-zinc-100 p-4 sm:p-5">
+          <form className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <label className="sr-only" htmlFor="submission-search">
+              Search submissions
+            </label>
+            <input
+              id="submission-search"
+              name="q"
+              type="search"
+              defaultValue={query}
+              placeholder="Search by title"
+              className={`${adminField} sm:flex-1`}
+            />
+            <input type="hidden" name="status" value={filter} />
+            <button type="submit" className={adminButton.primary}>
+              Search
+            </button>
+          </form>
 
-        <div className="flex flex-wrap gap-2 border-b border-zinc-100 px-4 py-3 sm:px-5">
-          {ADMIN_SUBMISSION_FILTERS.map((f) => {
-            const active = filter === f;
-            const href =
-              f === "queue"
-                ? query
-                  ? `/dashboard/admin/submissions?q=${encodeURIComponent(query)}`
-                  : "/dashboard/admin/submissions"
-                : `/dashboard/admin/submissions?status=${f}${query ? `&q=${encodeURIComponent(query)}` : ""}`;
-            return (
-              <Link
-                key={f}
-                href={href}
-                prefetch={false}
-                className={cn(
-                  "rounded-xl border px-3 py-1.5 text-xs font-medium transition-colors",
-                  active
-                    ? "border-[#10271c] bg-[#10271c] text-white"
-                    : "border-[#e2ded5] bg-white text-zinc-600 hover:border-[#c8b077] hover:text-[#10271c]"
-                )}
-              >
-                {filterLabel(f)}
-              </Link>
-            );
-          })}
+          <div className="flex flex-wrap gap-1.5">
+            {ADMIN_SUBMISSION_FILTERS.map((f) => {
+              const active = filter === f;
+              const href =
+                f === "queue"
+                  ? query
+                    ? `/dashboard/admin/submissions?q=${encodeURIComponent(query)}`
+                    : "/dashboard/admin/submissions"
+                  : `/dashboard/admin/submissions?status=${f}${query ? `&q=${encodeURIComponent(query)}` : ""}`;
+              return (
+                <Link
+                  key={f}
+                  href={href}
+                  prefetch={false}
+                  className={cn(
+                    "rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors",
+                    active
+                      ? "border-[#0F3A2C] bg-[#0F3A2C] text-white"
+                      : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300 hover:text-zinc-900"
+                  )}
+                >
+                  {filterLabel(f)}
+                </Link>
+              );
+            })}
+          </div>
         </div>
 
         {items.length === 0 ? (
-          <div className="p-6">
-            <DashboardEmptyState
-              icon={<Film className="h-5 w-5" />}
-              title={filter === "queue" ? "Review queue is clear" : "No submissions in this filter"}
-              description={
-                filter === "queue"
-                  ? "New creator submissions will appear here when they submit for review."
-                  : "Try another status filter or clear the search."
-              }
-            />
-          </div>
+          <AdminEmptyState
+            icon={<Film className="h-5 w-5" />}
+            title={filter === "queue" ? "Review queue is clear" : "No submissions in this filter"}
+            description={
+              filter === "queue"
+                ? "New creator submissions will appear here when they submit for review."
+                : "Try another status filter or clear the search."
+            }
+          />
         ) : (
           <ul className="divide-y divide-zinc-100">
             {items.map((item) => (
               <li key={item.id}>
                 <Link
                   href={`/dashboard/admin/submissions/${item.id}`}
-                  className="flex flex-col gap-3 px-4 py-4 transition-colors hover:bg-[#fbfbf8] sm:flex-row sm:items-center sm:justify-between sm:px-5"
+                  className="group flex flex-col gap-3 px-4 py-4 transition-colors hover:bg-zinc-50/70 sm:flex-row sm:items-center sm:justify-between sm:px-5"
                 >
-                  <div className="min-w-0 space-y-2">
+                  <div className="min-w-0 space-y-1.5">
                     <div className="flex flex-wrap items-center gap-2">
                       <StatusBadge status={item.status} />
                       {isVideoCategory(String(item.category)) ? (
@@ -238,12 +252,9 @@ export default async function AdminSubmissionsPage({
                         </span>
                       )}
                     </div>
-                    <p className="truncate font-serif text-lg font-semibold text-[#10271c]">
-                      {item.title}
-                    </p>
+                    <p className="truncate text-base font-semibold text-zinc-900">{item.title}</p>
                     <p className="text-sm text-zinc-500">
                       {item.creator_name ?? "Unknown creator"}
-                      {item.creator_email ? ` · ${item.creator_email}` : ""}
                       {item.school_name ? ` · ${item.school_name}` : ""}
                     </p>
                     <p className="text-xs text-zinc-400">
@@ -251,7 +262,9 @@ export default async function AdminSubmissionsPage({
                       {formatSubmissionDate(item.updated_at)}
                     </p>
                   </div>
-                  <span className="shrink-0 text-sm font-medium text-[#10271c]">Review →</span>
+                  <span className="shrink-0 text-sm font-medium text-[#0F3A2C] group-hover:underline">
+                    Review →
+                  </span>
                 </Link>
               </li>
             ))}
@@ -268,7 +281,7 @@ export default async function AdminSubmissionsPage({
             status: filter === "queue" ? undefined : filter,
           }}
         />
-      </div>
-    </div>
+      </AdminCard>
+    </AdminPage>
   );
 }

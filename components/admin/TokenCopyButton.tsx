@@ -16,13 +16,14 @@ export default function TokenCopyButton({ token }: { token: string }) {
     <button
       type="button"
       onClick={handleCopy}
-      className="inline-flex items-center gap-2 font-mono text-sm bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sky-900 hover:border-sky-300 transition-all"
+      title={copied ? "Copied" : "Copy access token"}
+      className="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-1.5 font-mono text-xs tracking-wider text-zinc-700 transition-colors hover:border-zinc-300 hover:text-zinc-900"
     >
       {token}
       {copied ? (
-        <Check className="w-4 h-4 text-sky-600" />
+        <Check className="h-3.5 w-3.5 text-emerald-600" />
       ) : (
-        <Copy className="w-4 h-4 text-zinc-400" />
+        <Copy className="h-3.5 w-3.5 text-zinc-400" />
       )}
     </button>
   );

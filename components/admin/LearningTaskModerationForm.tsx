@@ -3,66 +3,64 @@
 import { useState, useTransition, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import { moderateSubmissionAction } from "@/lib/admin/submission-actions";
+import { moderateLearningTaskAction } from "@/lib/learning/task-actions";
 import {
-  allowedNextStatuses,
-  notesRequiredFor,
-} from "@/lib/admin/submissions";
-import { STATUS_CONFIG } from "@/types/submission";
-import type { SubmissionStatus } from "@/types/auth";
+  allowedNextTaskStatuses,
+  notesRequiredForTask,
+} from "@/lib/learning/tasks";
+import {
+  LEARNING_TASK_STATUS_LABELS,
+  type LearningTaskStatus,
+} from "@/types/learning";
 import { cn } from "@/lib/utils";
 
-export default function SubmissionModerationForm({
+export default function LearningTaskModerationForm({
   submissionId,
   currentStatus,
   initialNotes,
 }: {
   submissionId: string;
-  currentStatus: SubmissionStatus;
+  currentStatus: LearningTaskStatus;
   initialNotes: string | null;
 }) {
   const router = useRouter();
+  const options = allowedNextTaskStatuses(currentStatus);
   const [pending, startTransition] = useTransition();
-  const [nextStatus, setNextStatus] = useState<SubmissionStatus | "">(
-    allowedNextStatuses(currentStatus)[0] ?? ""
+  const [nextStatus, setNextStatus] = useState<LearningTaskStatus | "">(
+    options[0] ?? ""
   );
   const [notes, setNotes] = useState(initialNotes ?? "");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const options = allowedNextStatuses(currentStatus);
-  const needsNotes = nextStatus ? notesRequiredFor(nextStatus) : false;
-
   if (options.length === 0) {
     return (
       <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-5 text-sm text-zinc-600">
-        This draft has not been submitted yet. Moderation opens after the creator
-        submits for review.
+        This draft has not been submitted yet. Moderation opens after the creator submits.
       </div>
     );
   }
 
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    if (!nextStatus) return;
+  const needsNotes = nextStatus ? notesRequiredForTask(nextStatus) : false;
 
+  function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+    if (!nextStatus) return;
     setError(null);
     setSuccess(null);
 
     startTransition(async () => {
-      const result = await moderateSubmissionAction({
+      const result = await moderateLearningTaskAction({
         submissionId,
         expectedStatus: currentStatus,
         nextStatus,
         adminNotes: notes,
       });
-
       if (!result.ok) {
         setError(result.error);
         return;
       }
-
-      setSuccess(`Updated to “${STATUS_CONFIG[nextStatus].label}”.`);
+      setSuccess(`Updated to “${LEARNING_TASK_STATUS_LABELS[nextStatus]}”.`);
       router.refresh();
     });
   }
@@ -71,22 +69,21 @@ export default function SubmissionModerationForm({
     <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-zinc-200 bg-white p-5">
       <div>
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#B08D3F]">
-          Moderate entry
+          Moderate task
         </p>
         <h3 className="mt-1 text-base font-semibold text-zinc-900">Update status</h3>
         <p className="mt-1 text-sm text-zinc-500">
           Current:{" "}
           <span className="font-medium text-zinc-700">
-            {STATUS_CONFIG[currentStatus].label}
+            {LEARNING_TASK_STATUS_LABELS[currentStatus]}
           </span>
         </p>
       </div>
 
       <fieldset disabled={pending} className="space-y-3">
         <legend className="sr-only">Next status</legend>
-        <div className="grid gap-2 sm:grid-cols-2">
+        <div className="grid gap-2">
           {options.map((status) => {
-            const cfg = STATUS_CONFIG[status];
             const selected = nextStatus === status;
             return (
               <label
@@ -107,14 +104,14 @@ export default function SubmissionModerationForm({
                   className="mt-1"
                 />
                 <span>
-                  <span className={cn("block text-sm font-semibold", cfg.color)}>
-                    {cfg.label}
+                  <span className="block text-sm font-semibold text-zinc-900">
+                    {LEARNING_TASK_STATUS_LABELS[status]}
                   </span>
                   <span className="mt-0.5 block text-xs text-zinc-500">
                     {status === "in_review" && "Mark as actively reviewing"}
-                    {status === "approved" && "Send to judging queue"}
-                    {status === "revision" && "Ask creator to edit"}
-                    {status === "rejected" && "Decline this entry"}
+                    {status === "approved" && "Complete the lesson for this creator"}
+                    {status === "revision" && "Ask the creator to improve and resubmit"}
+                    {status === "rejected" && "Decline this attempt"}
                   </span>
                 </span>
               </label>
@@ -124,43 +121,42 @@ export default function SubmissionModerationForm({
 
         <div>
           <label
-            htmlFor="admin-notes"
+            htmlFor="task-admin-notes"
             className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-zinc-500"
           >
-            Admin notes{needsNotes ? " (required)" : " (optional)"}
+            Mentor notes{needsNotes ? " (required)" : " (optional)"}
           </label>
           <textarea
-            id="admin-notes"
+            id="task-admin-notes"
             value={notes}
-            onChange={(e) => setNotes(e.target.value)}
+            onChange={(event) => setNotes(event.target.value)}
             rows={4}
             maxLength={2000}
             placeholder={
               needsNotes
-                ? "Explain what the creator should fix or why it was rejected…"
-                : "Optional internal / creator-facing note"
+                ? "Explain what to improve or why it was rejected…"
+                : "Optional feedback for the creator"
             }
-            className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-900 outline-none transition-colors placeholder:text-zinc-400 focus:border-[#0F3A2C] focus:ring-2 focus:ring-[#0F3A2C]/10"
+            className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-900 outline-none focus:border-[#0F3A2C] focus:ring-2 focus:ring-[#0F3A2C]/10"
           />
-          <p className="mt-1 text-right text-[11px] text-zinc-400">{notes.length}/2000</p>
         </div>
       </fieldset>
 
-      {error && (
+      {error ? (
         <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
           {error}
         </p>
-      )}
-      {success && (
+      ) : null}
+      {success ? (
         <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
           {success}
         </p>
-      )}
+      ) : null}
 
       <button
         type="submit"
         disabled={pending || !nextStatus}
-        className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#0F3A2C] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#175a44] disabled:cursor-not-allowed disabled:opacity-60"
+        className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#0F3A2C] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#175a44] disabled:opacity-60"
       >
         {pending ? (
           <>

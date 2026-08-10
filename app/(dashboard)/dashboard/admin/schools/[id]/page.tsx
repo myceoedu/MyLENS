@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MAX_CREATORS_PER_SCHOOL } from "@/lib/config/campaign";
 import { createClient } from "@/lib/supabase/server";
@@ -7,10 +6,23 @@ import TokenCopyButton from "@/components/admin/TokenCopyButton";
 import RegenerateTokenButton from "@/components/admin/RegenerateTokenButton";
 import SchoolStatusSelect from "@/components/admin/SchoolStatusSelect";
 import UserStatusActions from "@/components/admin/UserStatusActions";
+import {
+  AdminBreadcrumbs,
+  AdminCard,
+  AdminPage,
+  AdminPageHeader,
+  StatusPill,
+} from "@/components/admin/AdminUI";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
+
+const STATUS_TONE = {
+  active: "emerald",
+  pending: "amber",
+  suspended: "rose",
+} as const;
 
 export default async function AdminSchoolDetailPage({ params }: PageProps) {
   const { id } = await params;
@@ -27,95 +39,76 @@ export default async function AdminSchoolDetailPage({ params }: PageProps) {
     .eq("role", "creator")
     .order("created_at", { ascending: false });
 
-  const activeCount = (creators ?? []).filter((c) => c.status === "active").length;
-  const pendingCount = (creators ?? []).filter((c) => c.status === "pending").length;
+  const roster = creators ?? [];
+  const activeCount = roster.filter((c) => c.status === "active").length;
+  const pendingCount = roster.filter((c) => c.status === "pending").length;
 
   return (
-    <div className="space-y-6">
-      <div>
-        <Link
-          href="/dashboard/admin/schools"
-          className="text-sm text-emerald-800 hover:text-emerald-950"
-          style={{ fontFamily: "var(--font-inter)" }}
-        >
-          ← Back to schools
-        </Link>
-        <h1
-          className="text-2xl font-bold text-emerald-950 mt-3"
-          style={{ fontFamily: "var(--font-poppins)" }}
-        >
-          {school.name}
-        </h1>
-        <p className="text-zinc-600 text-sm" style={{ fontFamily: "var(--font-inter)" }}>
-          {getStateLabel(school.state_id)} · {activeCount} active, {pendingCount} pending · max{" "}
-          {MAX_CREATORS_PER_SCHOOL} creators
-        </p>
-      </div>
+    <AdminPage>
+      <AdminBreadcrumbs
+        items={[{ label: "Schools", href: "/dashboard/admin/schools" }, { label: school.name }]}
+      />
 
-      <div className="grid lg:grid-cols-2 gap-6">
-        <section className="bg-white border border-zinc-200/80 rounded-3xl p-8 shadow-sm space-y-6">
-          <h2
-            className="text-lg font-semibold text-emerald-950"
-            style={{ fontFamily: "var(--font-poppins)" }}
-          >
-            Event Access Token
-          </h2>
-          <p className="text-sm text-zinc-600" style={{ fontFamily: "var(--font-inter)" }}>
-            Share this token with the school coordinator. Students need the exact school name and
-            this token to register.
-          </p>
-          {school.access_token ? (
-            <TokenCopyButton token={school.access_token} />
-          ) : (
-            <p className="text-zinc-500 text-sm">No token set.</p>
-          )}
-          <RegenerateTokenButton schoolId={school.id} />
+      <AdminPageHeader
+        eyebrow={getStateLabel(school.state_id)}
+        title={school.name}
+        description={`${activeCount} active · ${pendingCount} pending · maximum ${MAX_CREATORS_PER_SCHOOL} creators`}
+      />
 
+      <div className="grid gap-5 lg:grid-cols-2">
+        <AdminCard className="space-y-5 p-6">
           <div>
-            <p
-              className="text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold mb-2"
-              style={{ fontFamily: "var(--font-poppins)" }}
-            >
-              School Status
+            <h2 className="text-sm font-semibold text-zinc-900">Event access token</h2>
+            <p className="mt-1 text-sm leading-6 text-zinc-500">
+              Share this token with the school coordinator. Students need the exact school name and
+              this token to register.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            {school.access_token ? (
+              <TokenCopyButton token={school.access_token} />
+            ) : (
+              <p className="text-sm text-zinc-500">No token set.</p>
+            )}
+            <RegenerateTokenButton schoolId={school.id} />
+          </div>
+
+          <div className="border-t border-zinc-100 pt-5">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-500">
+              School status
             </p>
             <SchoolStatusSelect schoolId={school.id} currentStatus={school.status} />
           </div>
-        </section>
+        </AdminCard>
 
-        <section className="bg-white border border-zinc-200/80 rounded-3xl p-8 shadow-sm">
-          <h2
-            className="text-lg font-semibold text-emerald-950 mb-4"
-            style={{ fontFamily: "var(--font-poppins)" }}
-          >
-            Creators ({(creators ?? []).length}/{MAX_CREATORS_PER_SCHOOL})
+        <AdminCard className="p-6">
+          <h2 className="text-sm font-semibold text-zinc-900">
+            Creators{" "}
+            <span className="font-normal tabular-nums text-zinc-500">
+              {roster.length}/{MAX_CREATORS_PER_SCHOOL}
+            </span>
           </h2>
-          {(creators ?? []).length === 0 ? (
-            <p className="text-sm text-zinc-500">No creators linked yet.</p>
+
+          {roster.length === 0 ? (
+            <p className="mt-4 text-sm text-zinc-500">No creators linked yet.</p>
           ) : (
-            <ul className="space-y-3">
-              {(creators ?? []).map((creator) => (
+            <ul className="mt-4 space-y-2">
+              {roster.map((creator) => (
                 <li
                   key={creator.id}
-                  className="flex items-center justify-between gap-3 border border-zinc-100 rounded-xl p-3"
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-zinc-200 px-3.5 py-3"
                 >
-                  <div>
-                    <p className="font-medium text-zinc-900 text-sm">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium text-zinc-900">
                       {creator.full_name ?? "—"}
                     </p>
-                    <p className="text-xs text-zinc-500">{creator.email}</p>
+                    <p className="truncate text-xs text-zinc-500">{creator.email}</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span
-                      className={
-                        creator.status === "active"
-                          ? "text-xs text-emerald-700 font-medium"
-                          : creator.status === "pending"
-                            ? "text-xs text-amber-600 font-medium"
-                            : "text-xs text-zinc-500"
-                      }
-                    >
+                    <StatusPill tone={STATUS_TONE[creator.status] ?? "neutral"}>
                       {creator.status}
-                    </span>
+                    </StatusPill>
                     <UserStatusActions
                       profileId={creator.id}
                       status={creator.status}
@@ -126,8 +119,8 @@ export default async function AdminSchoolDetailPage({ params }: PageProps) {
               ))}
             </ul>
           )}
-        </section>
+        </AdminCard>
       </div>
-    </div>
+    </AdminPage>
   );
 }

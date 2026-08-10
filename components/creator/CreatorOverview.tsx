@@ -122,7 +122,7 @@ export default function CreatorOverview({
           <GraduationCap className="h-4 w-4 text-emerald-700" />
           <p className="mt-3 text-2xl font-semibold text-zinc-900">{lessonPercent}%</p>
           <p className="text-xs text-zinc-500">
-            Learning · {completedLessons}/{lessonCount}
+            Lessons · {completedLessons}/{lessonCount}
           </p>
         </Link>
         {nextClass ? (

@@ -6,7 +6,7 @@ import PartnershipInquiriesPanel from "@/components/admin/PartnershipInquiriesPa
 import type { ContactInquiry } from "@/types/contact-inquiry";
 import type { PartnershipInquiry } from "@/types/partnership-inquiry";
 import { cn } from "@/lib/utils";
-import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
+import { AdminPage, AdminPageHeader } from "@/components/admin/AdminUI";
 
 type InquiryTab = "school" | "partnership";
 
@@ -42,41 +42,43 @@ export default function AdminInquiriesHub({
   ];
 
   return (
-    <div className="space-y-7">
-      <DashboardPageHeader
+    <AdminPage>
+      <AdminPageHeader
         eyebrow="Communications"
         title="Inquiries"
         description="Review school registration messages and partnership requests, then record the follow-up status."
       />
 
-      <div className="flex flex-wrap gap-2 border-b border-[#dfd9cd] pb-3">
+      <div className="flex flex-wrap gap-1.5">
         {tabs.map((t) => {
           const newCount = t.id === "school" ? schoolNew : partnershipNew;
+          const active = tab === t.id;
           return (
             <button
               key={t.id}
               type="button"
               onClick={() => setTab(t.id)}
+              aria-pressed={active}
               className={cn(
-                "inline-flex flex-col items-start gap-0.5 rounded-xl px-4 py-2.5 text-left transition-colors",
-                tab === t.id
-                  ? "bg-sky-900 text-white shadow-sm"
-                                    : "bg-white text-zinc-700 ring-1 ring-[#e2ded5] hover:text-sky-900 hover:ring-amber-300"
+                "inline-flex items-center gap-2 rounded-lg border px-3.5 py-2.5 text-sm font-medium transition-colors",
+                active
+                  ? "border-[#0F3A2C] bg-[#0F3A2C] text-white"
+                  : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300 hover:text-zinc-900"
               )}
+              title={t.hint}
             >
-              <span className="text-sm font-semibold">{t.label}</span>
+              {t.label}
               <span
                 className={cn(
-                  "text-xs",
-                  tab === t.id ? "text-white/75" : "text-zinc-500"
+                  "inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[11px] font-semibold tabular-nums",
+                  active
+                    ? "bg-white/15 text-white"
+                    : newCount > 0
+                      ? "bg-amber-100 text-amber-700"
+                      : "bg-zinc-100 text-zinc-600"
                 )}
               >
-                {t.hint}
-                {newCount > 0 && (
-                  <span className={cn("ml-2 font-medium", tab === t.id ? "text-amber-200" : "text-amber-700")}>
-                    · {newCount} new
-                  </span>
-                )}
+                {newCount > 0 ? newCount : t.count}
               </span>
             </button>
           );
@@ -86,13 +88,13 @@ export default function AdminInquiriesHub({
       {tab === "school" ? (
         <InquiriesPanel inquiries={schoolInquiries} />
       ) : partnershipLoadError ? (
-        <div className="rounded-2xl border border-red-200 bg-red-50 px-6 py-8 text-center">
-          <p className="text-red-800 font-medium mb-2">Could not load partnership inquiries</p>
-          <p className="text-sm text-red-600">{partnershipLoadError}</p>
+        <div className="rounded-xl border border-rose-200 bg-rose-50 px-6 py-8 text-center">
+          <p className="mb-2 font-medium text-rose-800">Could not load partnership inquiries</p>
+          <p className="text-sm text-rose-600">{partnershipLoadError}</p>
         </div>
       ) : (
         <PartnershipInquiriesPanel inquiries={partnershipInquiries} />
       )}
-    </div>
+    </AdminPage>
   );
 }

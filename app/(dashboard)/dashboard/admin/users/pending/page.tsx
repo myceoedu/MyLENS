@@ -1,7 +1,14 @@
+import { UserCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import UserStatusActions from "@/components/admin/UserStatusActions";
-import { DashboardEmptyState, DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
-import { UserCheck } from "lucide-react";
+import AdminSubTabs from "@/components/admin/AdminSubTabs";
+import {
+  AdminCard,
+  AdminEmptyState,
+  AdminPage,
+  AdminPageHeader,
+  adminTable,
+} from "@/components/admin/AdminUI";
 
 export default async function AdminPendingUsersPage() {
   const supabase = await createClient();
@@ -12,7 +19,8 @@ export default async function AdminPendingUsersPage() {
     .eq("status", "pending")
     .order("created_at", { ascending: false });
 
-  const schoolIds = [...new Set((pending ?? []).map((u) => u.school_id).filter(Boolean))] as string[];
+  const rows = pending ?? [];
+  const schoolIds = [...new Set(rows.map((u) => u.school_id).filter(Boolean))] as string[];
   const schoolNames: Record<string, string> = {};
 
   if (schoolIds.length > 0) {
@@ -23,67 +31,59 @@ export default async function AdminPendingUsersPage() {
   }
 
   return (
-    <div className="space-y-7">
-      <DashboardPageHeader
+    <AdminPage>
+      <AdminPageHeader
         eyebrow="Account operations"
-        title="Pending approvals"
-        description="Review creator registrations and activate verified accounts associated with a participating school."
+        title="Pending approval"
+        description="Activate creator registrations that are linked to a participating school."
       />
 
-      <div className="overflow-hidden rounded-[1.5rem] border border-[#e2ded5] bg-white shadow-[0_16px_34px_-28px_rgba(16,39,28,0.4)]">
-        {(pending ?? []).length === 0 ? (
-          <DashboardEmptyState
+      <AdminSubTabs
+        tabs={[
+          { href: "/dashboard/admin/users", label: "All accounts", active: false },
+          {
+            href: "/dashboard/admin/users/pending",
+            label: "Pending approval",
+            count: rows.length,
+            active: true,
+          },
+        ]}
+      />
+
+      <AdminCard>
+        {rows.length === 0 ? (
+          <AdminEmptyState
             icon={<UserCheck className="h-5 w-5" />}
             title="All approvals are up to date"
-            description="New creator registrations with valid school tokens will appear here."
+            description="New creator registrations with a valid school token will appear here."
           />
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm" style={{ fontFamily: "var(--font-inter)" }}>
+          <div className={adminTable.wrapper}>
+            <table className={adminTable.table}>
               <thead>
-                <tr className="border-b border-zinc-100 bg-zinc-50/50 text-left">
-                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
-                    Name
-                  </th>
-                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
-                    Email
-                  </th>
-                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
-                    Role
-                  </th>
-                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
-                    School
-                  </th>
-                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
-                    Registered
-                  </th>
-                  <th className="px-6 py-4" />
+                <tr className={adminTable.head}>
+                  <th className={adminTable.th}>Name</th>
+                  <th className={adminTable.th}>Email</th>
+                  <th className={adminTable.th}>Role</th>
+                  <th className={adminTable.th}>School</th>
+                  <th className={adminTable.th}>Registered</th>
+                  <th className={adminTable.th} />
                 </tr>
               </thead>
               <tbody>
-                {(pending ?? []).map((user) => (
-                  <tr key={user.id} className="border-b border-zinc-50 hover:bg-zinc-50/30">
-                    <td className="px-6 py-4 font-medium text-zinc-900">
-                      {user.full_name ?? "—"}
-                    </td>
-                    <td className="px-6 py-4 text-zinc-600">{user.email}</td>
-                    <td className="px-6 py-4 text-zinc-600 capitalize">{user.role}</td>
-                    <td className="px-6 py-4 text-zinc-600">
+                {rows.map((user) => (
+                  <tr key={user.id} className={adminTable.row}>
+                    <td className={adminTable.tdStrong}>{user.full_name ?? "—"}</td>
+                    <td className={adminTable.td}>{user.email}</td>
+                    <td className={`${adminTable.td} capitalize`}>{user.role}</td>
+                    <td className={adminTable.td}>
                       {user.school_id ? (schoolNames[user.school_id] ?? "—") : "—"}
                     </td>
-                    <td className="px-6 py-4 text-zinc-500 text-xs">
+                    <td className={`${adminTable.td} text-xs text-zinc-500`}>
                       {new Date(user.created_at).toLocaleDateString("en-MY")}
                     </td>
-                    <td className="px-6 py-4">
-                      {user.role === "creator" ? (
-                        <UserStatusActions
-                          profileId={user.id}
-                          status={user.status}
-                          showApprove
-                        />
-                      ) : (
-                        <UserStatusActions profileId={user.id} status={user.status} showApprove />
-                      )}
+                    <td className={`${adminTable.td} text-right`}>
+                      <UserStatusActions profileId={user.id} status={user.status} showApprove />
                     </td>
                   </tr>
                 ))}
@@ -91,7 +91,7 @@ export default async function AdminPendingUsersPage() {
             </table>
           </div>
         )}
-      </div>
-    </div>
+      </AdminCard>
+    </AdminPage>
   );
 }

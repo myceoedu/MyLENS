@@ -43,13 +43,13 @@ export default function DashboardPagination({
         {currentPage > 1 ? (
           <Link
             href={pageHref(currentPage - 1)}
-            className="inline-flex items-center gap-1 border border-[#ddd8ce] bg-white px-3 py-2 text-xs font-medium text-[#10271c] transition-colors hover:border-[#bba978]"
+            className="inline-flex items-center gap-1 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-xs font-medium text-zinc-700 transition-colors hover:border-zinc-300 hover:text-zinc-900"
           >
             <ChevronLeft className="h-3.5 w-3.5" />
             Previous
           </Link>
         ) : (
-          <span className="inline-flex cursor-not-allowed items-center gap-1 border border-zinc-100 bg-zinc-50 px-3 py-2 text-xs text-zinc-400">
+          <span className="inline-flex cursor-not-allowed items-center gap-1 rounded-lg border border-zinc-100 bg-zinc-50 px-3 py-2 text-xs text-zinc-400">
             <ChevronLeft className="h-3.5 w-3.5" />
             Previous
           </span>
@@ -60,13 +60,13 @@ export default function DashboardPagination({
         {currentPage < totalPages ? (
           <Link
             href={pageHref(currentPage + 1)}
-            className="inline-flex items-center gap-1 border border-[#ddd8ce] bg-white px-3 py-2 text-xs font-medium text-[#10271c] transition-colors hover:border-[#bba978]"
+            className="inline-flex items-center gap-1 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-xs font-medium text-zinc-700 transition-colors hover:border-zinc-300 hover:text-zinc-900"
           >
             Next
             <ChevronRight className="h-3.5 w-3.5" />
           </Link>
         ) : (
-          <span className="inline-flex cursor-not-allowed items-center gap-1 border border-zinc-100 bg-zinc-50 px-3 py-2 text-xs text-zinc-400">
+          <span className="inline-flex cursor-not-allowed items-center gap-1 rounded-lg border border-zinc-100 bg-zinc-50 px-3 py-2 text-xs text-zinc-400">
             Next
             <ChevronRight className="h-3.5 w-3.5" />
           </span>
