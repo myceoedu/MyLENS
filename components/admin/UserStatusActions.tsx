@@ -39,7 +39,7 @@ export default function UserStatusActions({
             type="button"
             disabled={pending}
             onClick={() => run(() => approveUserAction(profileId))}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-emerald-900 hover:bg-emerald-800 rounded-lg px-3 py-1.5 disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-sky-900 hover:bg-sky-800 rounded-lg px-3 py-1.5 disabled:opacity-60"
           >
             {pending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Check className="w-3 h-3" />}
             Approve
@@ -61,7 +61,7 @@ export default function UserStatusActions({
             type="button"
             disabled={pending}
             onClick={() => run(() => updateUserStatusAction(profileId, "active"))}
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-800 border border-emerald-200 rounded-lg px-3 py-1.5 hover:bg-emerald-50 disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-sky-800 border border-sky-200 rounded-lg px-3 py-1.5 hover:bg-sky-50 disabled:opacity-60"
           >
             Reactivate
           </button>

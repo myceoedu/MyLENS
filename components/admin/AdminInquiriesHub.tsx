@@ -60,8 +60,8 @@ export default function AdminInquiriesHub({
               className={cn(
                 "inline-flex flex-col items-start gap-0.5 rounded-xl px-4 py-2.5 text-left transition-colors",
                 tab === t.id
-                  ? "bg-[#10271c] text-white shadow-sm"
-                  : "bg-white text-zinc-700 ring-1 ring-[#e2ded5] hover:text-[#10271c] hover:ring-[#cfc09a]"
+                  ? "bg-sky-900 text-white shadow-sm"
+                                    : "bg-white text-zinc-700 ring-1 ring-[#e2ded5] hover:text-sky-900 hover:ring-amber-300"
               )}
             >
               <span className="text-sm font-semibold">{t.label}</span>

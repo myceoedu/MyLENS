@@ -23,7 +23,7 @@ export default function RegenerateTokenButton({ schoolId }: { schoolId: string }
             else router.refresh();
           });
         }}
-        className="inline-flex items-center gap-2 text-sm font-medium text-emerald-800 border border-emerald-200 rounded-xl px-4 py-2.5 bg-emerald-50/50 hover:bg-emerald-50 transition-all disabled:opacity-60"
+        className="inline-flex items-center gap-2 text-sm font-medium text-sky-800 border border-sky-200 rounded-xl px-4 py-2.5 bg-sky-50/50 hover:bg-sky-50 transition-all disabled:opacity-60"
       >
         {pending ? (
           <Loader2 className="w-4 h-4 animate-spin" />

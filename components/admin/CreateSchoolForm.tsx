@@ -13,7 +13,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="bg-emerald-900 hover:bg-emerald-800 disabled:opacity-60 text-white font-medium rounded-xl py-3 px-6 transition-all shadow-sm inline-flex items-center gap-2"
+      className="bg-sky-900 hover:bg-sky-800 disabled:opacity-60 text-white font-medium rounded-xl py-3 px-6 transition-all shadow-sm inline-flex items-center gap-2"
       style={{ fontFamily: "var(--font-poppins)" }}
     >
       {pending && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -36,7 +36,7 @@ export default function CreateSchoolForm() {
         </div>
       )}
       {state?.ok && (
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+        <div className="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-900">
           School created with a new access token. View it in the schools list.
         </div>
       )}

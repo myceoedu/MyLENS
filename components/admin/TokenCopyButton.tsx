@@ -16,11 +16,11 @@ export default function TokenCopyButton({ token }: { token: string }) {
     <button
       type="button"
       onClick={handleCopy}
-      className="inline-flex items-center gap-2 font-mono text-sm bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-emerald-950 hover:border-emerald-300 transition-all"
+      className="inline-flex items-center gap-2 font-mono text-sm bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sky-900 hover:border-sky-300 transition-all"
     >
       {token}
       {copied ? (
-        <Check className="w-4 h-4 text-emerald-600" />
+        <Check className="w-4 h-4 text-sky-600" />
       ) : (
         <Copy className="w-4 h-4 text-zinc-400" />
       )}
