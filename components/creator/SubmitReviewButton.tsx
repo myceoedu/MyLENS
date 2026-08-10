@@ -28,8 +28,7 @@ export default function SubmitReviewButton({
         type="button"
         onClick={handleClick}
         disabled={pending || isWindowClosed}
-        className="inline-flex items-center gap-2 bg-emerald-900 hover:bg-emerald-800 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-all shadow-sm"
-        style={{ fontFamily: "var(--font-inter)" }}
+        className="inline-flex items-center gap-2 bg-emerald-700 px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {pending ? (
           <>

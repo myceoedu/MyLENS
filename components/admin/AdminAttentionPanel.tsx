@@ -1,16 +1,27 @@
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, MessageSquare, UserCheck } from "lucide-react";
+import { ArrowRight, CheckCircle2, Film, MessageSquare, UserCheck } from "lucide-react";
 
 interface AdminAttentionPanelProps {
   pendingCreators: number;
   newInquiries: number;
+  pendingSubmissions?: number;
 }
 
 export default function AdminAttentionPanel({
   pendingCreators,
   newInquiries,
+  pendingSubmissions = 0,
 }: AdminAttentionPanelProps) {
   const items = [
+    pendingSubmissions > 0
+      ? {
+          title: `${pendingSubmissions} video submission${pendingSubmissions === 1 ? "" : "s"} need review`,
+          description: "Watch entries, request edits, or approve them for the judging queue.",
+          href: "/dashboard/admin/submissions",
+          label: "Review submissions",
+          icon: Film,
+        }
+      : null,
     pendingCreators > 0
       ? {
           title: `${pendingCreators} creator${pendingCreators === 1 ? "" : "s"} awaiting approval`,
@@ -38,7 +49,9 @@ export default function AdminAttentionPanel({
           <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9a722a]">
             Attention required
           </p>
-          <h2 className="mt-1 font-serif text-xl font-semibold text-[#10271c]">Keep the campaign moving</h2>
+          <h2 className="mt-1 font-serif text-xl font-semibold text-[#10271c]">
+            Keep the campaign moving
+          </h2>
         </div>
         {items.length === 0 && (
           <span className="inline-flex items-center gap-2 text-sm text-emerald-800">

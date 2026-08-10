@@ -4,51 +4,37 @@ import type { CampaignStep } from "@/types/campaign";
 
 export default function CampaignProgress({ steps }: { steps: CampaignStep[] }) {
   return (
-    <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5 lg:gap-3">
+    <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
       {steps.map((step, index) => {
         return (
           <li
             key={step.id}
             className={cn(
-              "group relative border bg-white p-5",
-              step.status === "complete" && "border-emerald-200/80 bg-emerald-50/30",
-              step.status === "current" && "border-[#B68A35]/50 ring-1 ring-[#B68A35]/20",
-              step.status === "upcoming" && "border-[#e2ded5]",
-              step.status === "locked" && "border-[#e8e2d6] opacity-70"
+              "border bg-white p-4",
+              step.status === "complete" && "border-emerald-200 bg-emerald-50/50",
+              step.status === "current" && "border-emerald-600",
+              step.status === "upcoming" && "border-zinc-200",
+              step.status === "locked" && "border-zinc-200 opacity-70"
             )}
           >
-            <div className="mb-3 mt-1 flex items-center gap-3">
+            <div className="mb-3 flex items-center gap-3">
               <StepIcon status={step.status} index={index} />
               <div>
-                <p
-                  className="text-[0.6rem] font-semibold uppercase tracking-[0.28em] text-[#8A98B0]"
-                  style={{ fontFamily: "var(--font-inter)" }}
-                >
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-400">
                   Step {index + 1}
                 </p>
-                <p
-                  className="text-base font-semibold leading-tight text-[#1A2332]"
-                  style={{ fontFamily: "var(--font-serif)" }}
-                >
-                  {step.label}
-                </p>
+                <p className="text-sm font-semibold text-zinc-900">{step.label}</p>
               </div>
             </div>
-            <p
-              className="text-xs leading-relaxed text-[#5A6A7E]"
-              style={{ fontFamily: "var(--font-inter)" }}
-            >
-              {step.description}
-            </p>
+            <p className="text-xs leading-relaxed text-zinc-500">{step.description}</p>
             <p
               className={cn(
-                "mt-4 text-[10px] font-semibold uppercase tracking-[0.18em]",
+                "mt-3 text-[11px] font-semibold uppercase tracking-wide",
                 step.status === "complete" && "text-emerald-700",
-                step.status === "current" && "text-[#B68A35]",
-                step.status === "upcoming" && "text-[#8A98B0]",
-                step.status === "locked" && "text-[#8A98B0]"
+                step.status === "current" && "text-emerald-700",
+                step.status === "upcoming" && "text-zinc-400",
+                step.status === "locked" && "text-zinc-400"
               )}
-              style={{ fontFamily: "var(--font-inter)" }}
             >
               {step.status === "complete"
                 ? "Complete"
@@ -72,7 +58,7 @@ function StepIcon({
   status: CampaignStep["status"];
   index: number;
 }) {
-  const base = "flex h-10 w-10 shrink-0 items-center justify-center rounded-full";
+  const base = "flex h-9 w-9 shrink-0 items-center justify-center";
 
   if (status === "complete") {
     return (
@@ -84,7 +70,7 @@ function StepIcon({
 
   if (status === "locked") {
     return (
-      <div className={cn(base, "border border-[#e2ded5] bg-[#FAF9F5] text-[#8A98B0]")}>
+      <div className={cn(base, "border border-zinc-200 bg-white text-zinc-400")}>
         <Lock className="h-3.5 w-3.5" />
       </div>
     );
@@ -95,8 +81,8 @@ function StepIcon({
       className={cn(
         base,
         status === "current"
-          ? "border border-[#B68A35]/50 bg-[#FAF9F5] text-[#B68A35]"
-          : "border border-[#e2ded5] bg-[#FAF9F5] text-[#5A6A7E]"
+          ? "border border-emerald-600 bg-emerald-50 text-emerald-700"
+          : "border border-zinc-200 bg-white text-zinc-500"
       )}
     >
       <Circle className="h-3.5 w-3.5" />

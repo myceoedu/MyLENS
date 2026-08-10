@@ -136,7 +136,7 @@ export default function ProfileForm({ profile, schoolName, stateLabel }: Profile
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex items-center gap-2 bg-emerald-900 hover:bg-emerald-800 disabled:opacity-60 text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-all shadow-sm"
+        className="inline-flex items-center gap-2 bg-emerald-700 px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800 disabled:opacity-60"
       >
         {pending ? (
           <>

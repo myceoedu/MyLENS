@@ -1,10 +1,11 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
-import { Loader2, Save, SendHorizonal } from "lucide-react";
+import { CheckCircle2, Circle, ExternalLink, Loader2, Save, SendHorizonal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AUTH_INPUT_CLASS, AUTH_LABEL_CLASS } from "@/lib/auth/errors";
 import { VIDEO_CATEGORIES, CATEGORY_CONFIG } from "@/types/submission";
+import { extractYouTubeId, getYouTubeThumbnailUrl } from "@/lib/youtube";
 import type { VideoCategory } from "@/lib/data/videos";
 import type { Submission } from "@/types/submission";
 import type { SubmissionActionResult } from "@/lib/creator/submission-actions";
@@ -35,8 +36,22 @@ export default function SubmissionForm({
   const [selectedCategory, setSelectedCategory] = useState<VideoCategory>(
     (defaultValues?.category as VideoCategory) ?? "Nature"
   );
+  const [title, setTitle] = useState(defaultValues?.title ?? "");
+  const [location, setLocation] = useState(defaultValues?.location ?? "");
+  const [stateId, setStateId] = useState(defaultValues?.state_id ?? defaultStateId ?? "");
+  const [videoUrl, setVideoUrl] = useState(defaultValues?.video_url ?? "");
 
   const formRef = useRef<HTMLFormElement>(null);
+  const cleanVideoUrl = videoUrl.trim();
+  const validVideoUrl = !cleanVideoUrl || /^https?:\/\//i.test(cleanVideoUrl);
+  const youtubeId = validVideoUrl && cleanVideoUrl ? extractYouTubeId(cleanVideoUrl) : null;
+  const checklist = [
+    { label: "Story title", complete: Boolean(title.trim()) },
+    { label: "Category", complete: Boolean(selectedCategory) },
+    { label: "Filming location", complete: Boolean(location.trim()) },
+    { label: "State", complete: Boolean(stateId) },
+    { label: "Video link", complete: Boolean(cleanVideoUrl) && validVideoUrl },
+  ];
 
   // Derive `saved` from the action result as it changes, per React's
   // "adjusting state during render" pattern — avoids the extra render pass
@@ -81,7 +96,8 @@ export default function SubmissionForm({
           type="text"
           required
           maxLength={120}
-          defaultValue={defaultValues?.title ?? ""}
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
           placeholder='e.g. "Sunrise over Cameron Highlands Tea Hills"'
           className={AUTH_INPUT_CLASS}
         />
@@ -134,7 +150,8 @@ export default function SubmissionForm({
             name="location"
             type="text"
             required
-            defaultValue={defaultValues?.location ?? ""}
+            value={location}
+            onChange={(event) => setLocation(event.target.value)}
             placeholder='e.g. "Batu Caves, Selangor"'
             className={AUTH_INPUT_CLASS}
           />
@@ -147,7 +164,8 @@ export default function SubmissionForm({
             id="state_id"
             name="state_id"
             required
-            defaultValue={defaultValues?.state_id ?? defaultStateId ?? ""}
+            value={stateId}
+            onChange={(event) => setStateId(event.target.value)}
             className={AUTH_INPUT_CLASS}
           >
             <option value="">Select state…</option>
@@ -187,7 +205,8 @@ export default function SubmissionForm({
           id="video_url"
           name="video_url"
           type="url"
-          defaultValue={defaultValues?.video_url ?? ""}
+          value={videoUrl}
+          onChange={(event) => setVideoUrl(event.target.value)}
           placeholder="https://drive.google.com/…  or  https://youtu.be/…"
           className={AUTH_INPUT_CLASS}
         />
@@ -195,16 +214,57 @@ export default function SubmissionForm({
           Paste a shareable link to your 45-second video (Google Drive, YouTube, OneDrive). File
           upload arrives in a later update.
         </p>
+        {!validVideoUrl ? (
+          <p className="mt-1.5 text-xs text-red-600">Video link must start with http:// or https://.</p>
+        ) : null}
+        {youtubeId ? (
+          <div className="mt-3 max-w-sm overflow-hidden border border-zinc-200 bg-zinc-950">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={getYouTubeThumbnailUrl(youtubeId)}
+              alt="Video link preview"
+              className="aspect-video w-full object-cover"
+              loading="lazy"
+            />
+            <p className="border-t border-white/10 px-3 py-2 text-xs text-white">YouTube preview ready</p>
+          </div>
+        ) : cleanVideoUrl && validVideoUrl ? (
+          <a
+            href={cleanVideoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-emerald-700 hover:underline"
+          >
+            Test video link <ExternalLink className="h-3.5 w-3.5" />
+          </a>
+        ) : null}
       </div>
+
+      <section className="border border-zinc-200 bg-zinc-50 p-4">
+        <h2 className="text-[11px] font-semibold uppercase tracking-wide text-zinc-600">
+          Ready-to-submit checklist
+        </h2>
+        <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+          {checklist.map((item) => (
+            <li key={item.label} className="flex items-center gap-2 text-xs text-zinc-600">
+              {item.complete ? (
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+              ) : (
+                <Circle className="h-4 w-4 shrink-0 text-zinc-300" />
+              )}
+              {item.label}
+            </li>
+          ))}
+        </ul>
+      </section>
 
       {/* Actions */}
       <div className="flex flex-wrap items-center gap-3 pt-2">
         <button
           type="submit"
           disabled={saving}
-          className="inline-flex items-center gap-2 bg-white border border-zinc-200 hover:border-zinc-300 text-zinc-700 text-sm font-medium px-5 py-2.5 rounded-xl transition-all disabled:opacity-60"
-          style={{ fontFamily: "var(--font-inter)" }}
-        >
+        className="inline-flex items-center gap-2 border border-zinc-200 bg-white px-3.5 py-2 text-sm font-medium text-zinc-700 transition-colors hover:border-zinc-400 disabled:opacity-60"
+      >
           {saving ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -223,8 +283,7 @@ export default function SubmissionForm({
             type="button"
             disabled={submittingForReview || isWindowClosed}
             onClick={onSubmitForReview}
-            className="inline-flex items-center gap-2 bg-emerald-900 hover:bg-emerald-800 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-medium px-5 py-2.5 rounded-xl transition-all shadow-sm"
-            style={{ fontFamily: "var(--font-inter)" }}
+            className="inline-flex items-center gap-2 bg-emerald-700 px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {submittingForReview ? (
               <>

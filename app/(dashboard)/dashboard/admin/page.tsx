@@ -17,6 +17,7 @@ export default async function AdminDashboardPage() {
     { count: creatorCount },
     { count: newSchoolInquiryCount },
     { count: newPartnershipInquiryCount },
+    { count: pendingSubmissionCount },
   ] = await Promise.all([
     supabase.from("schools").select("id", { count: "exact", head: true }),
     supabase.from("schools").select("id", { count: "exact", head: true }).eq("status", "active"),
@@ -34,10 +35,15 @@ export default async function AdminDashboardPage() {
       .from("partnership_inquiries")
       .select("id", { count: "exact", head: true })
       .eq("status", "new"),
+    supabase
+      .from("submissions")
+      .select("id", { count: "exact", head: true })
+      .in("status", ["submitted", "in_review"]),
   ]);
 
   const pending = pendingCount ?? 0;
   const newInquiries = (newSchoolInquiryCount ?? 0) + (newPartnershipInquiryCount ?? 0);
+  const pendingSubmissions = pendingSubmissionCount ?? 0;
 
   return (
     <div className="relative overflow-hidden rounded-[2rem] border border-[#dfd9cd] bg-[#fbfbf8] shadow-[0_20px_55px_-42px_rgba(16,39,28,0.45)]">
@@ -60,7 +66,11 @@ export default async function AdminDashboardPage() {
           <AdminStatCard label="Active Creators" value={creatorCount ?? 0} />
         </div>
 
-        <AdminAttentionPanel pendingCreators={pending} newInquiries={newInquiries} />
+        <AdminAttentionPanel
+          pendingCreators={pending}
+          newInquiries={newInquiries}
+          pendingSubmissions={pendingSubmissions}
+        />
 
         <section className="border-t border-[#dfd9cd] pt-8">
           <h2
@@ -77,6 +87,13 @@ export default async function AdminDashboardPage() {
             >
               <Plus className="w-4 h-4" strokeWidth={2.5} />
               Add School
+            </Link>
+            <Link
+              href="/dashboard/admin/submissions"
+              className="rounded-xl border border-[#ddd8ce] bg-white px-5 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:border-[#bba978] hover:text-[#10271c]"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              Submissions{pendingSubmissions > 0 ? ` (${pendingSubmissions})` : ""}
             </Link>
             <Link
               href="/dashboard/admin/users/pending"

@@ -158,6 +158,8 @@ export async function submitForReviewAction(submissionId: string): Promise<Submi
   revalidatePath(`/dashboard/creator/submissions/${submissionId}`);
   revalidatePath("/dashboard/creator/submissions");
   revalidatePath("/dashboard/creator");
+  revalidatePath("/dashboard/admin/submissions");
+  revalidatePath("/dashboard/admin");
   return { ok: true };
 }
 

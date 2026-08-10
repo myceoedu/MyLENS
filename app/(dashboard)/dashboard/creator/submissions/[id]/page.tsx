@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, CheckCircle2, Clapperboard, ExternalLink, MapPin } from "lucide-react";
+import { ArrowLeft, CheckCircle2, ExternalLink, MapPin } from "lucide-react";
 import { requireRole } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { getCreatorContext } from "@/lib/creator/queries";
 import { updateSubmissionAction } from "@/lib/creator/submission-actions";
-import { CreatorShell } from "@/components/creator/CreatorShell";
+import { CreatorBreadcrumbs, CreatorNotice, CreatorShell } from "@/components/creator/CreatorShell";
 import StatusBadge from "@/components/creator/StatusBadge";
 import CategoryPill from "@/components/creator/CategoryPill";
 import SubmissionForm from "@/components/creator/SubmissionForm";
@@ -48,150 +48,123 @@ export default async function SubmissionDetailPage({ params }: PageProps) {
   const boundUpdateAction = updateSubmissionAction.bind(null, submission.id);
 
   return (
-    <div className="space-y-6">
-      <CreatorShell>
-        <div className="p-8 md:p-10 space-y-8">
-          {/* Header */}
-          <div>
-            <Link
-              href="/dashboard/creator/submissions"
-              className="inline-flex items-center gap-1.5 text-sm text-emerald-800 hover:text-emerald-950 mb-4 transition-colors"
-              style={{ fontFamily: "var(--font-inter)" }}
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to submissions
-            </Link>
+    <CreatorShell>
+      <CreatorBreadcrumbs
+        items={[
+          { label: "Submissions", href: "/dashboard/creator/submissions" },
+          { label: submission.title },
+        ]}
+      />
+      <div className="border-b border-zinc-200 px-4 py-3 sm:px-5">
+        <Link
+          href="/dashboard/creator/submissions"
+          className="inline-flex items-center gap-1.5 text-sm text-zinc-600 hover:text-zinc-900"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to submissions
+        </Link>
+      </div>
 
-            <div className="border border-[#e2ded5] bg-white p-5 sm:p-6">
-              <div className="flex items-start justify-between gap-5">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-[#e8dfc4] bg-[#FAF9F5] text-[#B68A35]">
-                    <Clapperboard className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[#B68A35]">
-                      Official MyLENS entry
-                    </p>
-                    <p className="mt-1 font-mono text-[10px] tracking-[0.1em] text-zinc-400">
-                      ENTRY / {submission.id.slice(0, 8).toUpperCase()}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-6 space-y-2">
-                <div className="flex flex-wrap items-center gap-2">
-                  <StatusBadge status={submission.status} />
-                  <CategoryPill category={submission.category as VideoCategory} />
-                </div>
-                <h1 className="font-serif text-3xl font-semibold tracking-tight text-[#1A2332]">
-                  {submission.title}
-                </h1>
-                <p className="flex items-center gap-1.5 text-sm text-zinc-500">
-                  <MapPin className="w-3.5 h-3.5" />
-                  {submission.location}
-                  {stateLabel ? ` · ${stateLabel}` : ""}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Admin revision notes */}
-          {submission.admin_notes && submission.status === "revision" && (
-            <div className="rounded-2xl border border-orange-200/80 bg-orange-50/80 px-5 py-4">
-              <p
-                className="text-sm font-semibold text-orange-900 mb-1"
-                style={{ fontFamily: "var(--font-poppins)" }}
-              >
-                Revision requested
-              </p>
-              <p className="text-sm text-orange-800" style={{ fontFamily: "var(--font-inter)" }}>
-                {submission.admin_notes}
-              </p>
-            </div>
-          )}
-
-          {/* Approved notice */}
-          {submission.status === "approved" && (
-            <div className="flex items-start gap-3 rounded-2xl border border-emerald-200/80 bg-emerald-50/80 px-5 py-4 text-sm text-emerald-800">
-              <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" />
-              <p>Your submission has been approved. It is now in the judging queue.</p>
-            </div>
-          )}
-
-          {/* Video link preview */}
-          {submission.video_url && (
-            <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/80 px-5 py-4 flex items-center justify-between gap-4">
-              <div>
-                <p
-                  className="text-sm font-semibold text-emerald-950 mb-0.5"
-                  style={{ fontFamily: "var(--font-poppins)" }}
-                >
-                  Video linked
-                </p>
-                <p
-                  className="text-xs text-zinc-500 truncate max-w-xs"
-                  style={{ fontFamily: "var(--font-inter)" }}
-                >
-                  {submission.video_url}
-                </p>
-              </div>
-              <a
-                href={submission.video_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-sm text-emerald-800 hover:text-emerald-950 font-medium shrink-0"
-              >
-                Open <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-            </div>
-          )}
-
-          {/* Edit form or read-only summary */}
-          {canEdit ? (
-            <section className="border-t border-zinc-200/80 pt-8">
-              <h2
-                className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-6"
-                style={{ fontFamily: "var(--font-poppins)" }}
-              >
-                Edit your story
-              </h2>
-              <SubmissionForm
-                mode="edit"
-                defaultValues={submission}
-                states={[...STATE_OPTIONS]}
-                saveAction={boundUpdateAction}
-                isWindowClosed={windowClosed}
-              />
-            </section>
-          ) : (
-            <section className="border-t border-zinc-200/80 pt-8 space-y-4">
-              {submission.description && (
-                <div>
-                  <p className="text-xs uppercase tracking-widest text-emerald-700 font-semibold mb-2">
-                    Story Description
-                  </p>
-                  <p className="text-sm text-zinc-700 leading-relaxed">{submission.description}</p>
-                </div>
-              )}
-            </section>
-          )}
-
-          {/* Submit for review */}
-          {canSubmit && (
-            <div className="border-t border-zinc-200/80 pt-8 flex flex-wrap items-center gap-4">
-              <SubmitReviewButton submissionId={submission.id} isWindowClosed={windowClosed} />
-              <DeleteSubmissionButton submissionId={submission.id} />
-            </div>
-          )}
-
-          {/* Delete draft (if no submit button shown) */}
-          {!canSubmit && submission.status === "draft" && (
-            <div className="border-t border-zinc-200/80 pt-8">
-              <DeleteSubmissionButton submissionId={submission.id} />
-            </div>
-          )}
+      <header className="border-b border-zinc-200 px-4 py-5 sm:px-5">
+        <div className="flex flex-wrap items-center gap-2">
+          <StatusBadge status={submission.status} />
+          <CategoryPill category={submission.category as VideoCategory} />
+          <span className="font-mono text-[10px] tracking-wide text-zinc-400">
+            {submission.id.slice(0, 8).toUpperCase()}
+          </span>
         </div>
-      </CreatorShell>
-    </div>
+        <h1 className="mt-3 text-2xl font-semibold tracking-tight text-zinc-900">
+          {submission.title}
+        </h1>
+        <p className="mt-2 flex items-center gap-1.5 text-sm text-zinc-500">
+          <MapPin className="h-3.5 w-3.5" />
+          {submission.location}
+          {stateLabel ? ` · ${stateLabel}` : ""}
+        </p>
+      </header>
+
+      <div className="space-y-5 p-4 sm:p-5">
+        {submission.admin_notes && submission.status === "revision" ? (
+          <CreatorNotice tone="warning">
+            <p className="text-sm font-semibold text-orange-900">Revision requested</p>
+            <p className="mt-1 text-sm text-orange-800">{submission.admin_notes}</p>
+          </CreatorNotice>
+        ) : null}
+
+        {submission.status === "approved" ? (
+          <CreatorNotice tone="success">
+            <div className="flex items-start gap-3">
+            <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" />
+            <p>Your submission has been approved. It is now in the judging queue.</p>
+            </div>
+          </CreatorNotice>
+        ) : null}
+
+        {submission.status === "rejected" ? (
+          <CreatorNotice tone="danger">
+            <p className="font-semibold">This submission was not selected.</p>
+            {submission.admin_notes ? <p className="mt-1">{submission.admin_notes}</p> : null}
+          </CreatorNotice>
+        ) : null}
+
+        {submission.status === "in_review" || submission.status === "submitted" ? (
+          <CreatorNotice tone="info">
+            Your entry is with the MyLENS team for review. You will see the outcome here.
+          </CreatorNotice>
+        ) : null}
+
+        {submission.video_url ? (
+          <div className="flex flex-wrap items-center justify-between gap-3 border border-zinc-200 bg-white px-4 py-3">
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-zinc-900">Video linked</p>
+              <p className="truncate text-xs text-zinc-500">{submission.video_url}</p>
+            </div>
+            <a
+              href={submission.video_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-emerald-700 hover:text-emerald-900"
+            >
+              Open <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          </div>
+        ) : null}
+
+        {canEdit ? (
+          <section>
+            <h2 className="mb-4 text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
+              Edit submission
+            </h2>
+            <SubmissionForm
+              mode="edit"
+              defaultValues={submission}
+              states={[...STATE_OPTIONS]}
+              saveAction={boundUpdateAction}
+              isWindowClosed={windowClosed}
+            />
+          </section>
+        ) : submission.description ? (
+          <section>
+            <h2 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
+              Description
+            </h2>
+            <p className="text-sm leading-relaxed text-zinc-700">{submission.description}</p>
+          </section>
+        ) : null}
+
+        {canSubmit ? (
+          <div className="flex flex-wrap items-center gap-3 border-t border-zinc-200 pt-5">
+            <SubmitReviewButton submissionId={submission.id} isWindowClosed={windowClosed} />
+            <DeleteSubmissionButton submissionId={submission.id} />
+          </div>
+        ) : null}
+
+        {!canSubmit && submission.status === "draft" ? (
+          <div className="border-t border-zinc-200 pt-5">
+            <DeleteSubmissionButton submissionId={submission.id} />
+          </div>
+        ) : null}
+      </div>
+    </CreatorShell>
   );
 }

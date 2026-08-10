@@ -3,10 +3,13 @@ import { ArrowLeft } from "lucide-react";
 import { requireRole } from "@/lib/auth/session";
 import { getCreatorContext } from "@/lib/creator/queries";
 import { createSubmissionAction } from "@/lib/creator/submission-actions";
-import { CreatorShell } from "@/components/creator/CreatorShell";
+import {
+  CreatorBreadcrumbs,
+  CreatorPageHeader,
+  CreatorShell,
+} from "@/components/creator/CreatorShell";
 import SubmissionForm from "@/components/creator/SubmissionForm";
 import { STATE_OPTIONS } from "@/lib/data/state-options";
-import { DashboardPageHeader } from "@/components/dashboard/DashboardPageHeader";
 
 export default async function NewSubmissionPage() {
   const profile = await requireRole(["creator"]);
@@ -19,25 +22,29 @@ export default async function NewSubmissionPage() {
 
   return (
     <CreatorShell>
-      <div className="space-y-8 p-6 sm:p-8 md:p-10">
-        <div>
-          <Link
-            href="/dashboard/creator/submissions"
-            className="inline-flex items-center gap-1.5 text-sm text-emerald-800 hover:text-emerald-950 mb-4 transition-colors"
-            style={{ fontFamily: "var(--font-inter)" }}
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to submissions
-          </Link>
-          <DashboardPageHeader
-            eyebrow="New story submission"
-            title="Share your tourism story"
-            description="Capture an authentic Malaysian destination in 45 seconds. Save a draft first, then submit for review when it is ready."
-          />
-        </div>
+      <CreatorBreadcrumbs
+        items={[
+          { label: "Submissions", href: "/dashboard/creator/submissions" },
+          { label: "New submission" },
+        ]}
+      />
+      <div className="border-b border-zinc-200 px-4 py-3 sm:px-5">
+        <Link
+          href="/dashboard/creator/submissions"
+          className="inline-flex items-center gap-1.5 text-sm text-zinc-600 hover:text-zinc-900"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to submissions
+        </Link>
+      </div>
+      <CreatorPageHeader
+        title="New submission"
+        description="Capture an authentic Malaysian destination in 45 seconds. Save a draft, then submit when ready."
+      />
 
+      <div className="p-4 sm:p-5">
         {windowClosed ? (
-          <div className="rounded-2xl border border-red-200/80 bg-red-50/80 px-5 py-4 text-sm text-red-800">
+          <div className="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
             The submission window has closed. New submissions are no longer accepted.
           </div>
         ) : (

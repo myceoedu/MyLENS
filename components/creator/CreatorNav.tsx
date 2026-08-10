@@ -19,7 +19,7 @@ export default function CreatorNav() {
   return (
     <nav
       aria-label="Creator workspace navigation"
-      className="mb-8 -mx-4 overflow-x-auto border-y border-[#e2ded5] bg-white px-4 py-2 sm:mx-0 sm:rounded-2xl sm:border sm:px-2"
+      className="sticky top-3 z-20 mb-6 overflow-x-auto border border-zinc-200 bg-white px-2 py-2 shadow-sm"
     >
       <div className="flex min-w-max items-center gap-1">
         {links.map(({ href, label, icon: Icon, exact }) => {
@@ -29,14 +29,13 @@ export default function CreatorNav() {
               key={href}
               href={href}
               className={cn(
-                "inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-colors",
+                "inline-flex items-center gap-2 border px-3 py-1.5 text-sm font-medium transition-colors",
                 active
-                  ? "bg-[#FAF9F5] text-[#1A2332] ring-1 ring-[#B68A35]/45"
-                  : "text-zinc-600 hover:bg-[#FAF9F5] hover:text-[#1A2332]"
+                  ? "border-zinc-900 bg-zinc-900 text-white"
+                  : "border-transparent text-zinc-600 hover:border-zinc-200 hover:bg-zinc-50 hover:text-zinc-900"
               )}
-              style={{ fontFamily: "var(--font-inter)" }}
             >
-              <Icon className={cn("h-4 w-4", active ? "text-[#B68A35]" : "text-zinc-500")} />
+              <Icon className="h-4 w-4" />
               {label}
             </Link>
           );

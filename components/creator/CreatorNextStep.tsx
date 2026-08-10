@@ -48,34 +48,32 @@ export default function CreatorNextStep({
           }
         : {
             title: "Develop your filmmaking skills",
-            description: "Use the Creator Academy to prepare your story before submissions open.",
+            description: "Use Learning to prepare your story before submissions open.",
             href: "/dashboard/creator/learning",
-            label: "Open academy",
+            label: "Open learning",
             icon: BookOpen,
           };
 
   const Icon = nextStep.icon;
 
   return (
-    <section className="border border-[#e2ded5] bg-white p-5 sm:p-6">
-      <div className="flex flex-wrap items-start justify-between gap-5">
-        <div className="flex min-w-0 items-start gap-4">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center border border-[#e8dfc4] bg-[#FAF9F5] text-[#B68A35]">
+    <section className="border-b border-zinc-200 px-4 py-5 sm:px-5">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex min-w-0 items-start gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-zinc-200 bg-emerald-50 text-emerald-700">
             <Icon className="h-5 w-5" />
           </div>
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#B68A35]">
-              Your next step
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-emerald-700">
+              Next step
             </p>
-            <h2 className="mt-1 font-serif text-xl font-semibold text-[#1A2332]">
-              {nextStep.title}
-            </h2>
-            <p className="mt-2 max-w-xl text-sm leading-6 text-[#5A6A7E]">{nextStep.description}</p>
+            <h2 className="mt-1 text-base font-semibold text-zinc-900">{nextStep.title}</h2>
+            <p className="mt-1 max-w-xl text-sm leading-6 text-zinc-500">{nextStep.description}</p>
           </div>
         </div>
         <Link
           href={nextStep.href}
-          className="inline-flex shrink-0 items-center gap-2 bg-[#10271c] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#1b3d2b]"
+          className="inline-flex shrink-0 items-center gap-2 bg-emerald-700 px-3.5 py-2 text-sm font-medium text-white hover:bg-emerald-800"
         >
           {nextStep.label}
           <ArrowRight className="h-4 w-4" />

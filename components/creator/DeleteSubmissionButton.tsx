@@ -30,7 +30,7 @@ export default function DeleteSubmissionButton({ submissionId }: { submissionId:
           type="button"
           onClick={handleDelete}
           disabled={pending}
-          className="inline-flex items-center gap-1.5 bg-red-600 hover:bg-red-700 disabled:opacity-60 text-white text-sm font-medium px-4 py-2 rounded-xl transition-all"
+          className="inline-flex items-center gap-1.5 bg-red-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-60"
         >
           {pending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
           Yes, delete
@@ -38,7 +38,7 @@ export default function DeleteSubmissionButton({ submissionId }: { submissionId:
         <button
           type="button"
           onClick={() => setConfirming(false)}
-          className="text-sm text-zinc-600 hover:text-zinc-900 px-3 py-2 rounded-xl border border-zinc-200 bg-white"
+          className="border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-600 hover:text-zinc-900"
         >
           Cancel
         </button>
@@ -51,8 +51,7 @@ export default function DeleteSubmissionButton({ submissionId }: { submissionId:
     <button
       type="button"
       onClick={() => setConfirming(true)}
-      className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-red-600 border border-zinc-200 hover:border-red-200 bg-white px-4 py-2 rounded-xl transition-all"
-      style={{ fontFamily: "var(--font-inter)" }}
+      className="inline-flex items-center gap-1.5 border border-zinc-200 bg-white px-3.5 py-2 text-sm text-zinc-500 transition-colors hover:border-red-200 hover:text-red-600"
     >
       <Trash2 className="w-3.5 h-3.5" />
       Delete draft

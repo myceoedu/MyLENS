@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
+  Film,
   GraduationCap,
   LayoutDashboard,
   MessageSquare,
@@ -14,6 +15,7 @@ import {
 
 const links = [
   { href: "/dashboard/admin", label: "Overview", icon: LayoutDashboard, exact: true },
+  { href: "/dashboard/admin/submissions", label: "Submissions", icon: Film },
   { href: "/dashboard/admin/inquiries", label: "Inquiries", icon: MessageSquare },
   { href: "/dashboard/admin/learning", label: "Learning", icon: GraduationCap },
   { href: "/dashboard/admin/schools", label: "Schools", icon: School },
