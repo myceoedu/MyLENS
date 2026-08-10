@@ -190,7 +190,7 @@ export default function LearningAdminPanel({ modules }: { modules: LearningModul
           className={
             error
               ? "rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
-              : "rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900"
+              : "rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-900"
           }
         >
           {error ?? success}
@@ -199,10 +199,10 @@ export default function LearningAdminPanel({ modules }: { modules: LearningModul
 
       <div className="flex flex-wrap items-end justify-between gap-4 px-1">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#a77d2f]">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-amber-600">
             Authoring studio
           </p>
-          <h2 className="mt-1 font-serif text-2xl font-semibold text-emerald-950">
+          <h2 className="mt-1 font-serif text-2xl font-semibold text-sky-900">
             Build the learning journey
           </h2>
           <p className="mt-1 text-sm text-zinc-500">
@@ -219,14 +219,14 @@ export default function LearningAdminPanel({ modules }: { modules: LearningModul
         >
           <div className="mb-6 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f4eee2] font-serif text-sm font-semibold text-[#9a722a]">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-50 font-serif text-sm font-semibold text-amber-700">
                 01
               </span>
               <div>
                 <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-zinc-400">
                   Curriculum structure
                 </p>
-                <h2 className="mt-0.5 text-lg font-bold text-emerald-950">
+                <h2 className="mt-0.5 text-lg font-bold text-sky-900">
                   {editingModule ? "Edit module" : "Create module"}
                 </h2>
               </div>
@@ -288,7 +288,7 @@ export default function LearningAdminPanel({ modules }: { modules: LearningModul
                   name="published"
                   type="checkbox"
                   defaultChecked={editingModule?.published ?? false}
-                  className="h-4 w-4 accent-emerald-800"
+                  className="h-4 w-4 accent-sky-800"
                 />
                 Publish module
               </label>
@@ -296,7 +296,7 @@ export default function LearningAdminPanel({ modules }: { modules: LearningModul
             <button
               type="submit"
               disabled={busy}
-              className="inline-flex items-center gap-2 rounded-xl bg-emerald-900 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-emerald-800 disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-xl bg-sky-900 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-sky-800 disabled:opacity-60"
             >
               {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <BookOpen className="h-4 w-4" />}
               {editingModule ? "Save module" : "Create module"}
@@ -311,14 +311,14 @@ export default function LearningAdminPanel({ modules }: { modules: LearningModul
         >
           <div className="mb-6 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-50 font-serif text-sm font-semibold text-emerald-800">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-sky-50 font-serif text-sm font-semibold text-sky-800">
                 02
               </span>
               <div>
                 <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-zinc-400">
                   Lesson material
                 </p>
-                <h2 className="mt-0.5 text-lg font-bold text-emerald-950">
+                <h2 className="mt-0.5 text-lg font-bold text-sky-900">
                   {editingItem ? "Edit learning content" : "Add learning content"}
                 </h2>
               </div>
@@ -433,8 +433,8 @@ export default function LearningAdminPanel({ modules }: { modules: LearningModul
                   <label htmlFor="content-file" className={AUTH_LABEL_CLASS}>
                     Upload file (optional)
                   </label>
-                  <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-zinc-300 bg-zinc-50 px-4 py-4 text-sm text-zinc-600 hover:border-emerald-300">
-                    <Upload className="h-4 w-4 text-emerald-700" />
+                  <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-zinc-300 bg-zinc-50 px-4 py-4 text-sm text-zinc-600 hover:border-sky-300">
+                    <Upload className="h-4 w-4 text-sky-700" />
                     <input
                       id="content-file"
                       name="file"
@@ -456,7 +456,7 @@ export default function LearningAdminPanel({ modules }: { modules: LearningModul
                       <input
                         name="remove_existing_file"
                         type="checkbox"
-                        className="h-4 w-4 accent-emerald-800"
+                        className="h-4 w-4 accent-sky-800"
                       />
                       Remove the current uploaded file and use the URL instead
                     </label>
@@ -514,7 +514,7 @@ export default function LearningAdminPanel({ modules }: { modules: LearningModul
                     name="published"
                     type="checkbox"
                     defaultChecked={editingItem?.published ?? false}
-                    className="h-4 w-4 accent-emerald-800"
+                    className="h-4 w-4 accent-sky-800"
                   />
                   Publish
                 </label>
@@ -523,7 +523,7 @@ export default function LearningAdminPanel({ modules }: { modules: LearningModul
               <button
                 type="submit"
                 disabled={busy}
-                className="inline-flex items-center gap-2 rounded-xl bg-emerald-900 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-emerald-800 disabled:opacity-60"
+                className="inline-flex items-center gap-2 rounded-xl bg-sky-900 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-sky-800 disabled:opacity-60"
               >
                 {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
                 {editingItem ? "Save content" : "Add content"}
@@ -533,13 +533,13 @@ export default function LearningAdminPanel({ modules }: { modules: LearningModul
         </form>
       </div>
 
-      <section className="space-y-4 rounded-[2rem] border border-zinc-200/80 bg-[#f7f7f3] p-4 sm:p-6">
+      <section className="space-y-4 rounded-[2rem] border border-zinc-200/80 bg-amber-50 p-4 sm:p-6">
         <div className="flex flex-wrap items-end justify-between gap-4 px-1 pb-1">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#a77d2f]">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-amber-600">
               Curriculum map
             </p>
-            <h2 className="mt-1 font-serif text-2xl font-semibold text-emerald-950">
+            <h2 className="mt-1 font-serif text-2xl font-semibold text-sky-900">
               Academy modules
             </h2>
             <p className="mt-1 text-sm text-zinc-500">
@@ -549,7 +549,7 @@ export default function LearningAdminPanel({ modules }: { modules: LearningModul
           <button
             type="button"
             onClick={refresh}
-            className="text-sm font-medium text-emerald-800 hover:text-emerald-950"
+            className="text-sm font-medium text-sky-800 hover:text-sky-900"
           >
             Refresh
           </button>
@@ -568,16 +568,16 @@ export default function LearningAdminPanel({ modules }: { modules: LearningModul
             >
               <div className="flex flex-wrap items-start justify-between gap-4 border-b border-zinc-100 px-6 py-5">
                 <div className="flex items-start gap-4">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-emerald-900/10 bg-[#f7f7f3] font-serif text-xs font-semibold text-emerald-900">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-sky-900/10 bg-amber-50 font-serif text-xs font-semibold text-sky-900">
                     {String(moduleIndex + 1).padStart(2, "0")}
                   </span>
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="font-bold text-emerald-950">{module.title}</h3>
+                      <h3 className="font-bold text-sky-900">{module.title}</h3>
                     <span
                       className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
                         module.published
-                          ? "bg-emerald-50 text-emerald-700"
+                          ? "bg-sky-50 text-sky-700"
                           : "bg-zinc-100 text-zinc-500"
                       }`}
                     >
@@ -604,7 +604,7 @@ export default function LearningAdminPanel({ modules }: { modules: LearningModul
                         module.published ? "Module unpublished." : "Module published."
                       )
                     }
-                    className="rounded-lg border border-zinc-200 px-3 py-2 text-xs font-medium text-zinc-700 hover:border-emerald-200"
+                    className="rounded-lg border border-zinc-200 px-3 py-2 text-xs font-medium text-zinc-700 hover:border-sky-200"
                   >
                     {module.published ? "Unpublish" : "Publish"}
                   </button>
@@ -614,7 +614,7 @@ export default function LearningAdminPanel({ modules }: { modules: LearningModul
                       setEditingModule(module);
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
-                    className="rounded-lg border border-zinc-200 p-2 text-zinc-600 hover:text-emerald-800"
+                    className="rounded-lg border border-zinc-200 p-2 text-zinc-600 hover:text-sky-800"
                     aria-label={`Edit ${module.title}`}
                   >
                     <Pencil className="h-4 w-4" />
@@ -686,14 +686,14 @@ export default function LearningAdminPanel({ modules }: { modules: LearningModul
                                 item.published ? "Content unpublished." : "Content published."
                               )
                             }
-                            className="rounded-lg border border-zinc-200 px-3 py-2 text-xs font-medium text-zinc-700 hover:border-emerald-200"
+                            className="rounded-lg border border-zinc-200 px-3 py-2 text-xs font-medium text-zinc-700 hover:border-sky-200"
                           >
                             {item.published ? "Unpublish" : "Publish"}
                           </button>
                           <button
                             type="button"
                             onClick={() => startEditingItem(item)}
-                            className="rounded-lg border border-zinc-200 p-2 text-zinc-600 hover:text-emerald-800"
+                            className="rounded-lg border border-zinc-200 p-2 text-zinc-600 hover:text-sky-800"
                             aria-label={`Edit ${item.title}`}
                           >
                             <Pencil className="h-4 w-4" />
@@ -727,3 +727,5 @@ export default function LearningAdminPanel({ modules }: { modules: LearningModul
     </div>
   );
 }
+
+

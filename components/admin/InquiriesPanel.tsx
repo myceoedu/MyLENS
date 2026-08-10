@@ -109,8 +109,8 @@ export default function InquiriesPanel({ inquiries }: { inquiries: ContactInquir
                   className={cn(
                     "inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border transition-all",
                     filter === tab.id
-                      ? "bg-emerald-900 text-white border-emerald-900"
-                      : "bg-white text-zinc-600 border-zinc-200 hover:border-emerald-200 hover:text-emerald-900"
+                                          ? "bg-sky-900 text-white border-sky-900"
+                                          : "bg-white text-zinc-600 border-zinc-200 hover:border-sky-200 hover:text-sky-900"
                   )}
                 >
                   {tab.label}
@@ -140,7 +140,7 @@ export default function InquiriesPanel({ inquiries }: { inquiries: ContactInquir
                 type="button"
                 onClick={handleExport}
                 disabled={inquiries.length === 0}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-emerald-900 text-white hover:bg-emerald-800 disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-sky-900 text-white hover:bg-sky-800 disabled:opacity-50"
               >
                 <Download className="w-4 h-4" />
                 Export CSV
@@ -155,7 +155,7 @@ export default function InquiriesPanel({ inquiries }: { inquiries: ContactInquir
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search name, email, school, or message…"
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-200 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-zinc-200 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-sky-300 focus:ring-1 focus:ring-sky-200 outline-none"
             />
           </div>
 
@@ -183,22 +183,22 @@ export default function InquiriesPanel({ inquiries }: { inquiries: ContactInquir
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-zinc-100 bg-zinc-50/50 text-left">
-                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
+                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-sky-700 font-semibold">
                     Name
                   </th>
-                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
+                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-sky-700 font-semibold">
                     Email
                   </th>
-                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
+                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-sky-700 font-semibold">
                     School
                   </th>
-                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
+                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-sky-700 font-semibold">
                     Message
                   </th>
-                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
+                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-sky-700 font-semibold">
                     Date
                   </th>
-                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-emerald-700 font-semibold">
+                  <th className="px-6 py-4 text-[0.65rem] uppercase tracking-widest text-sky-700 font-semibold">
                     Status
                   </th>
                   <th className="px-6 py-4" />
@@ -213,7 +213,7 @@ export default function InquiriesPanel({ inquiries }: { inquiries: ContactInquir
                     <td className="px-6 py-4">
                       <a
                         href={`mailto:${row.email}`}
-                        className="text-emerald-800 hover:underline inline-flex items-center gap-1.5"
+                        className="text-sky-800 hover:underline inline-flex items-center gap-1.5"
                       >
                         <Mail className="w-3.5 h-3.5 shrink-0" />
                         {row.email}
@@ -225,7 +225,7 @@ export default function InquiriesPanel({ inquiries }: { inquiries: ContactInquir
                       <button
                         type="button"
                         onClick={() => setSelected(row)}
-                        className="mt-1 text-xs font-medium text-emerald-800 hover:underline"
+                        className="mt-1 text-xs font-medium text-sky-800 hover:underline"
                       >
                         Read full message
                       </button>
