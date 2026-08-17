@@ -95,7 +95,7 @@ export default async function SubmissionDetailPage({ params }: PageProps) {
           <CreatorNotice tone="success">
             <div className="flex items-start gap-3">
             <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" />
-            <p>Your submission has been approved. It is now in the judging queue.</p>
+            <p>Your submission has been approved.</p>
             </div>
           </CreatorNotice>
         ) : null}

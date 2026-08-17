@@ -34,7 +34,7 @@ export default async function AdminUsersPage({
   const rangeStart = (currentPage - 1) * PAGE_SIZE;
   const query = rawQuery?.trim().slice(0, 80) ?? "";
   const searchTerm = query.replaceAll(/[,%()]/g, "");
-  const role = ["creator", "admin", "judge"].includes(rawRole ?? "")
+  const role = ["creator", "admin"].includes(rawRole ?? "")
     ? (rawRole as UserRole)
     : undefined;
   const status = ["pending", "active", "suspended"].includes(rawStatus ?? "")
@@ -74,7 +74,7 @@ export default async function AdminUsersPage({
       <AdminPageHeader
         eyebrow="Account operations"
         title="People"
-        description="Creator, judge, and administrator accounts across the MyLENS workspace."
+        description="Creator and administrator accounts across the MyLENS workspace."
       />
 
       <AdminSubTabs
@@ -109,7 +109,6 @@ export default async function AdminUsersPage({
             <option value="">All roles</option>
             <option value="creator">Creators</option>
             <option value="admin">Administrators</option>
-            <option value="judge">Judges</option>
           </select>
           <label className="sr-only" htmlFor="user-status">
             Filter by status

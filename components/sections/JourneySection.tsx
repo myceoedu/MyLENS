@@ -33,7 +33,7 @@ const STEPS = [
     num: "04",
     label: "Step 4",
     title: "National Selection",
-    body: "Submissions enter an intense curation phase where an expert panel of filmmakers and judges shortlist the top cinematic entries.",
+    body: "Submissions enter an intense curation phase where the mentoring team shortlists the top cinematic entries.",
     img: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1000&q=80",
     imgAlt: "Professional editing bay and post-production screening process",
   },

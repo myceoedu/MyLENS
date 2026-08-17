@@ -1,4 +1,4 @@
-export type UserRole = "creator" | "admin" | "judge";
+export type UserRole = "creator" | "admin";
 
 export type UserStatus = "pending" | "active" | "suspended";
 
@@ -13,7 +13,7 @@ export type SubmissionStatus =
   | "revision"
   | "rejected";
 
-export const USER_ROLES: UserRole[] = ["creator", "admin", "judge"];
+export const USER_ROLES: UserRole[] = ["creator", "admin"];
 
 export function isUserRole(value: string): value is UserRole {
   return USER_ROLES.includes(value as UserRole);

@@ -59,6 +59,11 @@ export async function requireAuth(): Promise<Profile> {
     redirect("/login?error=account_inactive");
   }
 
+  // Legacy / unsupported roles (e.g. old judge accounts) have no workspace.
+  if (!isUserRole(String(profile.role))) {
+    redirect("/login?error=account_inactive");
+  }
+
   return profile;
 }
 

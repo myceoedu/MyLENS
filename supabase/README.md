@@ -22,7 +22,6 @@ Authentication → **Users** → Add user (with passwords):
 | Email | User metadata |
 |-------|----------------|
 | `admin@mylens2026.my` | `{ "full_name": "National Admin", "role": "admin" }` |
-| `judge@mylens2026.my` | `{ "full_name": "Panel Judge", "role": "judge" }` |
 | `creator1@mylens2026.my` | `{ "full_name": "Aisha Mya", "role": "creator" }` |
 | `creator2@mylens2026.my` | `{ "full_name": "Irfan Izuddin", "role": "creator" }` |
 

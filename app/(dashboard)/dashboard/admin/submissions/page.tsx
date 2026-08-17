@@ -151,7 +151,7 @@ export default async function AdminSubmissionsPage({
       <AdminPageHeader
         eyebrow="Campaign entries"
         title="Video submissions"
-        description="Review creator tourism videos, request edits, and approve entries for judging."
+        description="Review creator tourism videos, request edits, and approve entries."
       />
 
       <div className="grid gap-4 sm:grid-cols-3">
@@ -170,7 +170,7 @@ export default async function AdminSubmissionsPage({
         <AdminStatCard
           label="Approved"
           value={approvedCount ?? 0}
-          hint="In judging queue"
+          hint="Approved entries"
           variant="active"
         />
       </div>

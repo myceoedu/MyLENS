@@ -28,7 +28,7 @@ export default function AdminAttentionPanel({
       ? {
           count: pendingSubmissions,
           title: `Video submission${pendingSubmissions === 1 ? "" : "s"} awaiting review`,
-          description: "Watch entries, request edits, or approve them for judging.",
+          description: "Watch entries, request edits, or approve them.",
           href: "/dashboard/admin/submissions",
           label: "Review submissions",
           icon: Film,

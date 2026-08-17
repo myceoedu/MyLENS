@@ -35,7 +35,7 @@ const CHAPTERS = [
     title: "Share with the Nation",
     subtitle: "The premiere",
     description:
-      "Completed films are celebrated on the national stage — judged, honoured, and preserved as part of Malaysia's living story.",
+      "Completed films are celebrated on the national stage — honoured and preserved as part of Malaysia's living story.",
   },
 ] as const;
 

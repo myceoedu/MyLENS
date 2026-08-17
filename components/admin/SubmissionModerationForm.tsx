@@ -112,7 +112,7 @@ export default function SubmissionModerationForm({
                   </span>
                   <span className="mt-0.5 block text-xs text-zinc-500">
                     {status === "in_review" && "Mark as actively reviewing"}
-                    {status === "approved" && "Send to judging queue"}
+                    {status === "approved" && "Mark as approved"}
                     {status === "revision" && "Ask creator to edit"}
                     {status === "rejected" && "Decline this entry"}
                   </span>

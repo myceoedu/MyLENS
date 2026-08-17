@@ -16,7 +16,7 @@ alter table public.learning_items
       'task'
     )
   );
-
+ 
 alter table public.learning_items
   drop constraint if exists learning_items_has_content;
 

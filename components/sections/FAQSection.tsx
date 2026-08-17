@@ -27,9 +27,9 @@ const FAQ_ITEMS = [
       "Not at all. MyLENS is designed as a foundational growth journey. Selected students receive guided learning modules, structural masterclasses, and direct industry mentorship to shape their technical skills from scratch.",
   },
   {
-    question: "How are videos judged?",
+    question: "How are videos selected?",
     answer:
-      "Submissions are evaluated by a distinguished panel of cultural experts and cinematic pioneers based on narrative depth, creative perspective, technical authenticity, and how powerfully they capture the unseen essence of Malaysia.",
+      "Submissions are evaluated by the MyLENS mentoring team based on narrative depth, creative perspective, technical authenticity, and how powerfully they capture the unseen essence of Malaysia.",
   },
   {
     question: "What are the key dates?",
